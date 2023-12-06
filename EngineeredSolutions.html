@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Flow Rate Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .container_div {
+            flex-basis: 48%;
+            background-color: #c0c0c0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        h2 {
+            color: #555;
+        }
+
+        div {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        input[type="number"] {
+            font-size: medium;
+            width: 90%;
+            padding: 8px;
+            margin: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            font-size: medium;
+            padding: 10px 20px;
+            border: none;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #708f72;
+        }
+
+        p {
+            margin-top: 10px;
+            color: #333;
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <div id="flow_rate">
+        <h1>Flow Rate Calculator</h1>
+        <div class="container">
+            <div class="container_div">
+                <h2>Fixture Flow Rate Calculation</h2>
+                <div>
+                    <h3>Private</h3>
+                    <label for="private_wcft">Water Closet Tank:</label>
+                    <input type="number" id="private_wcft" value="0"><br><br>
+
+                    <label for="private_wcfv">Water Closet Valve:</label>
+                    <input type="number" id="private_wcfv" value="0">
+                </div>
+                <div>
+                    <h3>Public</h3>
+                    <label for="public_wcft">Public Water Closet Tank:</label>
+                    <input type="number" id="public_wcft" value="0"><br><br>
+
+                    <label for="public_wcfv">Public Water Closet Valve:</label>
+                    <input type="number" id="public_wcfv" value="0"><br><br>
+
+                    <label for="public_urinal_3_4">Urinal 3/4 inch WSFU:</label>
+                    <input type="number" id="public_urinal_3_4" value="0"><br><br>
+
+                    <label for="public_urinal_1">Urinal 1 inch WSFU:</label>
+                    <input type="number" id="public_urinal_1" value="0"><br><br>
+                </div>
+                <button onclick="calculateFixtureFlow()">Calculate Fixture Flow Rate</button>
+                <h3 id="fixtureResult"></h3>
+
+            </div>
+            <div class="container_div">
+                <h2>Irrigation Calculation</h2>
+                <div>
+                    <label for="irrigation_sprinklers">Number of Sprinklers:</label>
+                    <input type="number" id="irrigation_sprinklers" value="0"><br><br>
+
+                    <label for="irrigation_flow_rate">Flow Rate (GPM):</label>
+                    <input type="number" id="irrigation_flow_rate" value="0"><br><br>
+
+                    <label for="duration">Duration (Minutes):</label>
+                    <input type="number" id="irrigation_duration" value="0"><br><br>
+                </div>
+                <button onclick="calculateIrrigationFlow()">Calculate Irrigation Flow Rate</button>
+                <h3 id="irrigationResult"></h3>
+
+                <h3>Or</h3>
+
+                <h2>Total Irrigation Flow Rate</h2>
+                <div>
+                    <label for="total_irrigation_flow_rate">Total Flow Rate (GPM):</label>
+                    <input type="number" id="total_irrigation_flow_rate" value="0"><br><br>
+                </div>
+                <button onclick="calculateTotalPumpFlow()">Calculate Total Pump Flow Rate</button>
+                <h2 id="pumpResult"></h2>
+            </div>
+        </div>
+    </div>
+
+    <div id="day_tank">
+        <h1>Day Tank Calculation</h1>
+        <div class="container">
+            <div class="container_div">
+                <h2>Discharge Side</h2>
+                <div>
+                    <label for="day_tank_discharge_lf_pr">Last Fixture Pressure Requirement (psi):</label>
+                    <input type="number" id="day_tank_discharge_lf_pr" value="0"><br><br>
+
+                    <label for="day_tank_discharge_lf_hp">Last Fixture Height from Pump (ft):</label>
+                    <input type="number" id="day_tank_discharge_lf_hp" value="0"><br><br>
+
+                    <label for="day_tank_discharge_tpr">Total Pipe Run (ft):</label>
+                    <input type="number" id="day_tank_discharge_tpr" value="0"><br><br>
+
+                    <label for="day_tank_discharge_lov">Losses on Valves (psi):</label>
+                    <input type="number" id="day_tank_discharge_lov" value="0"><br><br>
+
+                    <label for="day_tank_discharge_lof">Losses on Fittings (ft):</label>
+                    <input type="number" id="day_tank_discharge_lof" value="0"><br><br>
+
+                </div>
+                <button onclick="calculateDayTankDischargeSide()">Calculate Discharge Side</button>
+                <h3 id="DayTankDischargeResult"></h3>
+
+            </div>
+            <div class="container_div">
+                <h2>Suction Side</h2>
+                <div>
+                    <label for="day_tank_suction_h">Head at Suction Side (ft):</label>
+                    <input type="number" id="day_tank_suction_h" value="0"><br><br>
+
+                    <label for="day_tank_suction_tpr">Total Pipe Run (ft):</label>
+                    <input type="number" id="day_tank_suction_tpr" value="0"><br><br>
+
+                    <label for="day_tank_suction_lov">Losses on Valves (psi):</label>
+                    <input type="number" id="day_tank_suction_lov" value="0"><br><br>
+
+                    <label for="day_tank_suction_lof">Losses on Fittings (ft):</label>
+                    <input type="number" id="day_tank_suction_lof" value="0"><br><br>
+                </div>
+                <button onclick="calculateDayTankSuctionSide()">Calculate Suction Side</button>
+                <h3 id="DayTankSuctionResult"></h3>
+
+
+                <button onclick="DayTankTotalHeadBoosterPumpResult()"> Calculate Day Tank Total Head of Booster
+                    Pump</button>
+                <h2 id="DayTankTotalHeadBoosterPumpResult"></h2>
+            </div>
+        </div>
+    </div>
+
+    <div id="municipal_line">
+        <h1>Municipal Line Calculation</h1>
+        <div class="container">
+            <div class="container_div">
+                <h2>Discharge Side</h2>
+                <div>
+                    <label for="municipal_line_discharge_lf_pr">Last Fixture Pressure Requirement (psi):</label>
+                    <input type="number" id="municipal_line_discharge_lf_pr" value="0"><br><br>
+
+                    <label for="municipal_line_discharge_lf_hp">Last Fixture Height from Pump (ft):</label>
+                    <input type="number" id="municipal_line_discharge_lf_hp" value="0"><br><br>
+
+                    <label for="municipal_line_discharge_tpr">Total Pipe Run (ft):</label>
+                    <input type="number" id="municipal_line_discharge_tpr" value="0"><br><br>
+
+                    <label for="municipal_line_discharge_lof">Losses on Fittings (ft):</label>
+                    <input type="number" id="municipal_line_discharge_lof" value="0"><br><br>
+
+                </div>
+                <button onclick="calculateMunicipalLineDischargeSide()">Calculate Discharge Side</button>
+                <h3 id="MunicipalLineDischargeResult"></h3>
+
+            </div>
+            <div class="container_div">
+                <h2>Suction Side</h2>
+                <div>
+                    <label for="municipal_line_suction_p">Municipal Line Pressure (psi):</label>
+                    <input type="number" id="municipal_line_suction_p" value="0"><br><br>
+
+                    <label for="municipal_line_suction_tpr">Total Pipe Run (ft):</label>
+                    <input type="number" id="municipal_line_suction_tpr" value="0"><br><br>
+
+                    <label for="municipal_line_suction_lof">Losses on Fittings (ft):</label>
+                    <input type="number" id="municipal_line_suction_lof" value="0"><br><br>
+                </div>
+                <button onclick="calculateMunicipalLineSuctionSide()">Calculate Suction Side</button>
+                <h3 id="MunicipalLineSuctionResult"></h3>
+
+
+                <button onclick="MunicipalLineTotalHeadBoosterPumpResult()"> Calculate Day Tank Total Head of Booster
+                    Pump</button>
+                <h2 id="MunicipalLineTotalHeadBoosterPumpResult"></h2>
+            </div>
+        </div>
+    </div>
+    <button onclick="printPage()">Print</button>
+
+    <script>
+        function calculateFixtureFlow() {
+            const privateWCFT = parseFloat(document.getElementById('private_wcft').value);
+            const privateWCFV = parseFloat(document.getElementById('private_wcfv').value);
+
+            const publicWCFT = parseFloat(document.getElementById('public_wcft').value);
+            const publicWCFV = parseFloat(document.getElementById('public_wcfv').value);
+
+            const publicUrinal3_4 = parseFloat(document.getElementById('public_urinal_3_4').value);
+            const publicUrinal1 = parseFloat(document.getElementById('public_urinal_1').value);
+
+            let calculatePrivateWaterClosetFlushTank = privateWCFT * 2.2;
+            let calculatePrivateWaterClosetFlushValve = privateWCFV * 6;
+
+            let calculatePublicWaterClosetFlushTank = publicWCFT * 5;
+            let calculatePublicWaterClosetFlushValve = publicWCFV * 10;
+            let calculatePublicUrinal3_4 = publicUrinal3_4 * 5;
+            let calculatePublicUrinal1 = publicUrinal1 * 10;
+
+            const totalWSFU = calculatePrivateWaterClosetFlushTank + calculatePrivateWaterClosetFlushValve + calculatePublicWaterClosetFlushTank + calculatePublicWaterClosetFlushValve + calculatePublicUrinal3_4 + calculatePublicUrinal1;
+            const gpm = 0;
+            if (totalWSFU == 0) {
+                calculateGPM(totalWSFU);
+            }
+            document.getElementById('fixtureResult').innerHTML = `Total WSFU: ${totalWSFU.toFixed(2)}<br>Flow Rate (GPM): ${gpm.toFixed(2)}`;
+            return gpm
+        }
+
+        function calculateGPM(totalWSFU) {
+            const lookupTable = {
+                5: 15, 6: 17.4, 7: 19.8, 8: 22.2, 9: 24.6, 10: 27, 11: 27.8, 12: 28.6, 13: 29.4, 14: 30.2,
+                15: 31, 16: 31.8, 17: 32.6, 18: 33.4, 19: 34.2, 20: 35, 25: 38, 30: 42, 35: 44, 40: 46,
+                45: 48, 50: 50, 60: 54, 70: 58, 80: 61.2, 90: 64.3, 100: 67.5, 120: 73, 140: 77, 160: 81,
+                180: 85.5, 200: 90, 225: 95.5, 250: 101, 275: 104.5, 300: 108, 400: 127, 500: 143,
+                750: 177, 1000: 208, 1250: 239, 1500: 269, 1750: 297, 2000: 325, 2500: 380, 3000: 433,
+                4000: 525, 5000: 593
+            };
+
+            const wsfuValues = Object.keys(lookupTable).map(Number);
+
+            const nearestWSFU = wsfuValues.reduce((prev, curr) => {
+                return (Math.abs(curr - totalWSFU) < Math.abs(prev - totalWSFU) ? curr : prev);
+            });
+
+            const gpm = lookupTable[nearestWSFU];
+
+            return gpm;
+        }
+
+        function calculateIrrigationFlow() {
+            const sprinklers = parseFloat(document.getElementById('irrigation_sprinklers').value);
+            const flowRate = parseFloat(document.getElementById('irrigation_flow_rate').value);
+            const duration = parseFloat(document.getElementById('irrigation_duration').value);
+
+            const totalFlow = sprinklers * flowRate * duration;
+
+            document.getElementById('irrigationResult').innerHTML = `Total Irrigation Flow Rate: ${totalFlow.toFixed(2)} GPM`;
+            return totalFlow
+        }
+
+        function calculateTotalPumpFlow() {
+            const totalIrrigationFlowRate = parseFloat(document.getElementById('total_irrigation_flow_rate').value);
+            let fixtureGPM = calculateFixtureFlow();
+            let irrigationGPM = totalIrrigationFlowRate;
+            if (irrigationGPM == 0) {
+                irrigationGPM = calculateIrrigationFlow();
+                const simplexFlow = fixtureGPM + irrigationGPM;
+                const duplexFlow = simplexFlow * 0.70;
+                const triplexFlow = simplexFlow * 0.35;
+
+                document.getElementById('pumpResult').innerHTML = `Simplex: ${simplexFlow.toFixed(2)} GPM<br>Duplex: ${duplexFlow.toFixed(2)} GPM<br>Triplex: ${triplexFlow.toFixed(2)} GPM`;
+                return simplexFlow;
+            }
+            else {
+                const simplexFlow = totalIrrigationFlowRate + fixtureGPM;
+                const duplexFlow = simplexFlow * 0.70;
+                const triplexFlow = simplexFlow * 0.35;
+
+                document.getElementById('pumpResult').innerHTML = `Simplex: ${simplexFlow.toFixed(2)} GPM<br>Duplex: ${duplexFlow.toFixed(2)} GPM<br>Triplex: ${triplexFlow.toFixed(2)} GPM`;
+                return simplexFlow;
+            }
+        }
+
+        function calculateDayTankDischargeSide() {
+            const dayTankDischargeLFPR = parseFloat(document.getElementById('day_tank_discharge_lf_pr').value);
+            const dayTankDischargeLFHP = parseFloat(document.getElementById('day_tank_discharge_lf_hp').value);
+            const dayTankDischargeTPR = parseFloat(document.getElementById('day_tank_discharge_tpr').value);
+            const dayTankDischargeLoV = parseFloat(document.getElementById('day_tank_discharge_lov').value);
+            const dayTankDischargeLoF = parseFloat(document.getElementById('day_tank_discharge_lof').value);
+
+            let dayTankDischargeLF_feet = dayTankDischargeLFPR * 2.31;
+            let dayTankDischargeLoOPR_feet = (dayTankDischargeTPR / 100) * 1.5;
+            let dayTankDischargeLoV_feet = dayTankDischargeLoV * 2.31;
+
+            let dayTankDischargeResult = dayTankDischargeLF_feet + dayTankDischargeLFHP + dayTankDischargeLoOPR_feet + dayTankDischargeLoV_feet + dayTankDischargeLoF;
+
+            document.getElementById('DayTankDischargeResult').innerHTML = `Day Tank Discharge Side: ${dayTankDischargeResult.toFixed(2)} feet`;
+
+            return dayTankDischargeResult;
+        }
+
+        function calculateDayTankSuctionSide() {
+            const dayTankSuctionH = parseFloat(document.getElementById('day_tank_suction_h').value);
+            const dayTankSuctionTPR = parseFloat(document.getElementById('day_tank_suction_tpr').value);
+            const dayTankSuctionLoV = parseFloat(document.getElementById('day_tank_suction_lov').value);
+            const dayTankSuctionLoF = parseFloat(document.getElementById('day_tank_suction_lof').value);
+
+            let dayTankSuctionH_neg = dayTankSuctionH * -1;
+
+            if (dayTankSuctionH < 0) {
+                dayTankSuctionH_neg = dayTankSuctionH;
+            }
+            let dayTankSuctionLoOPR_feet = (dayTankSuctionTPR / 100) * 1.5;
+            let dayTankSuctionLoV_feet = dayTankSuctionLoV * 2.31;
+
+            let dayTankSuctionResult = dayTankSuctionH_neg + dayTankSuctionLoOPR_feet + dayTankSuctionLoV_feet + dayTankSuctionLoF;
+
+            document.getElementById('DayTankSuctionResult').innerHTML = `Day Tank Suction Side: ${dayTankSuctionResult.toFixed(2)} feet`;
+
+            return dayTankSuctionResult;
+        }
+
+        function DayTankTotalHeadBoosterPumpResult() {
+
+            let dayTankTotalHeadOfBoosterPump = calculateDayTankDischargeSide() + calculateDayTankSuctionSide();
+
+            document.getElementById('DayTankTotalHeadBoosterPumpResult').innerHTML = `Total Head of Booster Pump: ${dayTankTotalHeadOfBoosterPump.toFixed(2)} feet`;
+
+            return dayTankTotalHeadOfBoosterPump;
+        }
+
+        function calculateMunicipalLineDischargeSide() {
+            const municipalLineDischargeLFPR = parseFloat(document.getElementById('municipal_line_discharge_lf_pr').value);
+            const municipalLineDischargeLFHP = parseFloat(document.getElementById('municipal_line_discharge_lf_hp').value);
+            const municipalLineDischargeTPR = parseFloat(document.getElementById('municipal_line_discharge_tpr').value);
+            const municipalLineDischargeLoF = parseFloat(document.getElementById('municipal_line_discharge_lof').value);
+
+            let municipalLineDischargeLF_feet = municipalLineDischargeLFPR * 2.31;
+            let municipalLineDischargeLoOPR_feet = (municipalLineDischargeTPR / 100) * 1.5;
+            let municipalLineDischargeLoV_feet = 5 * 2.31;
+
+            let municipalLineDischargeResult = municipalLineDischargeLF_feet + municipalLineDischargeLFHP + municipalLineDischargeLoOPR_feet + municipalLineDischargeLoV_feet + municipalLineDischargeLoF;
+
+            if (municipalLineDischargeLFPR == 0 && municipalLineDischargeLFPR == 0 && municipalLineDischargeTPR == 0 && municipalLineDischargeLoF == 0) {
+                municipalLineDischargeResult = 0;
+            }
+            document.getElementById('MunicipalLineDischargeResult').innerHTML = `Municipal Line Discharge Side: ${municipalLineDischargeResult.toFixed(2)} feet`;
+
+            return municipalLineDischargeResult;
+        }
+
+        function calculateMunicipalLineSuctionSide() {
+            const municipalLineSuctionP = parseFloat(document.getElementById('municipal_line_suction_p').value);
+            const municipalLineSuctionTPR = parseFloat(document.getElementById('municipal_line_suction_tpr').value);
+            const municipalLineSuctionLoF = parseFloat(document.getElementById('municipal_line_suction_lof').value);
+
+            let municipalLineSuction_neg_feet = municipalLineSuctionP * 2.31 * -1;
+
+            if (municipalLineSuctionP < 0) {
+                municipalLineSuction_neg_feet = municipalLineSuctionP * 2.31;
+            }
+            let municipalLineSuctionLoOPR_feet = (municipalLineSuctionTPR / 100) * 1.5;
+            let municipalLineSuctionLoV_feet = 5 * 2.31;
+
+            let municipalLineSuctionResult = municipalLineSuction_neg_feet + municipalLineSuctionLoOPR_feet + municipalLineSuctionLoV_feet + municipalLineSuctionLoF;
+
+            if (municipalLineSuctionP == 0 && municipalLineSuctionTPR == 0 && municipalLineSuctionLoF == 0) {
+                municipalLineSuctionResult = 0;
+            }
+            document.getElementById('MunicipalLineSuctionResult').innerHTML = `Municipal Line Suction Side: ${municipalLineSuctionResult.toFixed(2)} feet`;
+
+            return municipalLineSuctionResult;
+        }
+
+        function MunicipalLineTotalHeadBoosterPumpResult() {
+
+            let municipalLineTotalHeadOfBoosterPump = calculateMunicipalLineDischargeSide() + calculateMunicipalLineSuctionSide();
+
+            document.getElementById('MunicipalLineTotalHeadBoosterPumpResult').innerHTML = `Total Head of Booster Pump: ${municipalLineTotalHeadOfBoosterPump.toFixed(2)} feet`;
+
+            return municipalLineTotalHeadOfBoosterPump;
+        }
+
+        function printPage() {
+            window.print();
+        }
+    </script>
+</body>
+
+</html>
