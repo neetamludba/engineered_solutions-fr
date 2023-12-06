@@ -189,6 +189,16 @@
             </div>
         </div>
     </div>
+    <div class="">
+        <div>
+            <button onclick="flowRateDayTankChartV190()">Flow Rate | Day Tank Chart V190</button>
+            <canvas id="frdtv190" width="575" height="375"></canvas>
+        </div>
+        <div>
+            <button onclick="flowRateDayTankChartV110()">Flow Rate | Day Tank Chart V110</button>
+            <canvas id="frdtv110" width="650" height="400"></canvas>
+        </div>
+    </div>
 
     <div id="municipal_line">
         <h1>Municipal Line Calculation</h1>
@@ -235,9 +245,124 @@
             </div>
         </div>
     </div>
+
+    <div class="">
+        <div>
+            <button onclick="flowRateMunicipalLineChartV190()">Flow Rate | Municipal Line Chart V190</button>
+            <canvas id="frdtv190" width="575" height="375"></canvas>
+        </div>
+        <div>
+            <button onclick="flowRateMunicipalLineChartV110()">Flow Rate | Municipal Line Chart V110</button>
+            <canvas id="frdtv110" width="650" height="400"></canvas>
+        </div>
+    </div>
     <button onclick="printPage()">Print</button>
 
     <script>
+        function flowRateDayTankChartV190() {
+            const canvas = document.getElementById("frdtv190");
+            const ctx = canvas.getContext("2d");
+
+            // Load your chart image (replace with your actual image URL)
+            const chartImage = new Image();
+            chartImage.src = "V190.png";
+
+            const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
+            const flowrateResult = calculateTotalPumpFlow();
+            // Draw the chart image
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                // Draw a custom line (e.g., flow rate indicator)
+                ctx.beginPath();
+                ctx.moveTo(25, daytankTotalHead - 250); // Starting point (adjust coordinates)
+                ctx.lineTo(flowrateResult + 80, daytankTotalHead - 250); // Ending point (adjust coordinates)
+                ctx.moveTo(flowrateResult + 80, daytankTotalHead - 250); // Starting point (adjust coordinates)
+                ctx.lineTo(flowrateResult + 80, 345); // Ending point (adjust coordinates)
+                ctx.strokeStyle = "red"; // Line color
+                ctx.lineWidth = 3; // Line width
+                ctx.stroke();
+            };
+        }
+
+        function flowRateDayTankChartV110() {
+            const canvas = document.getElementById("frdtv110");
+            const ctx = canvas.getContext("2d");
+
+            // Load your chart image (replace with your actual image URL)
+            const chartImage = new Image();
+            chartImage.src = "V110.png";
+
+            const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
+            const flowrateResult = calculateTotalPumpFlow();
+            // Draw the chart image
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                // Draw a custom line (e.g., flow rate indicator)
+                ctx.beginPath();
+                ctx.moveTo(25, daytankTotalHead - 250); // Starting point (adjust coordinates)
+                ctx.lineTo(flowrateResult + 80, daytankTotalHead - 250); // Ending point (adjust coordinates)
+                ctx.moveTo(flowrateResult + 80, daytankTotalHead - 250); // Starting point (adjust coordinates)
+                ctx.lineTo(flowrateResult + 80, 345); // Ending point (adjust coordinates)
+                ctx.strokeStyle = "red"; // Line color
+                ctx.lineWidth = 3; // Line width
+                ctx.stroke();
+            };
+        }
+
+        function flowRateMunicipalLineChartV190() {
+            const canvas = document.getElementById("frdtv190");
+            const ctx = canvas.getContext("2d");
+
+            // Load your chart image (replace with your actual image URL)
+            const chartImage = new Image();
+            chartImage.src = "V190.png";
+
+            const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
+            const flowrateResult = calculateTotalPumpFlow();
+            // Draw the chart image
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                // Draw a custom line (e.g., flow rate indicator)
+                ctx.beginPath();
+                ctx.moveTo(25, daytankTotalHead - 250); // Starting point (adjust coordinates)
+                ctx.lineTo(flowrateResult + 80, daytankTotalHead - 250); // Ending point (adjust coordinates)
+                ctx.moveTo(flowrateResult + 80, daytankTotalHead - 250); // Starting point (adjust coordinates)
+                ctx.lineTo(flowrateResult + 80, 345); // Ending point (adjust coordinates)
+                ctx.strokeStyle = "red"; // Line color
+                ctx.lineWidth = 3; // Line width
+                ctx.stroke();
+            };
+        }
+
+        function flowRateMunicipalLineChartV110() {
+            const canvas = document.getElementById("frdtv110");
+            const ctx = canvas.getContext("2d");
+
+            // Load your chart image (replace with your actual image URL)
+            const chartImage = new Image();
+            chartImage.src = "V110.png";
+
+            const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
+            const flowrateResult = calculateTotalPumpFlow();
+            // Draw the chart image
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                // Draw a custom line (e.g., flow rate indicator)
+                ctx.beginPath();
+                ctx.moveTo(25, daytankTotalHead - 250); // Starting point (adjust coordinates)
+                ctx.lineTo(flowrateResult + 80, daytankTotalHead - 250); // Ending point (adjust coordinates)
+                ctx.moveTo(flowrateResult + 80, daytankTotalHead - 250); // Starting point (adjust coordinates)
+                ctx.lineTo(flowrateResult + 80, 345); // Ending point (adjust coordinates)
+                ctx.strokeStyle = "red"; // Line color
+                ctx.lineWidth = 3; // Line width
+                ctx.stroke();
+            };
+        }
+
         function calculateFixtureFlow() {
             const privateWCFT = parseFloat(document.getElementById('private_wcft').value);
             const privateWCFV = parseFloat(document.getElementById('private_wcfv').value);
@@ -257,9 +382,9 @@
             let calculatePublicUrinal1 = publicUrinal1 * 10;
 
             const totalWSFU = calculatePrivateWaterClosetFlushTank + calculatePrivateWaterClosetFlushValve + calculatePublicWaterClosetFlushTank + calculatePublicWaterClosetFlushValve + calculatePublicUrinal3_4 + calculatePublicUrinal1;
-            const gpm = 0;
-            if (totalWSFU == 0) {
-                calculateGPM(totalWSFU);
+            let gpm = 0;
+            if (totalWSFU != 0) {
+                gpm = calculateGPM(totalWSFU);
             }
             document.getElementById('fixtureResult').innerHTML = `Total WSFU: ${totalWSFU.toFixed(2)}<br>Flow Rate (GPM): ${gpm.toFixed(2)}`;
             return gpm
