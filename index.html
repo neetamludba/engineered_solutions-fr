@@ -4,6 +4,10 @@
 <head>
     <title>Flow Rate Calculator</title>
     <style>
+        .color_palette {
+            color: #225050 #B2B788 #748591 #73876A #8CAC9C
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -68,14 +72,14 @@
             font-size: medium;
             padding: 10px 20px;
             border: none;
-            background-color: #4caf50;
+            background-color: #225050;
             color: white;
             border-radius: 5px;
             cursor: pointer;
         }
 
         button:hover {
-            background-color: #708f72;
+            background-color: #B2B788;
         }
 
         p {
@@ -92,6 +96,10 @@
         input[type="number"].no-spinner {
             -moz-appearance: textfield;
             appearance: textField;
+        }
+
+        .required_message {
+            color: red;
         }
     </style>
 </head>
@@ -131,48 +139,51 @@
                         <label for="numberOfFixtures">Number of Fixtures:</label>
                         <input type="number" id="numberOfFixtures" class="no-spinner" placeholder="Enter number"
                             required>
-                        <br><br>
 
-                        <button type="submit">Add Fixture</button>
+                    </div>
+                    <button type="submit">Add Fixture</button>
+                    <p id="addFixtureError" class="required_message"></p>
                 </form>
-            </div>
-            <p id="addedFixtures"></p>
-            <button onclick="calculateFixtureFlow()">Calculate Fixture Flow Rate</button>
-            <h3 id="fixtureResult"></h3>
+                <p id="addedFixtures"></p>
+                <br>
+                <!-- <button onclick="calculateFixtureFlow()">Calculate Fixture Flow Rate</button> -->
+                <h3 id="fixtureResult"></h3>
 
-        </div>
-        <div class="container_div">
-            <form id="irrigationForm" onsubmit="calculateIrrigationFlow()">
-                <h2>Irrigation Calculation</h2>
+            </div>
+            <div class="container_div">
+                <form id="irrigationForm" onsubmit="calculateIrrigationFlow()">
+                    <h2>Irrigation Calculation</h2>
+                    <div>
+                        <label for="irrigation_sprinklers">Number of Sprinklers:</label>
+                        <input type="number" id="irrigation_sprinklers" class="no-spinner" placeholder="Enter number"
+                            required><br><br>
+
+                        <label for="irrigation_flow_rate">Flow Rate (GPM):</label>
+                        <input type="number" id="irrigation_flow_rate" class="no-spinner" placeholder="Enter number"
+                            required step="any"><br><br>
+
+                        <label for="irrigation_duration">Duration (Minutes):</label>
+                        <input type="number" id="irrigation_duration" class="no-spinner" placeholder="Enter number"
+                            required step="any">
+                    </div>
+                    <button type="submit">Calculate Irrigation Flow Rate</button>
+                </form>
+                <!-- <h3 id="irrigationResult"></h3> -->
+
+                <h3>Or</h3>
+
+                <h2>Total Irrigation Flow Rate</h2>
                 <div>
-                    <label for="irrigation_sprinklers">Number of Sprinklers:</label>
-                    <input type="number" id="irrigation_sprinklers" class="no-spinner" placeholder="Enter number"
-                        required><br><br>
-
-                    <label for="irrigation_flow_rate">Flow Rate (GPM):</label>
-                    <input type="number" id="irrigation_flow_rate" class="no-spinner" placeholder="Enter number"
-                        required step="any"><br><br>
-
-                    <label for="irrigation_duration">Duration (Minutes):</label>
-                    <input type="number" id="irrigation_duration" class="no-spinner" placeholder="Enter number" required
-                        step="any"><br><br>
+                    <label for="total_irrigation_flow_rate">Total Flow Rate (GPM):</label>
+                    <input type="number" id="total_irrigation_flow_rate" class="no-spinner" placeholder="Enter number"
+                        required step="any">
                 </div>
-                <button type="submit">Calculate Irrigation Flow Rate</button>
-            </form>
-            <h3 id="irrigationResult"></h3>
+                <p id="irrigationFlowRateError" class="required_message"></p>
 
-            <h3>Or</h3>
-
-            <h2>Total Irrigation Flow Rate</h2>
-            <div>
-                <label for="total_irrigation_flow_rate">Total Flow Rate (GPM):</label>
-                <input type="number" id="total_irrigation_flow_rate" class="no-spinner" placeholder="Enter number"
-                    required step="any"><br><br>
+                <button onclick="calculateTotalPumpFlow()">Calculate Total Pump Flow Rate</button>
+                <h2 id="pumpResult"></h2>
             </div>
-            <button onclick="calculateTotalPumpFlow()">Calculate Total Pump Flow Rate</button>
-            <h2 id="pumpResult"></h2>
         </div>
-    </div>
     </div>
 
     <div id="day_tank">
@@ -205,6 +216,7 @@
                     </div>
                     <button type="submit">Calculate Discharge Side</button>
                 </form>
+                <p class="required_message" id="DayTankDischargeResultError"></p>
                 <h3 id="DayTankDischargeResult"></h3>
 
             </div>
@@ -230,6 +242,7 @@
                     </div>
                     <button type="submit">Calculate Suction Side</button>
                 </form>
+                <p class="required_message" id="DayTankSuctionResultError"></p>
                 <h3 id="DayTankSuctionResult"></h3>
 
 
@@ -277,6 +290,8 @@
                     </div>
                     <button type="submit">Calculate Discharge Side</button>
                 </form>
+                <p class="required_message" id="MunicipalLineDischargeResultError"></p>
+
                 <h3 id="MunicipalLineDischargeResult"></h3>
 
             </div>
@@ -299,6 +314,8 @@
                     </div>
                     <button type="submit">Calculate Suction Side</button>
                 </form>
+                <p class="required_message" id="MunicipalLineSuctionResultError"></p>
+
                 <h3 id="MunicipalLineSuctionResult"></h3>
 
 
@@ -641,7 +658,9 @@
 
             document.getElementById('addedFixtures').innerHTML = display;
             document.getElementById('numberOfFixtures').value = '';
+            document.getElementById('addFixtureError').innerHTML = "";
 
+            calculateFixtureFlow()
         }
 
         function calculateFixtureFlow() {
@@ -657,8 +676,13 @@
             if (totalWSFU != 0) {
                 gpm = calculateGPM(totalWSFU);
             }
-            document.getElementById('fixtureResult').innerHTML = `Total WSFU: ${totalWSFU.toFixed(2)}<br>Flow Rate (GPM): ${gpm.toFixed(2)}`;
-            return gpm
+            if (gpm) {
+                document.getElementById('addFixtureError').innerHTML = "";
+                document.getElementById('fixtureResult').innerHTML = `Total WSFU: ${totalWSFU.toFixed(2)}<br>Flow Rate (GPM): ${gpm.toFixed(2)}`;
+                return gpm
+            } else {
+                return gpm
+            }
         }
 
         function calculateGPM(totalWSFU) {
@@ -691,31 +715,42 @@
 
             const totalFlow = sprinklers * flowRate * duration;
 
-            document.getElementById('irrigationResult').innerHTML = `Total Irrigation Flow Rate: ${totalFlow.toFixed(2)} GPM`;
-            return totalFlow
+            document.getElementById('total_irrigation_flow_rate').value = totalFlow.toFixed(2);
+            document.getElementById('irrigationFlowRateError').innerHTML = "";
+
+            // return totalFlow
         }
 
         function calculateTotalPumpFlow() {
             const totalIrrigationFlowRate = parseFloat(document.getElementById('total_irrigation_flow_rate').value);
             let fixtureGPM = calculateFixtureFlow();
-            let irrigationGPM = totalIrrigationFlowRate;
-            if (irrigationGPM == 0) {
-                irrigationGPM = calculateIrrigationFlow();
-                const simplexFlow = fixtureGPM + irrigationGPM;
-                const duplexFlow = simplexFlow * 0.70;
-                const triplexFlow = simplexFlow * 0.35;
 
-                document.getElementById('pumpResult').innerHTML = `Simplex: ${simplexFlow.toFixed(2)} GPM<br>Duplex: ${duplexFlow.toFixed(2)} GPM<br>Triplex: ${triplexFlow.toFixed(2)} GPM`;
-                return simplexFlow;
+            if (fixtureGPM == 0.00) {
+                document.getElementById('addFixtureError').innerHTML = "Please add Fixtures";
             }
             else {
-                const simplexFlow = totalIrrigationFlowRate + fixtureGPM;
-                const duplexFlow = simplexFlow * 0.70;
-                const triplexFlow = simplexFlow * 0.35;
+                document.getElementById('addFixtureError').innerHTML = "";
 
-                document.getElementById('pumpResult').innerHTML = `Simplex: ${simplexFlow.toFixed(2)} GPM<br>Duplex: ${duplexFlow.toFixed(2)} GPM<br>Triplex: ${triplexFlow.toFixed(2)} GPM`;
-                return simplexFlow;
             }
+
+            if (isNaN(totalIrrigationFlowRate)) {
+                document.getElementById('irrigationFlowRateError').innerHTML = "Please Input Flow Rate";
+            }
+            else {
+                document.getElementById('irrigationFlowRateError').innerHTML = "";
+
+            }
+
+            if (isNaN(totalIrrigationFlowRate) || fixtureGPM == 0.00) {
+                return;
+            }
+            const simplexFlow = totalIrrigationFlowRate + fixtureGPM;
+            const duplexFlow = simplexFlow * 0.70;
+            const triplexFlow = simplexFlow * 0.35;
+
+            document.getElementById('pumpResult').innerHTML = `Simplex: ${simplexFlow.toFixed(2)} GPM<br>Duplex: ${duplexFlow.toFixed(2)} GPM<br>Triplex: ${triplexFlow.toFixed(2)} GPM`;
+            return simplexFlow;
+
         }
 
         function DayTankDischargeLossesFittings() {
@@ -738,8 +773,10 @@
             let dayTankDischargeLoV_feet = dayTankDischargeLoV * 2.31;
 
             let dayTankDischargeResult = dayTankDischargeLF_feet + dayTankDischargeLFHP + dayTankDischargeLoOPR_feet + dayTankDischargeLoV_feet + dayTankDischargeLoF;
-
-            document.getElementById('DayTankDischargeResult').innerHTML = `Day Tank Discharge Side: ${dayTankDischargeResult.toFixed(2)} feet`;
+            if (!isNaN(dayTankDischargeResult)) {
+                document.getElementById('DayTankDischargeResultError').innerHTML = "";
+                document.getElementById('DayTankDischargeResult').innerHTML = `Day Tank Discharge Side: ${dayTankDischargeResult.toFixed(2)} feet`;
+            }
 
             return dayTankDischargeResult;
         }
@@ -768,13 +805,37 @@
             let dayTankSuctionLoV_feet = dayTankSuctionLoV * 2.31;
 
             let dayTankSuctionResult = dayTankSuctionH_neg + dayTankSuctionLoOPR_feet + dayTankSuctionLoV_feet + dayTankSuctionLoF;
-
-            document.getElementById('DayTankSuctionResult').innerHTML = `Day Tank Suction Side: ${dayTankSuctionResult.toFixed(2)} feet`;
+            if (!isNaN(dayTankSuctionResult)) {
+                document.getElementById('DayTankSuctionResultError').innerHTML = "";
+                document.getElementById('DayTankSuctionResult').innerHTML = `Day Tank Suction Side: ${dayTankSuctionResult.toFixed(2)} feet`;
+            }
 
             return dayTankSuctionResult;
         }
 
         function DayTankTotalHeadBoosterPumpResult() {
+            let dayTankDischargeResultValidity = calculateDayTankDischargeSide();
+            let dayTankSuctionResultValidity = calculateDayTankSuctionSide();
+
+            if (isNaN(dayTankDischargeResultValidity)) {
+                document.getElementById('DayTankDischargeResultError').innerHTML = "Please Calculate Discharge Side";
+            }
+            else {
+                document.getElementById('DayTankDischargeResultError').innerHTML = "";
+
+            }
+
+            if (isNaN(dayTankSuctionResultValidity)) {
+                document.getElementById('DayTankSuctionResultError').innerHTML = "Please Calculate Suction Side";
+            }
+            else {
+                document.getElementById('DayTankSuctionResultError').innerHTML = "";
+
+            }
+
+            if (isNaN(dayTankDischargeResultValidity) || isNaN(dayTankDischargeResultValidity)) {
+                return;
+            }
 
             let dayTankTotalHeadOfBoosterPump = calculateDayTankDischargeSide() + calculateDayTankSuctionSide();
 
@@ -856,11 +917,10 @@
 
             let municipalLineDischargeResult = municipalLineDischargeLF_feet + municipalLineDischargeLFHP + municipalLineDischargeLoOPR_feet + municipalLineDischargeLoV_feet + municipalLineDischargeLoF;
 
-            if (municipalLineDischargeLFPR == 0 && municipalLineDischargeLFPR == 0 && municipalLineDischargeTPR == 0 && municipalLineDischargeLoF == 0) {
-                municipalLineDischargeResult = 0;
+            if (!isNaN(municipalLineDischargeResult)) {
+                document.getElementById('MunicipalLineDischargeResultError').innerHTML = "";
+                document.getElementById('MunicipalLineDischargeResult').innerHTML = `Municipal Line Discharge Side: ${municipalLineDischargeResult.toFixed(2)} feet`;
             }
-            document.getElementById('MunicipalLineDischargeResult').innerHTML = `Municipal Line Discharge Side: ${municipalLineDischargeResult.toFixed(2)} feet`;
-
             return municipalLineDischargeResult;
         }
 
@@ -887,15 +947,38 @@
 
             let municipalLineSuctionResult = municipalLineSuction_neg_feet + municipalLineSuctionLoOPR_feet + municipalLineSuctionLoV_feet + municipalLineSuctionLoF;
 
-            if (municipalLineSuctionP == 0 && municipalLineSuctionTPR == 0 && municipalLineSuctionLoF == 0) {
-                municipalLineSuctionResult = 0;
+            if (!isNaN(municipalLineSuctionResult)) {
+                document.getElementById('MunicipalLineSuctionResultError').innerHTML = "";
+                document.getElementById('MunicipalLineSuctionResult').innerHTML = `Municipal Line Suction Side: ${municipalLineSuctionResult.toFixed(2)} feet`;
             }
-            document.getElementById('MunicipalLineSuctionResult').innerHTML = `Municipal Line Suction Side: ${municipalLineSuctionResult.toFixed(2)} feet`;
-
             return municipalLineSuctionResult;
         }
 
         function MunicipalLineTotalHeadBoosterPumpResult() {
+
+            let municipalLineDischargeResultValidity = calculateMunicipalLineDischargeSide();
+            let municipalLineSuctionResultValidity = calculateMunicipalLineSuctionSide();
+
+            if (isNaN(municipalLineDischargeResultValidity)) {
+                document.getElementById('MunicipalLineDischargeResultError').innerHTML = "Please Calculate Discharge Side";
+            }
+            else {
+                document.getElementById('MunicipalLineDischargeResultError').innerHTML = "";
+
+            }
+
+            if (isNaN(municipalLineSuctionResultValidity)) {
+                document.getElementById('MunicipalLineSuctionResultError').innerHTML = "Please Calculate Suction Side";
+            }
+            else {
+                document.getElementById('MunicipalLineSuctionResultError').innerHTML = "";
+
+            }
+
+            if (isNaN(municipalLineDischargeResultValidity) || isNaN(municipalLineSuctionResultValidity)) {
+                return;
+            }
+
 
             let municipalLineTotalHeadOfBoosterPump = calculateMunicipalLineDischargeSide() + calculateMunicipalLineSuctionSide();
 
