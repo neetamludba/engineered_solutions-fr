@@ -101,6 +101,35 @@
         .required_message {
             color: red;
         }
+
+        .cfrmlv190 {
+            display: none;
+        }
+
+        .cfrmlv110 {
+            display: none;
+        }
+
+        .cfrdtv190 {
+            display: none;
+        }
+
+        .cfrdtv110 {
+            display: none;
+        }
+
+        .button_inline {
+            display: flex;
+            justify-content: space-between;
+            background-color: #c0c0c0;
+            border-radius: 0px;
+            padding: 0px;
+            margin-bottom: 0px;
+        }
+
+        .delete_btn{
+            background-color: #c38e58;
+        }
     </style>
 </head>
 
@@ -126,13 +155,11 @@
 
                         <label for="fixtures">Select Fixture:</label>
                         <select id="fixtures" onchange="populateSupplyControl()" required>
-                            <!-- Fixture options will be populated based on the selected occupancy -->
                         </select>
                         <br><br>
 
                         <label for="supplyControl">Type of Supply Control:</label>
                         <select id="supplyControl" required>
-                            <!-- Supply control options will be populated based on the selected fixture -->
                         </select>
                         <br><br>
 
@@ -141,12 +168,16 @@
                             required>
 
                     </div>
-                    <button type="submit">Add Fixture</button>
+                    <div class="button_inline">
+                        <button type="submit">Add Fixture</button>
+                        <button class="delete_btn" onclick="removeLastFixture()">Remove Last Fixture</button>
+                    </div>
+
                     <p id="addFixtureError" class="required_message"></p>
                 </form>
                 <p id="addedFixtures"></p>
+
                 <br>
-                <!-- <button onclick="calculateFixtureFlow()">Calculate Fixture Flow Rate</button> -->
                 <h3 id="fixtureResult"></h3>
 
             </div>
@@ -168,7 +199,6 @@
                     </div>
                     <button type="submit">Calculate Irrigation Flow Rate</button>
                 </form>
-                <!-- <h3 id="irrigationResult"></h3> -->
 
                 <h3>Or</h3>
 
@@ -188,6 +218,9 @@
 
     <div id="day_tank">
         <h1>Day Tank Calculation</h1>
+        <div class="helping_canvas">
+            <canvas id="day_tank_helping_canvas" width="500" height="500"></canvas>
+        </div>
         <div class="container">
             <div class="container_div">
                 <form id="dayTankDischargeForm" onsubmit="calculateDayTankDischargeSide()">
@@ -195,15 +228,16 @@
                     <div>
                         <label for="day_tank_discharge_lf_pr">Pressure Requirement (psi):</label>
                         <input type="number" id="day_tank_discharge_lf_pr" class="no-spinner" placeholder="Enter number"
-                            required step="any"><br><br>
+                            required step="any" oninput="dayTankHelpingCanvas()"><br><br>
 
                         <label for="day_tank_discharge_lf_hp">Height from Pump (ft):</label>
                         <input type="number" id="day_tank_discharge_lf_hp" class="no-spinner" placeholder="Enter number"
-                            required step="any"><br><br>
+                            required step="any" oninput="dayTankHelpingCanvas()"><br><br>
 
                         <label for="day_tank_discharge_tpr">Total Pipe Run (ft):</label>
                         <input type="number" id="day_tank_discharge_tpr" class="no-spinner" placeholder="Enter number"
-                            required step="any" required step="any" onchange="DayTankDischargeLossesFittings()"><br><br>
+                            required step="any" required step="any" onchange="DayTankDischargeLossesFittings()"
+                            oninput="dayTankHelpingCanvas()"><br><br>
 
                         <label for="day_tank_discharge_lov">Losses on Valves (psi):</label>
                         <input type="number" id="day_tank_discharge_lov" class="no-spinner" placeholder="Enter number"
@@ -226,7 +260,7 @@
                     <div>
                         <label for="day_tank_suction_h">Head at Suction Side (ft):</label>
                         <input type="number" id="day_tank_suction_h" class="no-spinner" placeholder="Enter number"
-                            required step="any"><br><br>
+                            required step="any" oninput="dayTankHelpingCanvas()"><br><br>
 
                         <label for="day_tank_suction_tpr">Total Pipe Run (ft):</label>
                         <input type="number" id="day_tank_suction_tpr" class="no-spinner" placeholder="Enter number"
@@ -252,19 +286,24 @@
             </div>
         </div>
     </div>
-    <!-- <div class="">
+    <div class="">
         <div>
+            <canvas id="frdtv190" class="cfrdtv190" width="840" height="524"></canvas>
+            <br>
             <button onclick="flowRateDayTankChartV190()">Flow Rate | Day Tank Chart V190</button>
-            <canvas id="frdtv190" width="575" height="375"></canvas>
         </div>
         <div>
+            <canvas id="frdtv110" class="cfrdtv110" width="1180" height="740"></canvas>
+            <br>
             <button onclick="flowRateDayTankChartV110()">Flow Rate | Day Tank Chart V110</button>
-            <canvas id="frdtv110" width="650" height="400"></canvas>
         </div>
-    </div> -->
+    </div>
 
     <div id="municipal_line">
         <h1>Municipal Line Calculation</h1>
+        <div class="helping_canvas">
+            <canvas id="municipal_line_helping_canvas" width="500" height="500"></canvas>
+        </div>
         <div class="container">
             <div class="container_div">
                 <form id="municipalLineDischargeForm" onsubmit="calculateMunicipalLineDischargeSide()">
@@ -272,16 +311,19 @@
                     <div>
                         <label for="municipal_line_discharge_lf_pr">Pressure Requirement (psi):</label>
                         <input type="number" id="municipal_line_discharge_lf_pr" class="no-spinner"
-                            placeholder="Enter number" required step="any"><br><br>
+                            placeholder="Enter number" required step="any"
+                            oninput="municipalLineHelpingCanvas()"><br><br>
 
                         <label for="municipal_line_discharge_lf_hp">Height from Pump (ft):</label>
                         <input type="number" id="municipal_line_discharge_lf_hp" class="no-spinner"
-                            placeholder="Enter number" required step="any"><br><br>
+                            placeholder="Enter number" required step="any"
+                            oninput="municipalLineHelpingCanvas()"><br><br>
 
                         <label for="municipal_line_discharge_tpr">Total Pipe Run (ft):</label>
                         <input type="number" id="municipal_line_discharge_tpr" class="no-spinner"
                             placeholder="Enter number" required step="any"
-                            onchange="MunicipalLineDischargeLossesFittings()"><br><br>
+                            onchange="MunicipalLineDischargeLossesFittings()"
+                            oninput="municipalLineHelpingCanvas()"><br><br>
 
                         <label for="municipal_line_discharge_lof">Losses on Fittings (ft):</label>
                         <input type="number" id="municipal_line_discharge_lof" class="no-spinner"
@@ -301,7 +343,7 @@
                     <div>
                         <label for="municipal_line_suction_p">Municipal Line Pressure (psi):</label>
                         <input type="number" id="municipal_line_suction_p" class="no-spinner" placeholder="Enter number"
-                            required step="any"><br><br>
+                            required step="any" oninput="municipalLineHelpingCanvas()"><br><br>
 
                         <label for="municipal_line_suction_tpr">Total Pipe Run (ft):</label>
                         <input type="number" id="municipal_line_suction_tpr" class="no-spinner"
@@ -326,16 +368,18 @@
         </div>
     </div>
 
-    <!-- <div class="">
+    <div class="">
         <div>
+            <canvas id="frmlv190" class="cfrmlv190" width="840" height="524"></canvas>
+            <br>
             <button onclick="flowRateMunicipalLineChartV190()">Flow Rate | Municipal Line Chart V190</button>
-            <canvas id="frmlv190" width="575" height="375"></canvas>
         </div>
         <div>
+            <canvas id="frmlv110" class="cfrmlv110" width="1180" height="740"></canvas>
+            <br>
             <button onclick="flowRateMunicipalLineChartV110()">Flow Rate | Municipal Line Chart V110</button>
-            <canvas id="frmlv110" width="650" height="400"></canvas>
         </div>
-    </div> -->
+    </div>
     <button onclick="printPage()">Print</button>
 
     <script>
@@ -584,7 +628,6 @@
             const fixturesDropdown = document.getElementById('fixtures');
             const supplyControlDropdown = document.getElementById('supplyControl');
 
-            // Clear previous options
             fixturesDropdown.innerHTML = '';
             supplyControlDropdown.innerHTML = '';
 
@@ -592,7 +635,6 @@
                 const selectedOccupancyData = occupancyArray[selectedOccupancy];
 
                 selectedOccupancyData.fixtures.forEach(fixture => {
-                    // Populate fixture options based on selected occupancy
                     const fixtureOption = document.createElement('option');
                     fixtureOption.value = fixture;
                     fixtureOption.textContent = fixture;
@@ -607,14 +649,12 @@
             const selectedFixtures = document.getElementById('fixtures').value;
             const supplyControlDropdown = document.getElementById('supplyControl');
 
-            // Clear previous options
             supplyControlDropdown.innerHTML = '';
 
             if (selectedFixtures) {
                 const selectedFixtureData = supplyControlArray[selectedFixtures];
 
                 selectedFixtureData.supplyControls.forEach(sc => {
-                    // Populate fixture options based on selected occupancy
                     const supplyControlOption = document.createElement('option');
                     supplyControlOption.value = sc;
                     supplyControlOption.textContent = sc;
@@ -640,9 +680,7 @@
 
             let matchingFixture = findMatchingFixture(occupancy, fixture, supplyControl);
 
-            matchingFixture.TOTAL_WSFU = (matchingFixture.LOAD_VALUES * numberOfFixtures).toFixed(2);
-            matchingFixture.NoF = numberOfFixtures;
-            fixturesTotalWSFU.push(matchingFixture);
+            fixturesTotalWSFU.push({ ...matchingFixture, TOTAL_WSFU: (matchingFixture.LOAD_VALUES * numberOfFixtures).toFixed(2), NoF: numberOfFixtures });
 
             let display = '';
             fixturesTotalWSFU.forEach((fixture, index) => {
@@ -663,6 +701,30 @@
             calculateFixtureFlow()
         }
 
+        function removeLastFixture() {
+            if (fixturesTotalWSFU.length) {
+                fixturesTotalWSFU.pop();
+                let display = '';
+                fixturesTotalWSFU.forEach((fixture, index) => {
+                    display += `${index + 1}) `;
+                    display += ` O: ${fixture.OCCUPANCY} |`;
+                    display += ` F: ${fixture.FIXTURE} |`;
+                    display += ` SC: ${fixture.SUPPLY_CONTROL} |`;
+                    display += ` LV: ${fixture.LOAD_VALUES} |`;
+                    display += ` NoF: ${fixture.NoF} |`;
+                    display += ` T: ${fixture.TOTAL_WSFU}`;
+                    display += `<br>`;
+                });
+                document.getElementById('addedFixtures').innerHTML = display;
+                calculateFixtureFlow();
+
+            } else {
+                document.getElementById('addFixtureError').innerHTML = "Please Add Fixtures";
+                document.getElementById('fixtureResult').innerHTML = '';
+            }
+
+        }
+
         function calculateFixtureFlow() {
 
             let totalWSFU = 0;
@@ -681,6 +743,7 @@
                 document.getElementById('fixtureResult').innerHTML = `Total WSFU: ${totalWSFU.toFixed(2)}<br>Flow Rate (GPM): ${gpm.toFixed(2)}`;
                 return gpm
             } else {
+                document.getElementById('fixtureResult').innerHTML = `Total WSFU: ${totalWSFU.toFixed(2)}<br>Flow Rate (GPM): ${gpm.toFixed(2)}`;
                 return gpm
             }
         }
@@ -718,7 +781,6 @@
             document.getElementById('total_irrigation_flow_rate').value = totalFlow.toFixed(2);
             document.getElementById('irrigationFlowRateError').innerHTML = "";
 
-            // return totalFlow
         }
 
         function calculateTotalPumpFlow() {
@@ -833,8 +895,8 @@
 
             }
 
-            if (isNaN(dayTankDischargeResultValidity) || isNaN(dayTankDischargeResultValidity)) {
-                return;
+            if (isNaN(dayTankDischargeResultValidity) || isNaN(dayTankSuctionResultValidity)) {
+                return
             }
 
             let dayTankTotalHeadOfBoosterPump = calculateDayTankDischargeSide() + calculateDayTankSuctionSide();
@@ -844,55 +906,153 @@
             return dayTankTotalHeadOfBoosterPump;
         }
 
+        function dayTankHelpingCanvas() {
+            var canvas = document.getElementById("day_tank_helping_canvas");
+            var ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#8CAC9C";
+            ctx.fillRect(0, 0, 500, 500);
+            ctx.fillStyle = "#000000";
+            ctx.font = canvas.width * 0.03 + "px Arial";
+
+            var dayTank = new Image();
+            dayTank.src = 'day_tank_img.png';
+
+            dayTank.onload = function () {
+                ctx.drawImage(dayTank, 0, canvas.height - dayTank.height);
+            };
+
+            var pump = new Image();
+            pump.src = 'pump_img.png';
+
+            pump.onload = function () {
+                ctx.drawImage(pump, 160, canvas.height - pump.height - 33);
+            };
+
+            var toilet = new Image();
+            toilet.src = 'toilet_img.png';
+
+            toilet.onload = function () {
+                ctx.drawImage(toilet, canvas.width - 70 - toilet.width, 120);
+            };
+
+            var pressure = new Image();
+            pressure.src = 'pressure_img.png';
+
+            pressure.onload = function () {
+                ctx.drawImage(pressure, canvas.width - 180 - pressure.width, 100);
+            };
+
+            var irrigation = new Image();
+            irrigation.src = 'irrigation_img.png';
+
+            irrigation.onload = function () {
+                ctx.drawImage(irrigation, canvas.width - 75 - irrigation.width, 180);
+            };
+
+            let pressureVal = parseFloat(document.getElementById('day_tank_discharge_lf_pr').value) || 0;
+            let totalPipeRun = parseFloat(document.getElementById('day_tank_discharge_tpr').value) || 0;
+            let elevationFromPump = parseFloat(document.getElementById('day_tank_discharge_lf_hp').value) || 0;
+            let suctionHead = parseFloat(document.getElementById('day_tank_suction_h').value) || 0;
+
+            ctx.fillText("Pressure", canvas.width * 0.5, canvas.height * 0.1);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(canvas.width * 0.5, canvas.height * 0.12, canvas.width * 0.2, canvas.height * 0.05);
+            ctx.fillStyle = "#000000";
+            ctx.fillText(pressureVal + " psi", canvas.width * 0.51, canvas.height * 0.155);
+
+            ctx.fillText("Total Pipe Run", canvas.width * 0.24, canvas.height * 0.44);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(canvas.width * 0.24, canvas.height * 0.46, canvas.width * 0.2, canvas.height * 0.05);
+            ctx.fillStyle = "#000000";
+            ctx.fillText(totalPipeRun + " ft", canvas.width * 0.25, canvas.height * 0.495);
+
+            ctx.fillText("Elevation From Booster Pump", canvas.width * 0.58, canvas.height * 0.7);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(canvas.width * 0.58, canvas.height * 0.72, canvas.width * 0.2, canvas.height * 0.05);
+            ctx.fillStyle = "#000000";
+            ctx.fillText(elevationFromPump + " ft", canvas.width * 0.59, canvas.height * 0.755);
+
+            ctx.fillText("Suction Head", canvas.width * 0.26, canvas.height * 0.77);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(canvas.width * 0.26, canvas.height * 0.79, canvas.width * 0.2, canvas.height * 0.05);
+            ctx.fillStyle = "#000000";
+            ctx.fillText(suctionHead + " ft", canvas.width * 0.27, canvas.height * 0.825);
+
+            ctx.fillText("Toilet", canvas.width * 0.84, canvas.height * 0.33);
+            ctx.fillText("Irrigation", canvas.width * 0.84, canvas.height * 0.43);
+
+            ctx.strokeStyle = "#0000ff"
+
+            ctx.beginPath();
+            ctx.moveTo(canvas.width * 0.33, canvas.height * 0.89);
+            ctx.lineTo(canvas.width * 0.25, canvas.height * 0.89);
+
+            ctx.moveTo(canvas.width * 0.48, canvas.height * 0.875);
+            ctx.lineTo(canvas.width * 0.38, canvas.height * 0.875);
+
+            ctx.moveTo(canvas.width * 0.48, canvas.height * 0.875);
+            ctx.lineTo(canvas.width * 0.48, canvas.height * 0.36);
+
+            ctx.moveTo(canvas.width * 0.56, canvas.height * 0.875);
+            ctx.lineTo(canvas.width * 0.56, canvas.height * 0.36);
+
+            ctx.moveTo(canvas.width * 0.72, canvas.height * 0.36);
+            ctx.lineTo(canvas.width * 0.48, canvas.height * 0.36);
+
+            ctx.moveTo(canvas.width * 0.25, canvas.height * 0.69);
+            ctx.lineTo(canvas.width * 0.25, canvas.height * 0.89);
+
+            ctx.stroke();
+        }
+
+        dayTankHelpingCanvas();
 
         function flowRateDayTankChartV190() {
             const canvas = document.getElementById("frdtv190");
+            canvas.classList.remove("cfrdtv190");
+
             const ctx = canvas.getContext("2d");
 
-            // Load your chart image (replace with your actual image URL)
             const chartImage = new Image();
             chartImage.src = "V190.png";
 
             const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
             const flowrateResult = calculateTotalPumpFlow();
-            // Draw the chart image
             chartImage.onload = function () {
                 ctx.drawImage(chartImage, 0, 0);
 
-                // Draw a custom line (e.g., flow rate indicator)
                 ctx.beginPath();
-                ctx.moveTo(25, daytankTotalHead - 250); // Starting point (adjust coordinates)
-                ctx.lineTo(flowrateResult + 80, daytankTotalHead - 250); // Ending point (adjust coordinates)
-                ctx.moveTo(flowrateResult + 80, daytankTotalHead - 250); // Starting point (adjust coordinates)
-                ctx.lineTo(flowrateResult + 80, 345); // Ending point (adjust coordinates)
-                ctx.strokeStyle = "red"; // Line color
-                ctx.lineWidth = 3; // Line width
+                ctx.moveTo(30, daytankTotalHead);
+                ctx.lineTo(flowrateResult + 180, daytankTotalHead);
+                ctx.moveTo(flowrateResult + 180, daytankTotalHead);
+                ctx.lineTo(flowrateResult + 180, 500);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
                 ctx.stroke();
             };
         }
 
         function flowRateDayTankChartV110() {
             const canvas = document.getElementById("frdtv110");
+            canvas.classList.remove("cfrdtv110");
+
             const ctx = canvas.getContext("2d");
 
-            // Load your chart image (replace with your actual image URL)
             const chartImage = new Image();
             chartImage.src = "V110.png";
 
             const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
             const flowrateResult = calculateTotalPumpFlow();
-            // Draw the chart image
             chartImage.onload = function () {
                 ctx.drawImage(chartImage, 0, 0);
 
-                // Draw a custom line (e.g., flow rate indicator)
                 ctx.beginPath();
-                ctx.moveTo(25, daytankTotalHead - 250); // Starting point (adjust coordinates)
-                ctx.lineTo(flowrateResult + 80, daytankTotalHead - 250); // Ending point (adjust coordinates)
-                ctx.moveTo(flowrateResult + 80, daytankTotalHead - 250); // Starting point (adjust coordinates)
-                ctx.lineTo(flowrateResult + 80, 345); // Ending point (adjust coordinates)
-                ctx.strokeStyle = "red"; // Line color
-                ctx.lineWidth = 3; // Line width
+                ctx.moveTo(25, daytankTotalHead - 250);
+                ctx.lineTo(flowrateResult + 80, daytankTotalHead - 250);
+                ctx.moveTo(flowrateResult + 80, daytankTotalHead - 250);
+                ctx.lineTo(flowrateResult + 80, 345);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
                 ctx.stroke();
             };
         }
@@ -976,7 +1136,7 @@
             }
 
             if (isNaN(municipalLineDischargeResultValidity) || isNaN(municipalLineSuctionResultValidity)) {
-                return;
+                return
             }
 
 
@@ -987,55 +1147,149 @@
             return municipalLineTotalHeadOfBoosterPump;
         }
 
+        function municipalLineHelpingCanvas() {
+            var canvas = document.getElementById("municipal_line_helping_canvas");
+            var ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#8CAC9C";
+            ctx.fillRect(0, 0, 500, 500);
+            ctx.fillStyle = "#000000";
+            ctx.font = canvas.width * 0.03 + "px Arial"; // Set font size
+
+            var hydrant = new Image();
+            hydrant.src = 'hydrant_img.png';
+
+            hydrant.onload = function () {
+                ctx.drawImage(hydrant, 0, canvas.height - hydrant.height);
+            };
+
+            var pump = new Image();
+            pump.src = 'pump_img.png';
+
+            pump.onload = function () {
+                ctx.drawImage(pump, 160, canvas.height - pump.height - 33);
+            };
+
+            var toilet = new Image();
+            toilet.src = 'toilet_img.png';
+
+            toilet.onload = function () {
+                ctx.drawImage(toilet, canvas.width - 70 - toilet.width, 120);
+            };
+
+            var pressure = new Image();
+            pressure.src = 'pressure_img.png';
+
+            pressure.onload = function () {
+                ctx.drawImage(pressure, canvas.width - 180 - pressure.width, 100);
+            };
+
+            var irrigation = new Image();
+            irrigation.src = 'irrigation_img.png';
+
+            irrigation.onload = function () {
+                ctx.drawImage(irrigation, canvas.width - 75 - irrigation.width, 180);
+            };
+
+            let pressureVal = parseFloat(document.getElementById('municipal_line_discharge_lf_pr').value) || 0;
+            let totalPipeRun = parseFloat(document.getElementById('municipal_line_discharge_tpr').value) || 0;
+            let elevationFromPump = parseFloat(document.getElementById('municipal_line_discharge_lf_hp').value) || 0;
+            let linePressure = parseFloat(document.getElementById('municipal_line_suction_p').value) || 0;
+
+            ctx.fillText("Pressure", canvas.width * 0.5, canvas.height * 0.1);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(canvas.width * 0.5, canvas.height * 0.12, canvas.width * 0.2, canvas.height * 0.05);
+            ctx.fillStyle = "#000000";
+            ctx.fillText(pressureVal + " psi", canvas.width * 0.51, canvas.height * 0.155);
+
+            ctx.fillText("Total Pipe Run", canvas.width * 0.24, canvas.height * 0.44);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(canvas.width * 0.24, canvas.height * 0.46, canvas.width * 0.2, canvas.height * 0.05);
+            ctx.fillStyle = "#000000";
+            ctx.fillText(totalPipeRun + " ft", canvas.width * 0.25, canvas.height * 0.495);
+
+            ctx.fillText("Elevation From Booster Pump", canvas.width * 0.58, canvas.height * 0.7);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(canvas.width * 0.58, canvas.height * 0.72, canvas.width * 0.2, canvas.height * 0.05);
+            ctx.fillStyle = "#000000";
+            ctx.fillText(elevationFromPump + " ft", canvas.width * 0.59, canvas.height * 0.755);
+
+            ctx.fillText("Line Pressure", canvas.width * 0.26, canvas.height * 0.77);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(canvas.width * 0.26, canvas.height * 0.79, canvas.width * 0.2, canvas.height * 0.05);
+            ctx.fillStyle = "#000000";
+            ctx.fillText(linePressure + " psi", canvas.width * 0.27, canvas.height * 0.825);
+
+            ctx.fillText("Toilet", canvas.width * 0.84, canvas.height * 0.33);
+            ctx.fillText("Irrigation", canvas.width * 0.84, canvas.height * 0.43);
+
+            ctx.strokeStyle = "#0000ff"
+
+            ctx.beginPath();
+            ctx.moveTo(canvas.width * 0.33, canvas.height * 0.89);
+            ctx.lineTo(canvas.width * 0.25, canvas.height * 0.89);
+
+            ctx.moveTo(canvas.width * 0.48, canvas.height * 0.875);
+            ctx.lineTo(canvas.width * 0.38, canvas.height * 0.875);
+
+            ctx.moveTo(canvas.width * 0.48, canvas.height * 0.875);
+            ctx.lineTo(canvas.width * 0.48, canvas.height * 0.36);
+
+            ctx.moveTo(canvas.width * 0.56, canvas.height * 0.875);
+            ctx.lineTo(canvas.width * 0.56, canvas.height * 0.36);
+
+            ctx.moveTo(canvas.width * 0.72, canvas.height * 0.36);
+            ctx.lineTo(canvas.width * 0.48, canvas.height * 0.36);
+
+            ctx.stroke();
+        }
+        municipalLineHelpingCanvas();
 
         function flowRateMunicipalLineChartV190() {
             const canvas = document.getElementById("frmlv190");
+            canvas.classList.remove("cfrmlv190");
+
             const ctx = canvas.getContext("2d");
 
-            // Load your chart image (replace with your actual image URL)
             const chartImage = new Image();
             chartImage.src = "V190.png";
 
             const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
             const flowrateResult = calculateTotalPumpFlow();
-            // Draw the chart image
             chartImage.onload = function () {
                 ctx.drawImage(chartImage, 0, 0);
 
-                // Draw a custom line (e.g., flow rate indicator)
                 ctx.beginPath();
-                ctx.moveTo(25, daytankTotalHead - 250); // Starting point (adjust coordinates)
-                ctx.lineTo(flowrateResult + 80, daytankTotalHead - 250); // Ending point (adjust coordinates)
-                ctx.moveTo(flowrateResult + 80, daytankTotalHead - 250); // Starting point (adjust coordinates)
-                ctx.lineTo(flowrateResult + 80, 345); // Ending point (adjust coordinates)
-                ctx.strokeStyle = "red"; // Line color
-                ctx.lineWidth = 3; // Line width
+                ctx.moveTo(25, daytankTotalHead - 250);
+                ctx.lineTo(flowrateResult + 80, daytankTotalHead - 250);
+                ctx.moveTo(flowrateResult + 80, daytankTotalHead - 250);
+                ctx.lineTo(flowrateResult + 80, 345);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
                 ctx.stroke();
             };
         }
 
         function flowRateMunicipalLineChartV110() {
             const canvas = document.getElementById("frmlv110");
+            canvas.classList.remove("cfrmlv110");
+
             const ctx = canvas.getContext("2d");
 
-            // Load your chart image (replace with your actual image URL)
             const chartImage = new Image();
             chartImage.src = "V110.png";
 
             const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
             const flowrateResult = calculateTotalPumpFlow();
-            // Draw the chart image
             chartImage.onload = function () {
                 ctx.drawImage(chartImage, 0, 0);
 
-                // Draw a custom line (e.g., flow rate indicator)
                 ctx.beginPath();
-                ctx.moveTo(25, daytankTotalHead - 250); // Starting point (adjust coordinates)
-                ctx.lineTo(flowrateResult + 80, daytankTotalHead - 250); // Ending point (adjust coordinates)
-                ctx.moveTo(flowrateResult + 80, daytankTotalHead - 250); // Starting point (adjust coordinates)
-                ctx.lineTo(flowrateResult + 80, 345); // Ending point (adjust coordinates)
-                ctx.strokeStyle = "red"; // Line color
-                ctx.lineWidth = 3; // Line width
+                ctx.moveTo(25, daytankTotalHead - 250);
+                ctx.lineTo(flowrateResult + 80, daytankTotalHead - 250);
+                ctx.moveTo(flowrateResult + 80, daytankTotalHead - 250);
+                ctx.lineTo(flowrateResult + 80, 345);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
                 ctx.stroke();
             };
         }
