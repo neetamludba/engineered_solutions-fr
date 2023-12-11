@@ -127,7 +127,7 @@
             margin-bottom: 0px;
         }
 
-        .delete_btn{
+        .delete_btn {
             background-color: #c38e58;
         }
     </style>
@@ -288,12 +288,12 @@
     </div>
     <div class="">
         <div>
-            <canvas id="frdtv190" class="cfrdtv190" width="840" height="524"></canvas>
+            <canvas id="frdtv190" class="cfrdtv190" width="720" height="460"></canvas>
             <br>
             <button onclick="flowRateDayTankChartV190()">Flow Rate | Day Tank Chart V190</button>
         </div>
         <div>
-            <canvas id="frdtv110" class="cfrdtv110" width="1180" height="740"></canvas>
+            <canvas id="frdtv110" class="cfrdtv110" width="720" height="460"></canvas>
             <br>
             <button onclick="flowRateDayTankChartV110()">Flow Rate | Day Tank Chart V110</button>
         </div>
@@ -370,12 +370,12 @@
 
     <div class="">
         <div>
-            <canvas id="frmlv190" class="cfrmlv190" width="840" height="524"></canvas>
+            <canvas id="frmlv190" class="cfrmlv190" width="720" height="460"></canvas>
             <br>
             <button onclick="flowRateMunicipalLineChartV190()">Flow Rate | Municipal Line Chart V190</button>
         </div>
         <div>
-            <canvas id="frmlv110" class="cfrmlv110" width="1180" height="740"></canvas>
+            <canvas id="frmlv110" class="cfrmlv110" width="720" height="460"></canvas>
             <br>
             <button onclick="flowRateMunicipalLineChartV110()">Flow Rate | Municipal Line Chart V110</button>
         </div>
@@ -1016,16 +1016,18 @@
             const chartImage = new Image();
             chartImage.src = "V190.png";
 
-            const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
-            const flowrateResult = calculateTotalPumpFlow();
+            const daytankTotalHead = 230;
+            //  DayTankTotalHeadBoosterPumpResult() ;
+            const flowrateResult = 160;
+            // calculateTotalPumpFlow();
             chartImage.onload = function () {
                 ctx.drawImage(chartImage, 0, 0);
 
                 ctx.beginPath();
-                ctx.moveTo(30, daytankTotalHead);
-                ctx.lineTo(flowrateResult + 180, daytankTotalHead);
-                ctx.moveTo(flowrateResult + 180, daytankTotalHead);
-                ctx.lineTo(flowrateResult + 180, 500);
+                ctx.moveTo(30, daytankTotalHead - 25);
+                ctx.lineTo(flowrateResult + 180, daytankTotalHead - 25);
+                ctx.moveTo(flowrateResult + 180, daytankTotalHead - 25);
+                ctx.lineTo(flowrateResult + 180, 440);
                 ctx.strokeStyle = "red";
                 ctx.lineWidth = 3;
                 ctx.stroke();
@@ -1041,16 +1043,18 @@
             const chartImage = new Image();
             chartImage.src = "V110.png";
 
-            const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
-            const flowrateResult = calculateTotalPumpFlow();
+            const daytankTotalHead = 230;
+            //  DayTankTotalHeadBoosterPumpResult() ;
+            const flowrateResult = 160;
+            // calculateTotalPumpFlow();
             chartImage.onload = function () {
                 ctx.drawImage(chartImage, 0, 0);
 
                 ctx.beginPath();
-                ctx.moveTo(25, daytankTotalHead - 250);
-                ctx.lineTo(flowrateResult + 80, daytankTotalHead - 250);
-                ctx.moveTo(flowrateResult + 80, daytankTotalHead - 250);
-                ctx.lineTo(flowrateResult + 80, 345);
+                ctx.moveTo(30, daytankTotalHead + 75);
+                ctx.lineTo(flowrateResult + 310, daytankTotalHead + 75);
+                ctx.moveTo(flowrateResult + 310, daytankTotalHead + 75);
+                ctx.lineTo(flowrateResult + 310, 440);
                 ctx.strokeStyle = "red";
                 ctx.lineWidth = 3;
                 ctx.stroke();
@@ -1259,10 +1263,10 @@
                 ctx.drawImage(chartImage, 0, 0);
 
                 ctx.beginPath();
-                ctx.moveTo(25, daytankTotalHead - 250);
-                ctx.lineTo(flowrateResult + 80, daytankTotalHead - 250);
-                ctx.moveTo(flowrateResult + 80, daytankTotalHead - 250);
-                ctx.lineTo(flowrateResult + 80, 345);
+                ctx.moveTo(30, daytankTotalHead - 25);
+                ctx.lineTo(flowrateResult + 180, daytankTotalHead - 25);
+                ctx.moveTo(flowrateResult + 180, daytankTotalHead - 25);
+                ctx.lineTo(flowrateResult + 180, 440);
                 ctx.strokeStyle = "red";
                 ctx.lineWidth = 3;
                 ctx.stroke();
@@ -1284,10 +1288,10 @@
                 ctx.drawImage(chartImage, 0, 0);
 
                 ctx.beginPath();
-                ctx.moveTo(25, daytankTotalHead - 250);
-                ctx.lineTo(flowrateResult + 80, daytankTotalHead - 250);
-                ctx.moveTo(flowrateResult + 80, daytankTotalHead - 250);
-                ctx.lineTo(flowrateResult + 80, 345);
+                ctx.moveTo(30, daytankTotalHead + 75);
+                ctx.lineTo(flowrateResult + 310, daytankTotalHead + 75);
+                ctx.moveTo(flowrateResult + 310, daytankTotalHead + 75);
+                ctx.lineTo(flowrateResult + 310, 440);
                 ctx.strokeStyle = "red";
                 ctx.lineWidth = 3;
                 ctx.stroke();
