@@ -40,8 +40,8 @@
         div {
             background-color: #fff;
             border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 10px;
+            margin-bottom: 10px;
         }
 
         label {
@@ -287,16 +287,15 @@
         </div>
     </div>
     <div class="">
-        <div>
-            <canvas id="frdtv190" class="cfrdtv190" width="720" height="460"></canvas>
-            <br>
-            <button onclick="flowRateDayTankChartV190()">Flow Rate | Day Tank Chart V190</button>
-        </div>
-        <div>
-            <canvas id="frdtv110" class="cfrdtv110" width="720" height="460"></canvas>
-            <br>
-            <button onclick="flowRateDayTankChartV110()">Flow Rate | Day Tank Chart V110</button>
-        </div>
+
+        <canvas id="frdtv190" class="cfrdtv190" width="720" height="460"></canvas>
+        <button onclick="flowRateDayTankChartV190()">Flow Rate | Day Tank Chart V190</button>
+
+        <div></div>
+
+        <canvas id="frdtv110" class="cfrdtv110" width="720" height="460"></canvas>
+        <button onclick="flowRateDayTankChartV110()">Flow Rate | Day Tank Chart V110</button>
+
     </div>
 
     <div id="municipal_line">
@@ -369,16 +368,15 @@
     </div>
 
     <div class="">
-        <div>
-            <canvas id="frmlv190" class="cfrmlv190" width="720" height="460"></canvas>
-            <br>
-            <button onclick="flowRateMunicipalLineChartV190()">Flow Rate | Municipal Line Chart V190</button>
-        </div>
-        <div>
-            <canvas id="frmlv110" class="cfrmlv110" width="720" height="460"></canvas>
-            <br>
-            <button onclick="flowRateMunicipalLineChartV110()">Flow Rate | Municipal Line Chart V110</button>
-        </div>
+
+        <canvas id="frmlv190" class="cfrmlv190" width="720" height="460"></canvas>
+        <button onclick="flowRateMunicipalLineChartV190()">Flow Rate | Municipal Line Chart V190</button>
+
+        <div></div>
+
+        <canvas id="frmlv110" class="cfrmlv110" width="720" height="460"></canvas>
+        <button onclick="flowRateMunicipalLineChartV110()">Flow Rate | Municipal Line Chart V110</button>
+
     </div>
     <button onclick="printPage()">Print</button>
 
@@ -811,7 +809,7 @@
             const triplexFlow = simplexFlow * 0.35;
 
             document.getElementById('pumpResult').innerHTML = `Simplex: ${simplexFlow.toFixed(2)} GPM<br>Duplex: ${duplexFlow.toFixed(2)} GPM<br>Triplex: ${triplexFlow.toFixed(2)} GPM`;
-            return simplexFlow;
+            return simplexFlow.toFixed(0);
 
         }
 
@@ -903,7 +901,7 @@
 
             document.getElementById('DayTankTotalHeadBoosterPumpResult').innerHTML = `Total Head of Booster Pump: ${dayTankTotalHeadOfBoosterPump.toFixed(2)} feet`;
 
-            return dayTankTotalHeadOfBoosterPump;
+            return dayTankTotalHeadOfBoosterPump.toFixed(0);
         }
 
         function dayTankHelpingCanvas() {
@@ -1016,18 +1014,16 @@
             const chartImage = new Image();
             chartImage.src = "V190.png";
 
-            const daytankTotalHead = 230;
-            //  DayTankTotalHeadBoosterPumpResult() ;
-            const flowrateResult = 160;
-            // calculateTotalPumpFlow();
+            const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
+            const flowRateResult = calculateTotalPumpFlow();
             chartImage.onload = function () {
                 ctx.drawImage(chartImage, 0, 0);
 
                 ctx.beginPath();
-                ctx.moveTo(30, daytankTotalHead - 25);
-                ctx.lineTo(flowrateResult + 180, daytankTotalHead - 25);
-                ctx.moveTo(flowrateResult + 180, daytankTotalHead - 25);
-                ctx.lineTo(flowrateResult + 180, 440);
+                ctx.moveTo(30, 440 - (daytankTotalHead * 1.04));
+                ctx.lineTo(30 + (flowRateResult * 1.88), 440 - (daytankTotalHead * 1.04));
+                ctx.moveTo(30 + (flowRateResult * 1.88), 440 - (daytankTotalHead * 1.04));
+                ctx.lineTo(30 + (flowRateResult * 1.88), 440);
                 ctx.strokeStyle = "red";
                 ctx.lineWidth = 3;
                 ctx.stroke();
@@ -1043,18 +1039,16 @@
             const chartImage = new Image();
             chartImage.src = "V110.png";
 
-            const daytankTotalHead = 230;
-            //  DayTankTotalHeadBoosterPumpResult() ;
-            const flowrateResult = 160;
-            // calculateTotalPumpFlow();
+            const dayTankTotalHead = DayTankTotalHeadBoosterPumpResult();
+            const flowRateResult = calculateTotalPumpFlow();
             chartImage.onload = function () {
                 ctx.drawImage(chartImage, 0, 0);
 
                 ctx.beginPath();
-                ctx.moveTo(30, daytankTotalHead + 75);
-                ctx.lineTo(flowrateResult + 310, daytankTotalHead + 75);
-                ctx.moveTo(flowrateResult + 310, daytankTotalHead + 75);
-                ctx.lineTo(flowrateResult + 310, 440);
+                ctx.moveTo(30, 440 - (dayTankTotalHead * .6));
+                ctx.lineTo(30 + (flowRateResult * 2.75), 440 - (dayTankTotalHead * .6));
+                ctx.moveTo(30 + (flowRateResult * 2.75), 440 - (dayTankTotalHead * .6));
+                ctx.lineTo(30 + (flowRateResult * 2.75), 440);
                 ctx.strokeStyle = "red";
                 ctx.lineWidth = 3;
                 ctx.stroke();
@@ -1148,7 +1142,7 @@
 
             document.getElementById('MunicipalLineTotalHeadBoosterPumpResult').innerHTML = `Total Head of Booster Pump: ${municipalLineTotalHeadOfBoosterPump.toFixed(2)} feet`;
 
-            return municipalLineTotalHeadOfBoosterPump;
+            return municipalLineTotalHeadOfBoosterPump.toFixed(0);
         }
 
         function municipalLineHelpingCanvas() {
@@ -1157,7 +1151,7 @@
             ctx.fillStyle = "#8CAC9C";
             ctx.fillRect(0, 0, 500, 500);
             ctx.fillStyle = "#000000";
-            ctx.font = canvas.width * 0.03 + "px Arial"; // Set font size
+            ctx.font = canvas.width * 0.03 + "px Arial";
 
             var hydrant = new Image();
             hydrant.src = 'hydrant_img.png';
@@ -1257,16 +1251,16 @@
             const chartImage = new Image();
             chartImage.src = "V190.png";
 
-            const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
-            const flowrateResult = calculateTotalPumpFlow();
+            const municipalLineTotalHead = MunicipalLineTotalHeadBoosterPumpResult();
+            const flowRateResult = calculateTotalPumpFlow();
             chartImage.onload = function () {
                 ctx.drawImage(chartImage, 0, 0);
 
                 ctx.beginPath();
-                ctx.moveTo(30, daytankTotalHead - 25);
-                ctx.lineTo(flowrateResult + 180, daytankTotalHead - 25);
-                ctx.moveTo(flowrateResult + 180, daytankTotalHead - 25);
-                ctx.lineTo(flowrateResult + 180, 440);
+                ctx.moveTo(30, 440 - (municipalLineTotalHead * 1.04));
+                ctx.lineTo(30 + (flowRateResult * 1.88), 440 - (municipalLineTotalHead * 1.04));
+                ctx.moveTo(30 + (flowRateResult * 1.88), 440 - (municipalLineTotalHead * 1.04));
+                ctx.lineTo(30 + (flowRateResult * 1.88), 440);
                 ctx.strokeStyle = "red";
                 ctx.lineWidth = 3;
                 ctx.stroke();
@@ -1282,16 +1276,16 @@
             const chartImage = new Image();
             chartImage.src = "V110.png";
 
-            const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
-            const flowrateResult = calculateTotalPumpFlow();
+            const MunicipalLineTotalHead = MunicipalLineTotalHeadBoosterPumpResult();
+            const flowRateResult = calculateTotalPumpFlow();
             chartImage.onload = function () {
                 ctx.drawImage(chartImage, 0, 0);
 
                 ctx.beginPath();
-                ctx.moveTo(30, daytankTotalHead + 75);
-                ctx.lineTo(flowrateResult + 310, daytankTotalHead + 75);
-                ctx.moveTo(flowrateResult + 310, daytankTotalHead + 75);
-                ctx.lineTo(flowrateResult + 310, 440);
+                ctx.moveTo(30, 440 - (MunicipalLineTotalHead * .6));
+                ctx.lineTo(30 + (flowRateResult * 2.75), 440 - (MunicipalLineTotalHead * .6));
+                ctx.moveTo(30 + (flowRateResult * 2.75), 440 - (MunicipalLineTotalHead * .6));
+                ctx.lineTo(30 + (flowRateResult * 2.75), 440);
                 ctx.strokeStyle = "red";
                 ctx.lineWidth = 3;
                 ctx.stroke();
