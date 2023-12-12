@@ -83,7 +83,7 @@
         }
 
         p {
-            margin-top: 10px;
+            margin-top: 5px;
             color: #333;
         }
 
@@ -241,9 +241,10 @@
 
                         <label for="day_tank_discharge_lov">Losses on Valves (psi):</label>
                         <input type="number" id="day_tank_discharge_lov" class="no-spinner" placeholder="Enter number"
-                            required step="any"><br><br>
+                            value="5" required step="any"><br><br>
 
-                        <label for="day_tank_discharge_lof">Losses on Fittings (ft):</label>
+                        <label for="day_tank_discharge_lof">Losses on Fittings (ft):
+                            <br>Assuming 10% of Total Pipe Run</label>
                         <input type="number" id="day_tank_discharge_lof" class="no-spinner" placeholder="Enter number"
                             required step="any"><br><br>
 
@@ -268,9 +269,10 @@
 
                         <label for="day_tank_suction_lov">Losses on Valves (psi):</label>
                         <input type="number" id="day_tank_suction_lov" class="no-spinner" placeholder="Enter number"
-                            required step="any"><br><br>
+                            value="5" required step="any"><br><br>
 
-                        <label for="day_tank_suction_lof">Losses on Fittings (ft):</label>
+                        <label for="day_tank_suction_lof">Losses on Fittings (ft):
+                            <br>Assuming 10% of Total Pipe Run</label>
                         <input type="number" id="day_tank_suction_lof" class="no-spinner" placeholder="Enter number"
                             required step="any"><br><br>
                     </div>
@@ -289,11 +291,13 @@
     <div class="">
 
         <canvas id="frdtv190" class="cfrdtv190" width="720" height="460"></canvas>
+        <br>
         <button onclick="flowRateDayTankChartV190()">Flow Rate | Day Tank Chart V190</button>
 
         <div></div>
 
         <canvas id="frdtv110" class="cfrdtv110" width="720" height="460"></canvas>
+        <br>
         <button onclick="flowRateDayTankChartV110()">Flow Rate | Day Tank Chart V110</button>
 
     </div>
@@ -324,7 +328,13 @@
                             onchange="MunicipalLineDischargeLossesFittings()"
                             oninput="municipalLineHelpingCanvas()"><br><br>
 
-                        <label for="municipal_line_discharge_lof">Losses on Fittings (ft):</label>
+                        <label for="municipal_line_discharge_lov">Losses on Valves (psi):</label>
+                        <input type="number" id="municipal_line_discharge_lov" class="no-spinner"
+                            placeholder="Enter number" value="5" required step="any"><br><br>
+
+
+                        <label for="municipal_line_discharge_lof">Losses on Fittings (ft):
+                            <br>Assuming 10% of Total Pipe Run</label>
                         <input type="number" id="municipal_line_discharge_lof" class="no-spinner"
                             placeholder="Enter number" required step="any"><br><br>
 
@@ -349,7 +359,12 @@
                             placeholder="Enter number" required step="any"
                             onchange="MunicipalLineSuctionLossesFittings()"><br><br>
 
-                        <label for="municipal_line_suction_lof">Losses on Fittings (ft):</label>
+                        <label for="municipal_line_suction_lov">Losses on Valves (psi):</label>
+                        <input type="number" id="municipal_line_suction_lov" class="no-spinner"
+                            placeholder="Enter number" value="5" required step="any"><br><br>
+
+                        <label for="municipal_line_suction_lof">Losses on Fittings (ft):
+                            <br>Assuming 10% of Total Pipe Run</label>
                         <input type="number" id="municipal_line_suction_lof" class="no-spinner"
                             placeholder="Enter number" required step="any"><br><br>
                     </div>
@@ -360,8 +375,8 @@
                 <h3 id="MunicipalLineSuctionResult"></h3>
 
 
-                <button onclick="MunicipalLineTotalHeadBoosterPumpResult()"> Calculate Day Tank Total Head of Booster
-                    Pump</button>
+                <button onclick="MunicipalLineTotalHeadBoosterPumpResult()">
+                    Calculate Day Tank Total Head of Booster Pump</button>
                 <h2 id="MunicipalLineTotalHeadBoosterPumpResult"></h2>
             </div>
         </div>
@@ -370,11 +385,13 @@
     <div class="">
 
         <canvas id="frmlv190" class="cfrmlv190" width="720" height="460"></canvas>
+        <br>
         <button onclick="flowRateMunicipalLineChartV190()">Flow Rate | Municipal Line Chart V190</button>
 
         <div></div>
 
         <canvas id="frmlv110" class="cfrmlv110" width="720" height="460"></canvas>
+        <br>
         <button onclick="flowRateMunicipalLineChartV110()">Flow Rate | Municipal Line Chart V110</button>
 
     </div>
@@ -951,7 +968,9 @@
             let totalPipeRun = parseFloat(document.getElementById('day_tank_discharge_tpr').value) || 0;
             let elevationFromPump = parseFloat(document.getElementById('day_tank_discharge_lf_hp').value) || 0;
             let suctionHead = parseFloat(document.getElementById('day_tank_suction_h').value) || 0;
-
+            if (suctionHead < 0) {
+                suctionHead *= -1;
+            }
             ctx.fillText("Pressure", canvas.width * 0.5, canvas.height * 0.1);
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(canvas.width * 0.5, canvas.height * 0.12, canvas.width * 0.2, canvas.height * 0.05);
@@ -1067,11 +1086,12 @@
             const municipalLineDischargeLFPR = parseFloat(document.getElementById('municipal_line_discharge_lf_pr').value);
             const municipalLineDischargeLFHP = parseFloat(document.getElementById('municipal_line_discharge_lf_hp').value);
             const municipalLineDischargeTPR = parseFloat(document.getElementById('municipal_line_discharge_tpr').value);
+            const municipalLineDischargeLoV = parseFloat(document.getElementById('municipal_line_discharge_lov').value);
             const municipalLineDischargeLoF = parseFloat(document.getElementById('municipal_line_discharge_lof').value);
 
             let municipalLineDischargeLF_feet = municipalLineDischargeLFPR * 2.31;
             let municipalLineDischargeLoOPR_feet = (municipalLineDischargeTPR / 100) * 1.5;
-            let municipalLineDischargeLoV_feet = 5 * 2.31;
+            let municipalLineDischargeLoV_feet = municipalLineDischargeLoV * 2.31;
 
             let municipalLineDischargeResult = municipalLineDischargeLF_feet + municipalLineDischargeLFHP + municipalLineDischargeLoOPR_feet + municipalLineDischargeLoV_feet + municipalLineDischargeLoF;
 
@@ -1093,7 +1113,9 @@
             event.preventDefault()
             const municipalLineSuctionP = parseFloat(document.getElementById('municipal_line_suction_p').value);
             const municipalLineSuctionTPR = parseFloat(document.getElementById('municipal_line_suction_tpr').value);
+            const municipalLineSuctionLoV = parseFloat(document.getElementById('municipal_line_suction_lov').value);
             const municipalLineSuctionLoF = parseFloat(document.getElementById('municipal_line_suction_lof').value);
+
 
             let municipalLineSuction_neg_feet = municipalLineSuctionP * 2.31 * -1;
 
@@ -1101,7 +1123,7 @@
                 municipalLineSuction_neg_feet = municipalLineSuctionP * 2.31;
             }
             let municipalLineSuctionLoOPR_feet = (municipalLineSuctionTPR / 100) * 1.5;
-            let municipalLineSuctionLoV_feet = 5 * 2.31;
+            let municipalLineSuctionLoV_feet = municipalLineSuctionLoV * 2.31;
 
             let municipalLineSuctionResult = municipalLineSuction_neg_feet + municipalLineSuctionLoOPR_feet + municipalLineSuctionLoV_feet + municipalLineSuctionLoF;
 
@@ -1193,6 +1215,9 @@
             let elevationFromPump = parseFloat(document.getElementById('municipal_line_discharge_lf_hp').value) || 0;
             let linePressure = parseFloat(document.getElementById('municipal_line_suction_p').value) || 0;
 
+            if (linePressure < 0) {
+                linePressure *= -1;
+            }
             ctx.fillText("Pressure", canvas.width * 0.5, canvas.height * 0.1);
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(canvas.width * 0.5, canvas.height * 0.12, canvas.width * 0.2, canvas.height * 0.05);
