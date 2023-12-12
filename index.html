@@ -4,10 +4,6 @@
 <head>
     <title>Flow Rate Calculator</title>
     <style>
-        .color_palette {
-            color: #225050 #B2B788 #748591 #73876A #8CAC9C
-        }
-
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -34,7 +30,7 @@
         }
 
         h2 {
-            color: #555;
+            color: #666;
         }
 
         div {
@@ -54,7 +50,7 @@
             font-size: medium;
             width: 90%;
             padding: 8px;
-            margin: 10px;
+            margin: 0px 10px 0px 10px;
             border-radius: 5px;
             border: 1px solid #ccc;
         }
@@ -63,7 +59,7 @@
             font-size: medium;
             width: 90%;
             padding: 8px;
-            margin: 10px;
+            margin: 0px 10px 10px 10px;
             border-radius: 5px;
             border: 1px solid #ccc;
         }
@@ -129,6 +125,23 @@
 
         .delete_btn {
             background-color: #c38e58;
+        }
+
+        .small_text {
+            margin: 0px;
+            color: #999;
+            padding-left: 15px;
+            font-size: x-small;
+        }
+
+        #print_btn {
+            background-color: #c38e58;
+            color: #225050;
+        }
+
+        #print_btn:hover {
+            background-color: #B2B788;
+
         }
     </style>
 </head>
@@ -200,7 +213,7 @@
                     <button type="submit">Calculate Irrigation Flow Rate</button>
                 </form>
 
-                <h3>Or</h3>
+                <h3 style="color: #bd6e20;">OR</h3>
 
                 <h2>Total Irrigation Flow Rate</h2>
                 <div>
@@ -243,10 +256,11 @@
                         <input type="number" id="day_tank_discharge_lov" class="no-spinner" placeholder="Enter number"
                             value="5" required step="any"><br><br>
 
-                        <label for="day_tank_discharge_lof">Losses on Fittings (ft):
-                            <br>Assuming 10% of Total Pipe Run</label>
+                        <label for="day_tank_discharge_lof">Losses on Fittings (ft):</label>
                         <input type="number" id="day_tank_discharge_lof" class="no-spinner" placeholder="Enter number"
-                            required step="any"><br><br>
+                            required step="any">
+                        <p class="small_text">Assuming 10% of Total Pipe Run</p>
+
 
                     </div>
                     <button type="submit">Calculate Discharge Side</button>
@@ -271,10 +285,10 @@
                         <input type="number" id="day_tank_suction_lov" class="no-spinner" placeholder="Enter number"
                             value="5" required step="any"><br><br>
 
-                        <label for="day_tank_suction_lof">Losses on Fittings (ft):
-                            <br>Assuming 10% of Total Pipe Run</label>
+                        <label for="day_tank_suction_lof">Losses on Fittings (ft):</label>
                         <input type="number" id="day_tank_suction_lof" class="no-spinner" placeholder="Enter number"
-                            required step="any"><br><br>
+                            required step="any">
+                        <p class="small_text">Assuming 10% of Total Pipe Run</p>
                     </div>
                     <button type="submit">Calculate Suction Side</button>
                 </form>
@@ -333,10 +347,11 @@
                             placeholder="Enter number" value="5" required step="any"><br><br>
 
 
-                        <label for="municipal_line_discharge_lof">Losses on Fittings (ft):
-                            <br>Assuming 10% of Total Pipe Run</label>
+                        <label for="municipal_line_discharge_lof">Losses on Fittings (ft):</label>
                         <input type="number" id="municipal_line_discharge_lof" class="no-spinner"
-                            placeholder="Enter number" required step="any"><br><br>
+                            placeholder="Enter number" required step="any">
+                        <p class="small_text">Assuming 10% of Total Pipe Run</p>
+
 
                     </div>
                     <button type="submit">Calculate Discharge Side</button>
@@ -363,10 +378,11 @@
                         <input type="number" id="municipal_line_suction_lov" class="no-spinner"
                             placeholder="Enter number" value="5" required step="any"><br><br>
 
-                        <label for="municipal_line_suction_lof">Losses on Fittings (ft):
-                            <br>Assuming 10% of Total Pipe Run</label>
+                        <label for="municipal_line_suction_lof">Losses on Fittings (ft):</label>
                         <input type="number" id="municipal_line_suction_lof" class="no-spinner"
-                            placeholder="Enter number" required step="any"><br><br>
+                            placeholder="Enter number" required step="any">
+                        <p class="small_text">Assuming 10% of Total Pipe Run</p>
+
                     </div>
                     <button type="submit">Calculate Suction Side</button>
                 </form>
@@ -395,7 +411,7 @@
         <button onclick="flowRateMunicipalLineChartV110()">Flow Rate | Municipal Line Chart V110</button>
 
     </div>
-    <button onclick="printPage()">Print</button>
+    <button id="print_btn" onclick="printPage()">Print</button>
 
     <script>
 
