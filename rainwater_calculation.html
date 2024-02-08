@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Rain-Water Calculator</title>
+    <style>
+        .page__banner-content {
+            text-align: center
+        }
+
+        .section-padding {
+            padding: 0px
+        }
+
+        #flow_rate {
+            padding-bottom: 20px;
+
+        }
+
+        #day_tank {
+            padding-bottom: 20px;
+
+        }
+
+        #municipal_line {
+            padding-bottom: 20px;
+
+        }
+
+        #addedFixtures,
+        p {
+            font-size: 13px;
+            padding: 0px;
+            color: #000;
+        }
+
+        .rw_container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .rw_container_div {
+            flex-basis: 48%;
+            background-color: #c0c0c0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        h3 {
+            color: #666;
+        }
+
+        .rainwater_div {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: inline-flex;
+            margin-bottom: 5px;
+            color: #666;
+            font-weight: bold;
+        }
+
+        input[type="number"] {
+            font-size: medium;
+            width: 90%;
+            height: auto;
+            padding: 5px 5px 5px 10px;
+            margin: 0px 10px 0px 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        select {
+            font-size: medium;
+            width: 90%;
+            padding: 5px 5px 5px 10px;
+            margin: 0px 10px 0px 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            font-size: medium;
+            padding: 10px 20px;
+            border: none;
+            background-color: #225050;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #B2B788;
+        }
+
+        p {
+            margin-top: 5px;
+            color: #333;
+        }
+
+        input[type="number"].no-spinner::-webkit-inner-spin-button,
+        input[type="number"].no-spinner::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"].no-spinner {
+            -moz-appearance: textfield;
+            -webkit-appearance: textfield;
+            appearance: field;
+        }
+
+        .required_message {
+            color: red;
+        }
+
+        .helping_canvas {
+            text-align: center;
+        }
+
+        .cfrmlv190 {
+            display: none;
+        }
+
+        .cfrmlv110 {
+            display: none;
+        }
+
+        .cfrdtv190 {
+            display: none;
+        }
+
+        .cfrdtv110 {
+            display: none;
+        }
+
+        input[type="radio"] {
+            display: inline-block !important;
+            margin-right: 10px;
+            margin-left: 20px;
+        }
+
+        .button_inline {
+            display: flex;
+            justify-content: space-between;
+            background-color: #c0c0c0;
+            border-radius: 0px;
+            padding: 0px;
+            margin-bottom: 0px;
+        }
+
+        .delete_btn {
+            background-color: #c38e58;
+        }
+
+        .small_text {
+            margin: 0px;
+            color: #999;
+            padding-left: 15px;
+            font-size: small;
+        }
+
+        #print_btn {
+            background-color: #c38e58;
+            color: #225050;
+        }
+
+        #print_btn:hover {
+            background-color: #B2B788;
+
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <div id="flow_rate">
+        <div class="rainwater_div">
+            <h2>Flow Rate Calculator</h2>
+            <div class="rw_container">
+                <div class="rw_container_div">
+                    <form id="addFixturesForm" onsubmit="addFixtures()">
+                        <h3>Fixture Flow Rate Calculation</h3>
+                        <div class="rainwater_div">
+                            <label for="occupancy">Select Occupancy:</label>
+                            <select id="occupancy" onchange="populateFixtures()" required>
+                                <option value="">Select Occupancy</option>
+                                <option value="Private">Private</option>
+                                <option value="Public">Public</option>
+                                <option value="Office, etc">Office, etc</option>
+                                <option value="Hotel, restaurant">Hotel, restaurant</option>
+                            </select>
+                            <br><br>
+
+                            <label for="fixtures">Select Fixture:</label>
+                            <select id="fixtures" onchange="populateSupplyControl()" required>
+                            </select>
+                            <br><br>
+
+                            <label for="supplyControl">Type of Supply Control:</label>
+                            <select id="supplyControl" required>
+                            </select>
+                            <br><br>
+
+                            <label for="numberOfFixtures">Number of Fixtures:</label>
+                            <input type="number" id="numberOfFixtures" class="no-spinner" placeholder="Enter number"
+                                required>
+
+                        </div>
+                        <div class="button_inline">
+                            <button type="submit">Add Fixture</button>
+                            <button class="delete_btn" onclick="removeLastFixture()">Remove Last Fixture</button>
+                        </div>
+
+                        <p id="addFixtureError" class="required_message"></p>
+                    </form>
+                    <p id="addedFixtures"></p>
+
+                    <br>
+                    <h4 id="fixtureResult"></h4>
+
+                </div>
+                <div class="rw_container_div">
+                    <form id="irrigationForm" onsubmit="calculateIrrigationFlow()">
+                        <h3>Irrigation Calculation</h3>
+                        <div class="rainwater_div">
+                            <label for="irrigation_sprinklers">Number of Sprinklers:</label>
+                            <input type="number" id="irrigation_sprinklers" class="no-spinner"
+                                placeholder="Enter number" required><br><br>
+
+                            <label for="irrigation_flow_rate">Flow Rate (GPM):</label>
+                            <input type="number" id="irrigation_flow_rate" class="no-spinner" placeholder="Enter number"
+                                required step="any"><br><br>
+
+                            <label for="irrigation_duration">Duration (Minutes):</label>
+                            <input type="number" id="irrigation_duration" class="no-spinner" placeholder="Enter number"
+                                required step="any">
+                        </div>
+                        <button type="submit">Calculate Irrigation Flow Rate</button>
+                    </form>
+
+                    <h4 style="color: #bd6e20;">OR</h4>
+
+                    <h3>Total Irrigation Flow Rate</h3>
+                    <div class="rainwater_div">
+                        <label for="total_irrigation_flow_rate">Total Flow Rate (GPM):</label>
+                        <input type="number" id="total_irrigation_flow_rate" class="no-spinner"
+                            placeholder="Enter number" required step="any">
+                    </div>
+                    <p id="irrigationFlowRateError" class="required_message"></p>
+
+                    <button onclick="calculateTotalPumpFlow()">Calculate Total Pump Flow Rate</button>
+                    <h3 id="pumpResult"></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="day_tank">
+        <div class="rainwater_div">
+            <h2>Day Tank Calculation</h2>
+            <div class="helping_canvas">
+                <canvas id="day_tank_helping_canvas" width="500" height="500"></canvas>
+            </div>
+            <div class="rw_container">
+                <div class="rw_container_div">
+                    <form id="dayTankDischargeForm" onsubmit="calculateDayTankDischargeSide()">
+                        <h3>Discharge Side</h3>
+                        <div class="rainwater_div">
+                            <label for="day_tank_discharge_lf_pr">Pressure Requirement (psi):</label>
+                            <input type="number" id="day_tank_discharge_lf_pr" class="no-spinner"
+                                placeholder="Enter number" required step="any" oninput="dayTankHelpingCanvas()"><br><br>
+
+                            <label for="day_tank_discharge_lf_hp">Height from Pump (ft):</label>
+                            <input type="number" id="day_tank_discharge_lf_hp" class="no-spinner"
+                                placeholder="Enter number" required step="any" oninput="dayTankHelpingCanvas()"><br><br>
+
+                            <label for="day_tank_discharge_tpr">Total Pipe Run (ft):</label>
+                            <input type="number" id="day_tank_discharge_tpr" class="no-spinner"
+                                placeholder="Enter number" required step="any" required step="any"
+                                onchange="DayTankDischargeLossesFittings()" oninput="dayTankHelpingCanvas()"><br><br>
+
+                            <label for="day_tank_discharge_lov">Losses on Valves (psi):</label>
+                            <input type="number" id="day_tank_discharge_lov" class="no-spinner"
+                                placeholder="Enter number" value="5" required step="any"><br><br>
+
+                            <label for="day_tank_discharge_lof">Losses on Fittings (ft):</label>
+                            <input type="number" id="day_tank_discharge_lof" class="no-spinner"
+                                placeholder="Enter number" required step="any">
+                            <p class="small_text">Assuming 10% of Total Pipe Run</p>
+
+
+                        </div>
+                        <button type="submit">Calculate Discharge Side</button>
+                    </form>
+                    <p class="required_message" id="DayTankDischargeResultError"></p>
+                    <h4 id="DayTankDischargeResult"></h4>
+
+                </div>
+                <div class="rw_container_div">
+                    <form id="dayTankSuctionForm" onsubmit="calculateDayTankSuctionSide()">
+                        <h3>Suction Side</h3>
+                        <div class="rainwater_div">
+                            <label for="day_tank_suction_h">Head at Suction Side (ft):</label>
+                            <input type="number" id="day_tank_suction_h" class="no-spinner" placeholder="Enter number"
+                                required step="any" oninput="dayTankHelpingCanvas()"><br><br>
+
+                            <label for="day_tank_suction_tpr">Total Pipe Run (ft):</label>
+                            <input type="number" id="day_tank_suction_tpr" class="no-spinner" placeholder="Enter number"
+                                required step="any" required step="any"
+                                onchange="DayTankSuctionLossesFittings()"><br><br>
+
+                            <label for="day_tank_suction_lov">Losses on Valves (psi):</label>
+                            <input type="number" id="day_tank_suction_lov" class="no-spinner" placeholder="Enter number"
+                                value="5" required step="any"><br><br>
+
+                            <label for="day_tank_suction_lof">Losses on Fittings (ft):</label>
+                            <input type="number" id="day_tank_suction_lof" class="no-spinner" placeholder="Enter number"
+                                required step="any">
+                            <p class="small_text">Assuming 10% of Total Pipe Run</p>
+                        </div>
+                        <button type="submit">Calculate Suction Side</button>
+                    </form>
+                    <p class="required_message" id="DayTankSuctionResultError"></p>
+                    <h4 id="DayTankSuctionResult"></h4>
+
+
+                    <button onclick="DayTankTotalHeadBoosterPumpResult()"> Calculate Day Tank Total Head of Booster
+                        Pump</button>
+                    <h3 id="DayTankTotalHeadBoosterPumpResult"></h3>
+                </div>
+            </div>
+        </div>
+        <div class="rainwater_div">
+
+            <canvas id="frdtv190" class="cfrdtv190" width="720" height="460"></canvas>
+            <br>
+            <button onclick="flowRateDayTankChartV190()">Flow Rate | Day Tank Chart V190</button>
+
+            <div></div>
+
+            <canvas id="frdtv110" class="cfrdtv110" width="720" height="460"></canvas>
+            <br>
+            <button onclick="flowRateDayTankChartV110()">Flow Rate | Day Tank Chart V110</button>
+
+        </div>
+        <div class="rw_container">
+
+            <div class="rainwater_div">
+                <h3>Pump Type</h3>
+
+                <p>Please select pump type:</p>
+                <input type="radio" id="vertical_multi-stage" name="day_tank_pump_type" value="vertical_multi-stage"
+                    checked="checked">
+                <label for="vertical_multi-stage">Vertical Multi-Stage Pump</label>
+                <input type="radio" id="submersible" name="day_tank_pump_type" value="submersible">
+                <label for="submersible">Submersible Pump</label>
+                <input type="radio" id="self-priming" name="day_tank_pump_type" value="self-priming">
+                <label for="self-priming">Self-Priming Pump</label>
+                <br><br>
+                <button onclick="dayTankPumpType()">Day Tank Pump Type</button>
+            </div>
+
+            <div id="day_tank_pump_type_images">
+            </div>
+
+        </div>
+    </div>
+
+    <div id="municipal_line">
+        <div class="rainwater_div">
+            <h2>Municipal Line Calculation</h2>
+            <div class="helping_canvas">
+                <canvas id="municipal_line_helping_canvas" width="500" height="500"></canvas>
+            </div>
+            <div class="rw_container">
+                <div class="rw_container_div">
+                    <form id="municipalLineDischargeForm" onsubmit="calculateMunicipalLineDischargeSide()">
+                        <h3>Discharge Side</h3>
+                        <div class="rainwater_div">
+                            <label for="municipal_line_discharge_lf_pr">Pressure Requirement (psi):</label>
+                            <input type="number" id="municipal_line_discharge_lf_pr" class="no-spinner"
+                                placeholder="Enter number" required step="any"
+                                oninput="municipalLineHelpingCanvas()"><br><br>
+
+                            <label for="municipal_line_discharge_lf_hp">Height from Pump (ft):</label>
+                            <input type="number" id="municipal_line_discharge_lf_hp" class="no-spinner"
+                                placeholder="Enter number" required step="any"
+                                oninput="municipalLineHelpingCanvas()"><br><br>
+
+                            <label for="municipal_line_discharge_tpr">Total Pipe Run (ft):</label>
+                            <input type="number" id="municipal_line_discharge_tpr" class="no-spinner"
+                                placeholder="Enter number" required step="any"
+                                onchange="MunicipalLineDischargeLossesFittings()"
+                                oninput="municipalLineHelpingCanvas()"><br><br>
+
+                            <label for="municipal_line_discharge_lov">Losses on Valves (psi):</label>
+                            <input type="number" id="municipal_line_discharge_lov" class="no-spinner"
+                                placeholder="Enter number" value="5" required step="any"><br><br>
+
+
+                            <label for="municipal_line_discharge_lof">Losses on Fittings (ft):</label>
+                            <input type="number" id="municipal_line_discharge_lof" class="no-spinner"
+                                placeholder="Enter number" required step="any">
+                            <p class="small_text">Assuming 10% of Total Pipe Run</p>
+
+
+                        </div>
+                        <button type="submit">Calculate Discharge Side</button>
+                    </form>
+                    <p class="required_message" id="MunicipalLineDischargeResultError"></p>
+
+                    <h4 id="MunicipalLineDischargeResult"></h4>
+
+                </div>
+                <div class="rw_container_div">
+                    <form id="municipalLineSuctionForm" onsubmit="calculateMunicipalLineSuctionSide()">
+                        <h3>Suction Side</h3>
+                        <div class="rainwater_div">
+                            <label for="municipal_line_suction_p">Municipal Line Pressure (psi):</label>
+                            <input type="number" id="municipal_line_suction_p" class="no-spinner"
+                                placeholder="Enter number" required step="any"
+                                oninput="municipalLineHelpingCanvas()"><br><br>
+
+                            <label for="municipal_line_suction_tpr">Total Pipe Run (ft):</label>
+                            <input type="number" id="municipal_line_suction_tpr" class="no-spinner"
+                                placeholder="Enter number" required step="any"
+                                onchange="MunicipalLineSuctionLossesFittings()"><br><br>
+
+                            <label for="municipal_line_suction_lov">Losses on Valves (psi):</label>
+                            <input type="number" id="municipal_line_suction_lov" class="no-spinner"
+                                placeholder="Enter number" value="5" required step="any"><br><br>
+
+                            <label for="municipal_line_suction_lof">Losses on Fittings (ft):</label>
+                            <input type="number" id="municipal_line_suction_lof" class="no-spinner"
+                                placeholder="Enter number" required step="any">
+                            <p class="small_text">Assuming 10% of Total Pipe Run</p>
+
+                        </div>
+                        <button type="submit">Calculate Suction Side</button>
+                    </form>
+                    <p class="required_message" id="MunicipalLineSuctionResultError"></p>
+
+                    <h4 id="MunicipalLineSuctionResult"></h4>
+
+
+                    <button onclick="MunicipalLineTotalHeadBoosterPumpResult()">
+                        Calculate Day Tank Total Head of Booster Pump</button>
+                    <h3 id="MunicipalLineTotalHeadBoosterPumpResult"></h3>
+                </div>
+            </div>
+        </div>
+        <div class="rainwater_div">
+
+            <canvas id="frmlv190" class="cfrmlv190" width="720" height="460"></canvas>
+            <br>
+            <button onclick="flowRateMunicipalLineChartV190()">Flow Rate | Municipal Line Chart V190</button>
+
+            <div></div>
+
+            <canvas id="frmlv110" class="cfrmlv110" width="720" height="460"></canvas>
+            <br>
+            <button onclick="flowRateMunicipalLineChartV110()">Flow Rate | Municipal Line Chart V110</button>
+
+        </div>
+
+        <div class="rw_container">
+
+            <div class="rainwater_div">
+                <h3>Pump Type</h3>
+
+                <p>Please select pump type:</p>
+                <input type="radio" id="vertical_multi-stage" name="municipal_line_pump_type"
+                    value="vertical_multi-stage" checked="checked">
+                <label for="vertical_multi-stage">Vertical Multi-Stage Pump</label>
+                <input type="radio" id="submersible" name="municipal_line_pump_type" value="submersible">
+                <label for="submersible">Submersible Pump</label>
+                <input type="radio" id="self-priming" name="municipal_line_pump_type" value="self-priming">
+                <label for="self-priming">Self-Priming Pump</label>
+                <br><br>
+                <button onclick="municipalLinePumpType()">Municipal Line Pump Type</button>
+            </div>
+
+            <div id="municipal_line_pump_type_images">
+            </div>
+
+        </div>
+
+    </div>
+    <button id="print_btn" onclick="printPage()">Print</button>
+
+    <script>
+
+        const fixturesData = [
+            {
+                "OCCUPANCY": "Private",
+                "FIXTURE": "Bathtub",
+                "SUPPLY_CONTROL": "Faucet",
+                "LOAD_VALUES": 1.4
+            }, {
+                "OCCUPANCY": "Private",
+                "FIXTURE": "Bathroom group",
+                "SUPPLY_CONTROL": "Flush tank",
+                "LOAD_VALUES": 3.6
+            }, {
+                "OCCUPANCY": "Private",
+                "FIXTURE": "Bathroom group",
+                "SUPPLY_CONTROL": "Flushometer valve",
+                "LOAD_VALUES": 8
+            }, {
+                "OCCUPANCY": "Private",
+                "FIXTURE": "Bidet",
+                "SUPPLY_CONTROL": "Faucet",
+                "LOAD_VALUES": 2
+            }, {
+                "OCCUPANCY": "Private",
+                "FIXTURE": "Combination fixture",
+                "SUPPLY_CONTROL": "Faucet",
+                "LOAD_VALUES": 3
+            }, {
+                "OCCUPANCY": "Private",
+                "FIXTURE": "Dishwashing machine",
+                "SUPPLY_CONTROL": "Automatic",
+                "LOAD_VALUES": 1.4
+            }, {
+                "OCCUPANCY": "Private",
+                "FIXTURE": "Kitchen sink",
+                "SUPPLY_CONTROL": "Faucet",
+                "LOAD_VALUES": 1.4
+            }, {
+                "OCCUPANCY": "Private",
+                "FIXTURE": "Laundry trays (1 to 3)",
+                "SUPPLY_CONTROL": "Faucet",
+                "LOAD_VALUES": 1.4
+            }, {
+                "OCCUPANCY": "Private",
+                "FIXTURE": "Lavatory",
+                "SUPPLY_CONTROL": "Faucet",
+                "LOAD_VALUES": 0.7
+            }, {
+                "OCCUPANCY": "Private",
+                "FIXTURE": "Shower head",
+                "SUPPLY_CONTROL": "Mixing valve",
+                "LOAD_VALUES": 1.4
+            }, {
+                "OCCUPANCY": "Private",
+                "FIXTURE": "Washing machine (8 lb)",
+                "SUPPLY_CONTROL": "Automatic",
+                "LOAD_VALUES": 1.4
+            }, {
+                "OCCUPANCY": "Private",
+                "FIXTURE": "Water closet",
+                "SUPPLY_CONTROL": "Flushometer tank",
+                "LOAD_VALUES": 2
+            }, {
+                "OCCUPANCY": "Private",
+                "FIXTURE": "Water closet",
+                "SUPPLY_CONTROL": "Flush tank",
+                "LOAD_VALUES": 2.2
+            }, {
+                "OCCUPANCY": "Private",
+                "FIXTURE": "Water closet",
+                "SUPPLY_CONTROL": "Flushometer valve",
+                "LOAD_VALUES": 6
+            }, {
+                "OCCUPANCY": "Public",
+                "FIXTURE": "Bathtub",
+                "SUPPLY_CONTROL": "Faucet",
+                "LOAD_VALUES": 4
+            }, {
+                "OCCUPANCY": "Public",
+                "FIXTURE": "Lavatory",
+                "SUPPLY_CONTROL": "Faucet",
+                "LOAD_VALUES": 2
+            }, {
+                "OCCUPANCY": "Public",
+                "FIXTURE": "Shower head",
+                "SUPPLY_CONTROL": "Mixing valve",
+                "LOAD_VALUES": 4
+            }, {
+                "OCCUPANCY": "Public",
+                "FIXTURE": "Urinal",
+                "SUPPLY_CONTROL": "Flush tank",
+                "LOAD_VALUES": 3
+            }, {
+                "OCCUPANCY": "Public",
+                "FIXTURE": "Urinal",
+                "SUPPLY_CONTROL": '1 inch flushometer valve',
+                "LOAD_VALUES": 10
+            }, {
+                "OCCUPANCY": "Public",
+                "FIXTURE": "Urinal",
+                "SUPPLY_CONTROL": '3/4 inch flushometer valve',
+                "LOAD_VALUES": 5
+            }, {
+                "OCCUPANCY": "Public",
+                "FIXTURE": "Washing machine (8 lb)",
+                "SUPPLY_CONTROL": "Automatic",
+                "LOAD_VALUES": 3
+            }, {
+                "OCCUPANCY": "Public",
+                "FIXTURE": "Washing machine (15 lb)",
+                "SUPPLY_CONTROL": "Automatic",
+                "LOAD_VALUES": 4
+            }, {
+                "OCCUPANCY": "Public",
+                "FIXTURE": "Water closet",
+                "SUPPLY_CONTROL": "Flushometer valve",
+                "LOAD_VALUES": 10
+            }, {
+                "OCCUPANCY": "Public",
+                "FIXTURE": "Water closet",
+                "SUPPLY_CONTROL": "Flush tank",
+                "LOAD_VALUES": 5
+            }, {
+                "OCCUPANCY": "Public",
+                "FIXTURE": "Water closet",
+                "SUPPLY_CONTROL": "Flushometer tank",
+                "LOAD_VALUES": 2
+            }, {
+                "OCCUPANCY": "Office, etc",
+                "FIXTURE": "Drinking fountain",
+                "SUPPLY_CONTROL": '3/8 inch valve',
+                "LOAD_VALUES": 0.25
+            }, {
+                "OCCUPANCY": "Office, etc",
+                "FIXTURE": "Service sink",
+                "SUPPLY_CONTROL": "Faucet",
+                "LOAD_VALUES": 3
+            }, {
+                "OCCUPANCY": "Hotel, restaurant",
+                "FIXTURE": "Kitchen sink",
+                "SUPPLY_CONTROL": "Faucet",
+                "LOAD_VALUES": 4
+            }
+        ];
+
+        const occupancyArray = {
+
+            "Private": {
+                "fixtures": [
+                    "Bathtub",
+                    "Bathroom group",
+                    "Bidet",
+                    "Combination fixture",
+                    "Dishwashing machine",
+                    "Kitchen sink",
+                    "Laundry trays (1 to 3)",
+                    "Lavatory",
+                    "Shower head",
+                    "Washing machine (8 lb)",
+                    "Water closet"
+
+                ]
+            },
+
+            "Public": {
+                "fixtures": [
+                    "Bathtub",
+                    "Lavatory",
+                    "Shower head",
+                    "Urinal",
+                    "Washing machine (8 lb)",
+                    "Washing machine (15 lb)",
+                    "Water closet"
+                ]
+            },
+
+            "Office, etc": {
+                "fixtures": [
+                    "Drinking fountain",
+                    "Service sink"
+                ]
+            },
+
+            "Hotel, restaurant": {
+                "fixtures": [
+                    "Kitchen sink"
+                ]
+            }
+        };
+
+        const supplyControlArray = {
+            "Bathtub": {
+                "supplyControls": ["Faucet"]
+            },
+            "Bathroom group": {
+                "supplyControls": ["Flush tank", "Flushometer valve"]
+            },
+            "Bidet": {
+                "supplyControls": ["Faucet"]
+            },
+            "Combination fixture": {
+                "supplyControls": ["Faucet"]
+            },
+            "Dishwashing machine": {
+                "supplyControls": ["Automatic"]
+            },
+            "Kitchen sink": {
+                "supplyControls": ["Faucet"]
+            },
+            "Laundry trays (1 to 3)": {
+                "supplyControls": ["Faucet"]
+            },
+            "Lavatory": {
+                "supplyControls": ["Faucet"]
+            },
+            "Shower head": {
+                "supplyControls": ["Mixing valve"]
+            },
+            "Washing machine (8 lb)": {
+                "supplyControls": ["Automatic"]
+            },
+            "Washing machine (15 lb)": {
+                "supplyControls": ["Automatic"]
+            },
+            "Water closet": {
+                "supplyControls": ["Flushometer tank", "Flush tank", "Flushometer valve"]
+            },
+            "Urinal": {
+                "supplyControls": ["Flush tank", '1 inch flushometer valve', '3/4 inch flushometer valve']
+            },
+            "Drinking fountain": {
+                "supplyControls": ['3/8 inch valve']
+            },
+            "Service sink": {
+                "supplyControls": ["Faucet"]
+            }
+        };
+
+        let fixturesTotalWSFU = [];
+
+        function populateFixtures() {
+            const selectedOccupancy = document.getElementById('occupancy').value;
+            const fixturesDropdown = document.getElementById('fixtures');
+            const supplyControlDropdown = document.getElementById('supplyControl');
+
+            fixturesDropdown.innerHTML = '';
+            supplyControlDropdown.innerHTML = '';
+
+            if (selectedOccupancy) {
+                const selectedOccupancyData = occupancyArray[selectedOccupancy];
+
+                selectedOccupancyData.fixtures.forEach(fixture => {
+                    const fixtureOption = document.createElement('option');
+                    fixtureOption.value = fixture;
+                    fixtureOption.textContent = fixture;
+                    fixturesDropdown.appendChild(fixtureOption);
+                });
+
+                populateSupplyControl();
+            }
+        }
+
+        function populateSupplyControl() {
+            const selectedFixtures = document.getElementById('fixtures').value;
+            const supplyControlDropdown = document.getElementById('supplyControl');
+
+            supplyControlDropdown.innerHTML = '';
+
+            if (selectedFixtures) {
+                const selectedFixtureData = supplyControlArray[selectedFixtures];
+
+                selectedFixtureData.supplyControls.forEach(sc => {
+                    const supplyControlOption = document.createElement('option');
+                    supplyControlOption.value = sc;
+                    supplyControlOption.textContent = sc;
+                    supplyControlDropdown.appendChild(supplyControlOption);
+                });
+            }
+        }
+
+        function findMatchingFixture(occupancy, fixture, supplyControl) {
+            return fixturesData.find((f) =>
+                f.OCCUPANCY === occupancy &&
+                f.FIXTURE === fixture &&
+                f.SUPPLY_CONTROL === supplyControl
+            );
+        }
+
+        function addFixtures() {
+            event.preventDefault()
+            const occupancy = document.getElementById('occupancy').value;
+            const fixture = document.getElementById('fixtures').value;
+            const supplyControl = document.getElementById('supplyControl').value;
+            const numberOfFixtures = parseFloat(document.getElementById('numberOfFixtures').value);
+
+            let matchingFixture = findMatchingFixture(occupancy, fixture, supplyControl);
+
+            fixturesTotalWSFU.push({ ...matchingFixture, TOTAL_WSFU: (matchingFixture.LOAD_VALUES * numberOfFixtures).toFixed(2), NoF: numberOfFixtures });
+
+            let display = '';
+            fixturesTotalWSFU.forEach((fixture, index) => {
+                display += `${index + 1}) `;
+                display += ` O: ${fixture.OCCUPANCY} |`;
+                display += ` F: ${fixture.FIXTURE} |`;
+                display += ` SC: ${fixture.SUPPLY_CONTROL} |`;
+                display += ` LV: ${fixture.LOAD_VALUES} |`;
+                display += ` NoF: ${fixture.NoF} |`;
+                display += ` T: ${fixture.TOTAL_WSFU}`;
+                display += `<br>`;
+            });
+
+            document.getElementById('addedFixtures').innerHTML = display;
+            document.getElementById('numberOfFixtures').value = '';
+            document.getElementById('addFixtureError').innerHTML = "";
+
+            calculateFixtureFlow()
+        }
+
+        function removeLastFixture() {
+            if (fixturesTotalWSFU.length) {
+                fixturesTotalWSFU.pop();
+                let display = '';
+                fixturesTotalWSFU.forEach((fixture, index) => {
+                    display += `${index + 1}) `;
+                    display += ` O: ${fixture.OCCUPANCY} |`;
+                    display += ` F: ${fixture.FIXTURE} |`;
+                    display += ` SC: ${fixture.SUPPLY_CONTROL} |`;
+                    display += ` LV: ${fixture.LOAD_VALUES} |`;
+                    display += ` NoF: ${fixture.NoF} |`;
+                    display += ` T: ${fixture.TOTAL_WSFU}`;
+                    display += `<br>`;
+                });
+                document.getElementById('addedFixtures').innerHTML = display;
+                calculateFixtureFlow();
+
+            } else {
+                document.getElementById('addFixtureError').innerHTML = "Please Add Fixtures";
+                document.getElementById('fixtureResult').innerHTML = '';
+            }
+
+        }
+
+        function calculateFixtureFlow() {
+
+            let totalWSFU = 0;
+
+            fixturesTotalWSFU.forEach((fixture) => {
+
+                totalWSFU += +fixture.TOTAL_WSFU;
+            });
+
+            let gpm = 0;
+            if (totalWSFU != 0) {
+                gpm = calculateGPM(totalWSFU);
+            }
+            if (gpm) {
+                document.getElementById('addFixtureError').innerHTML = "";
+                document.getElementById('fixtureResult').innerHTML = `Total WSFU: ${totalWSFU.toFixed(2)}<br>Flow Rate (GPM): ${gpm.toFixed(2)}`;
+                return gpm
+            } else {
+                document.getElementById('fixtureResult').innerHTML = `Total WSFU: ${totalWSFU.toFixed(2)}<br>Flow Rate (GPM): ${gpm.toFixed(2)}`;
+                return gpm
+            }
+        }
+
+        function calculateGPM(totalWSFU) {
+            const lookupTable = {
+                5: 15, 6: 17.4, 7: 19.8, 8: 22.2, 9: 24.6, 10: 27, 11: 27.8, 12: 28.6, 13: 29.4, 14: 30.2,
+                15: 31, 16: 31.8, 17: 32.6, 18: 33.4, 19: 34.2, 20: 35, 25: 38, 30: 42, 35: 44, 40: 46,
+                45: 48, 50: 50, 60: 54, 70: 58, 80: 61.2, 90: 64.3, 100: 67.5, 120: 73, 140: 77, 160: 81,
+                180: 85.5, 200: 90, 225: 95.5, 250: 101, 275: 104.5, 300: 108, 400: 127, 500: 143,
+                750: 177, 1000: 208, 1250: 239, 1500: 269, 1750: 297, 2000: 325, 2500: 380, 3000: 433,
+                4000: 525, 5000: 593
+            };
+
+            const wsfuValues = Object.keys(lookupTable).map(Number);
+
+            const nearestWSFU = wsfuValues.reduce((prev, curr) => {
+                return (Math.abs(curr - totalWSFU) < Math.abs(prev - totalWSFU) ? curr : prev);
+            });
+
+            const gpm = lookupTable[nearestWSFU];
+
+            return gpm;
+        }
+
+        function calculateIrrigationFlow() {
+            event.preventDefault();
+
+            const sprinklers = parseFloat(document.getElementById('irrigation_sprinklers').value);
+            const flowRate = parseFloat(document.getElementById('irrigation_flow_rate').value);
+            const duration = parseFloat(document.getElementById('irrigation_duration').value);
+
+            const totalFlow = sprinklers * flowRate * duration;
+
+            document.getElementById('total_irrigation_flow_rate').value = totalFlow.toFixed(2);
+            document.getElementById('irrigationFlowRateError').innerHTML = "";
+
+        }
+
+        function calculateTotalPumpFlow() {
+            const totalIrrigationFlowRate = parseFloat(document.getElementById('total_irrigation_flow_rate').value);
+            let fixtureGPM = calculateFixtureFlow();
+
+            if (fixtureGPM == 0.00) {
+                document.getElementById('addFixtureError').innerHTML = "Please add Fixtures";
+            }
+            else {
+                document.getElementById('addFixtureError').innerHTML = "";
+
+            }
+
+            if (isNaN(totalIrrigationFlowRate)) {
+                document.getElementById('irrigationFlowRateError').innerHTML = "Please Input Flow Rate";
+            }
+            else {
+                document.getElementById('irrigationFlowRateError').innerHTML = "";
+
+            }
+
+            if (isNaN(totalIrrigationFlowRate) || fixtureGPM == 0.00) {
+                return;
+            }
+            const simplexFlow = totalIrrigationFlowRate + fixtureGPM;
+            const duplexFlow = simplexFlow * 0.70;
+            const triplexFlow = simplexFlow * 0.35;
+
+            document.getElementById('pumpResult').innerHTML = `Simplex: ${simplexFlow.toFixed(2)} GPM<br>Duplex: ${duplexFlow.toFixed(2)} GPM<br>Triplex: ${triplexFlow.toFixed(2)} GPM`;
+            return simplexFlow.toFixed(0);
+
+        }
+
+        function DayTankDischargeLossesFittings() {
+            const dayTankDischargeTPR = parseFloat(document.getElementById('day_tank_discharge_tpr').value);
+            let dayTankDischargeLoF = (dayTankDischargeTPR / 100) * 10;
+
+            document.getElementById('day_tank_discharge_lof').value = dayTankDischargeLoF.toFixed(2);
+        }
+
+        function calculateDayTankDischargeSide() {
+            event.preventDefault();
+            const dayTankDischargeLFPR = parseFloat(document.getElementById('day_tank_discharge_lf_pr').value);
+            const dayTankDischargeLFHP = parseFloat(document.getElementById('day_tank_discharge_lf_hp').value);
+            const dayTankDischargeTPR = parseFloat(document.getElementById('day_tank_discharge_tpr').value);
+            const dayTankDischargeLoV = parseFloat(document.getElementById('day_tank_discharge_lov').value);
+            const dayTankDischargeLoF = parseFloat(document.getElementById('day_tank_discharge_lof').value);
+
+            let dayTankDischargeLF_feet = dayTankDischargeLFPR * 2.31;
+            let dayTankDischargeLoOPR_feet = (dayTankDischargeTPR / 100) * 1.5;
+            let dayTankDischargeLoV_feet = dayTankDischargeLoV * 2.31;
+
+            let dayTankDischargeResult = dayTankDischargeLF_feet + dayTankDischargeLFHP + dayTankDischargeLoOPR_feet + dayTankDischargeLoV_feet + dayTankDischargeLoF;
+            if (!isNaN(dayTankDischargeResult)) {
+                document.getElementById('DayTankDischargeResultError').innerHTML = "";
+                document.getElementById('DayTankDischargeResult').innerHTML = `Day Tank Discharge Side: ${dayTankDischargeResult.toFixed(2)} feet`;
+            }
+
+            return dayTankDischargeResult;
+        }
+
+        function DayTankSuctionLossesFittings() {
+            const dayTankSuctionTPR = parseFloat(document.getElementById('day_tank_suction_tpr').value);
+            let dayTankSuctionLoF = (dayTankSuctionTPR / 100) * 10;
+
+            document.getElementById('day_tank_suction_lof').value = dayTankSuctionLoF.toFixed(2);
+        }
+
+        function calculateDayTankSuctionSide() {
+            event.preventDefault();
+
+            const dayTankSuctionH = parseFloat(document.getElementById('day_tank_suction_h').value);
+            const dayTankSuctionTPR = parseFloat(document.getElementById('day_tank_suction_tpr').value);
+            const dayTankSuctionLoV = parseFloat(document.getElementById('day_tank_suction_lov').value);
+            const dayTankSuctionLoF = parseFloat(document.getElementById('day_tank_suction_lof').value);
+
+            let dayTankSuctionH_neg = dayTankSuctionH * -1;
+
+            if (dayTankSuctionH < 0) {
+                dayTankSuctionH_neg = dayTankSuctionH;
+            }
+            let dayTankSuctionLoOPR_feet = (dayTankSuctionTPR / 100) * 1.5;
+            let dayTankSuctionLoV_feet = dayTankSuctionLoV * 2.31;
+
+            let dayTankSuctionResult = dayTankSuctionH_neg + dayTankSuctionLoOPR_feet + dayTankSuctionLoV_feet + dayTankSuctionLoF;
+            if (!isNaN(dayTankSuctionResult)) {
+                document.getElementById('DayTankSuctionResultError').innerHTML = "";
+                document.getElementById('DayTankSuctionResult').innerHTML = `Day Tank Suction Side: ${dayTankSuctionResult.toFixed(2)} feet`;
+            }
+
+            return dayTankSuctionResult;
+        }
+
+        function DayTankTotalHeadBoosterPumpResult() {
+            let dayTankDischargeResultValidity = calculateDayTankDischargeSide();
+            let dayTankSuctionResultValidity = calculateDayTankSuctionSide();
+
+            if (isNaN(dayTankDischargeResultValidity)) {
+                document.getElementById('DayTankDischargeResultError').innerHTML = "Please Calculate Discharge Side";
+            }
+            else {
+                document.getElementById('DayTankDischargeResultError').innerHTML = "";
+
+            }
+
+            if (isNaN(dayTankSuctionResultValidity)) {
+                document.getElementById('DayTankSuctionResultError').innerHTML = "Please Calculate Suction Side";
+            }
+            else {
+                document.getElementById('DayTankSuctionResultError').innerHTML = "";
+
+            }
+
+            if (isNaN(dayTankDischargeResultValidity) || isNaN(dayTankSuctionResultValidity)) {
+                return
+            }
+
+            let dayTankTotalHeadOfBoosterPump = calculateDayTankDischargeSide() + calculateDayTankSuctionSide();
+
+            document.getElementById('DayTankTotalHeadBoosterPumpResult').innerHTML = `Total Head of Booster Pump: ${dayTankTotalHeadOfBoosterPump.toFixed(2)} feet`;
+
+            return dayTankTotalHeadOfBoosterPump.toFixed(0);
+        }
+
+        function dayTankHelpingCanvas() {
+            var canvas = document.getElementById("day_tank_helping_canvas");
+            var ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#8CAC9C";
+            ctx.fillRect(0, 0, 500, 500);
+            ctx.fillStyle = "#000000";
+            ctx.font = canvas.width * 0.03 + "px Arial";
+
+            var dayTank = new Image();
+            dayTank.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/day_tank_img.png';
+
+            dayTank.onload = function () {
+                ctx.drawImage(dayTank, 0, canvas.height - dayTank.height);
+            };
+
+            var pump = new Image();
+            pump.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/pump_img.png';
+
+            pump.onload = function () {
+                ctx.drawImage(pump, 160, canvas.height - pump.height - 33);
+            };
+
+            var toilet = new Image();
+            toilet.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/toilet_img.png';
+
+            toilet.onload = function () {
+                ctx.drawImage(toilet, canvas.width - 70 - toilet.width, 120);
+            };
+
+            var pressure = new Image();
+            pressure.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/pressure_img.png';
+
+            pressure.onload = function () {
+                ctx.drawImage(pressure, canvas.width - 180 - pressure.width, 100);
+            };
+
+            var irrigation = new Image();
+            irrigation.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/irrigation_img.png';
+
+            irrigation.onload = function () {
+                ctx.drawImage(irrigation, canvas.width - 75 - irrigation.width, 180);
+            };
+
+            let pressureVal = parseFloat(document.getElementById('day_tank_discharge_lf_pr').value) || 0;
+            let totalPipeRun = parseFloat(document.getElementById('day_tank_discharge_tpr').value) || 0;
+            let elevationFromPump = parseFloat(document.getElementById('day_tank_discharge_lf_hp').value) || 0;
+            let suctionHead = parseFloat(document.getElementById('day_tank_suction_h').value) || 0;
+            if (suctionHead < 0) {
+                suctionHead *= -1;
+            }
+            ctx.fillText("Pressure", canvas.width * 0.5, canvas.height * 0.1);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(canvas.width * 0.5, canvas.height * 0.12, canvas.width * 0.2, canvas.height * 0.05);
+            ctx.fillStyle = "#000000";
+            ctx.fillText(pressureVal + " psi", canvas.width * 0.51, canvas.height * 0.155);
+
+            ctx.fillText("Total Pipe Run", canvas.width * 0.24, canvas.height * 0.44);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(canvas.width * 0.24, canvas.height * 0.46, canvas.width * 0.2, canvas.height * 0.05);
+            ctx.fillStyle = "#000000";
+            ctx.fillText(totalPipeRun + " ft", canvas.width * 0.25, canvas.height * 0.495);
+
+            ctx.fillText("Elevation From Booster Pump", canvas.width * 0.58, canvas.height * 0.7);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(canvas.width * 0.58, canvas.height * 0.72, canvas.width * 0.2, canvas.height * 0.05);
+            ctx.fillStyle = "#000000";
+            ctx.fillText(elevationFromPump + " ft", canvas.width * 0.59, canvas.height * 0.755);
+
+            ctx.fillText("Suction Head", canvas.width * 0.26, canvas.height * 0.77);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(canvas.width * 0.26, canvas.height * 0.79, canvas.width * 0.2, canvas.height * 0.05);
+            ctx.fillStyle = "#000000";
+            ctx.fillText(suctionHead + " ft", canvas.width * 0.27, canvas.height * 0.825);
+
+            ctx.fillText("Toilet", canvas.width * 0.84, canvas.height * 0.33);
+            ctx.fillText("Irrigation", canvas.width * 0.84, canvas.height * 0.43);
+
+            ctx.strokeStyle = "#0000ff"
+
+            ctx.beginPath();
+            ctx.moveTo(canvas.width * 0.33, canvas.height * 0.89);
+            ctx.lineTo(canvas.width * 0.25, canvas.height * 0.89);
+
+            ctx.moveTo(canvas.width * 0.48, canvas.height * 0.875);
+            ctx.lineTo(canvas.width * 0.38, canvas.height * 0.875);
+
+            ctx.moveTo(canvas.width * 0.48, canvas.height * 0.875);
+            ctx.lineTo(canvas.width * 0.48, canvas.height * 0.36);
+
+            ctx.moveTo(canvas.width * 0.56, canvas.height * 0.875);
+            ctx.lineTo(canvas.width * 0.56, canvas.height * 0.36);
+
+            ctx.moveTo(canvas.width * 0.72, canvas.height * 0.36);
+            ctx.lineTo(canvas.width * 0.48, canvas.height * 0.36);
+
+            ctx.moveTo(canvas.width * 0.25, canvas.height * 0.69);
+            ctx.lineTo(canvas.width * 0.25, canvas.height * 0.89);
+
+            ctx.stroke();
+        }
+
+        dayTankHelpingCanvas();
+
+        function flowRateDayTankChartV190() {
+            const canvas = document.getElementById("frdtv190");
+            canvas.classList.remove("cfrdtv190");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V190.png";
+
+            const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
+            const flowRateResult = calculateTotalPumpFlow();
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (daytankTotalHead * 1.04));
+                ctx.lineTo(30 + (flowRateResult * 1.88), 440 - (daytankTotalHead * 1.04));
+                ctx.moveTo(30 + (flowRateResult * 1.88), 440 - (daytankTotalHead * 1.04));
+                ctx.lineTo(30 + (flowRateResult * 1.88), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function flowRateDayTankChartV110() {
+            const canvas = document.getElementById("frdtv110");
+            canvas.classList.remove("cfrdtv110");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V110.png";
+
+            const dayTankTotalHead = DayTankTotalHeadBoosterPumpResult();
+            const flowRateResult = calculateTotalPumpFlow();
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (dayTankTotalHead * .6));
+                ctx.lineTo(30 + (flowRateResult * 2.75), 440 - (dayTankTotalHead * .6));
+                ctx.moveTo(30 + (flowRateResult * 2.75), 440 - (dayTankTotalHead * .6));
+                ctx.lineTo(30 + (flowRateResult * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function dayTankPumpType() {
+            var selectedPumpType = document.querySelector('input[name="day_tank_pump_type"]:checked').value;
+            var imageContainer = document.getElementById('day_tank_pump_type_images');
+            imageContainer.innerHTML = '';
+
+            var images = [];
+
+            // Add image paths based on selected pump type
+            if (selectedPumpType === 'vertical_multi-stage') {
+                images = ['path/to/image1.jpg', 'path/to/image2.jpg'];
+            } else if (selectedPumpType === 'submersible') {
+                images = ['path/to/image3.jpg', 'path/to/image4.jpg'];
+            } else if (selectedPumpType === 'self-priming') {
+                images = ['path/to/image5.jpg', 'path/to/image6.jpg'];
+            }
+
+            // Create and append image elements to the container
+            images.forEach(function (imagePath) {
+                var imageElement = document.createElement('img');
+                imageElement.src = imagePath;
+                imageElement.alt = 'Pump Image';
+                imageContainer.appendChild(imageElement);
+            });
+        }
+
+        function MunicipalLineDischargeLossesFittings() {
+            const municipalLineDischargeTPR = parseFloat(document.getElementById('municipal_line_discharge_tpr').value);
+            let municipalLineDischargeLoF = (municipalLineDischargeTPR / 100) * 10;
+
+            document.getElementById('municipal_line_discharge_lof').value = municipalLineDischargeLoF.toFixed(2);
+        }
+
+        function calculateMunicipalLineDischargeSide() {
+            event.preventDefault()
+            const municipalLineDischargeLFPR = parseFloat(document.getElementById('municipal_line_discharge_lf_pr').value);
+            const municipalLineDischargeLFHP = parseFloat(document.getElementById('municipal_line_discharge_lf_hp').value);
+            const municipalLineDischargeTPR = parseFloat(document.getElementById('municipal_line_discharge_tpr').value);
+            const municipalLineDischargeLoV = parseFloat(document.getElementById('municipal_line_discharge_lov').value);
+            const municipalLineDischargeLoF = parseFloat(document.getElementById('municipal_line_discharge_lof').value);
+
+            let municipalLineDischargeLF_feet = municipalLineDischargeLFPR * 2.31;
+            let municipalLineDischargeLoOPR_feet = (municipalLineDischargeTPR / 100) * 1.5;
+            let municipalLineDischargeLoV_feet = municipalLineDischargeLoV * 2.31;
+
+            let municipalLineDischargeResult = municipalLineDischargeLF_feet + municipalLineDischargeLFHP + municipalLineDischargeLoOPR_feet + municipalLineDischargeLoV_feet + municipalLineDischargeLoF;
+
+            if (!isNaN(municipalLineDischargeResult)) {
+                document.getElementById('MunicipalLineDischargeResultError').innerHTML = "";
+                document.getElementById('MunicipalLineDischargeResult').innerHTML = `Municipal Line Discharge Side: ${municipalLineDischargeResult.toFixed(2)} feet`;
+            }
+            return municipalLineDischargeResult;
+        }
+
+        function MunicipalLineSuctionLossesFittings() {
+            const municipalLineSuctionTPR = parseFloat(document.getElementById('municipal_line_suction_tpr').value);
+            let municipalLineSuctionLoF = (municipalLineSuctionTPR / 100) * 10;
+
+            document.getElementById('municipal_line_suction_lof').value = municipalLineSuctionLoF.toFixed(2);
+        }
+
+        function calculateMunicipalLineSuctionSide() {
+            event.preventDefault()
+            const municipalLineSuctionP = parseFloat(document.getElementById('municipal_line_suction_p').value);
+            const municipalLineSuctionTPR = parseFloat(document.getElementById('municipal_line_suction_tpr').value);
+            const municipalLineSuctionLoV = parseFloat(document.getElementById('municipal_line_suction_lov').value);
+            const municipalLineSuctionLoF = parseFloat(document.getElementById('municipal_line_suction_lof').value);
+
+
+            let municipalLineSuction_neg_feet = municipalLineSuctionP * 2.31 * -1;
+
+            if (municipalLineSuctionP < 0) {
+                municipalLineSuction_neg_feet = municipalLineSuctionP * 2.31;
+            }
+            let municipalLineSuctionLoOPR_feet = (municipalLineSuctionTPR / 100) * 1.5;
+            let municipalLineSuctionLoV_feet = municipalLineSuctionLoV * 2.31;
+
+            let municipalLineSuctionResult = municipalLineSuction_neg_feet + municipalLineSuctionLoOPR_feet + municipalLineSuctionLoV_feet + municipalLineSuctionLoF;
+
+            if (!isNaN(municipalLineSuctionResult)) {
+                document.getElementById('MunicipalLineSuctionResultError').innerHTML = "";
+                document.getElementById('MunicipalLineSuctionResult').innerHTML = `Municipal Line Suction Side: ${municipalLineSuctionResult.toFixed(2)} feet`;
+            }
+            return municipalLineSuctionResult;
+        }
+
+        function MunicipalLineTotalHeadBoosterPumpResult() {
+
+            let municipalLineDischargeResultValidity = calculateMunicipalLineDischargeSide();
+            let municipalLineSuctionResultValidity = calculateMunicipalLineSuctionSide();
+
+            if (isNaN(municipalLineDischargeResultValidity)) {
+                document.getElementById('MunicipalLineDischargeResultError').innerHTML = "Please Calculate Discharge Side";
+            }
+            else {
+                document.getElementById('MunicipalLineDischargeResultError').innerHTML = "";
+
+            }
+
+            if (isNaN(municipalLineSuctionResultValidity)) {
+                document.getElementById('MunicipalLineSuctionResultError').innerHTML = "Please Calculate Suction Side";
+            }
+            else {
+                document.getElementById('MunicipalLineSuctionResultError').innerHTML = "";
+
+            }
+
+            if (isNaN(municipalLineDischargeResultValidity) || isNaN(municipalLineSuctionResultValidity)) {
+                return
+            }
+
+
+            let municipalLineTotalHeadOfBoosterPump = calculateMunicipalLineDischargeSide() + calculateMunicipalLineSuctionSide();
+
+            document.getElementById('MunicipalLineTotalHeadBoosterPumpResult').innerHTML = `Total Head of Booster Pump: ${municipalLineTotalHeadOfBoosterPump.toFixed(2)} feet`;
+
+            return municipalLineTotalHeadOfBoosterPump.toFixed(0);
+        }
+
+        function municipalLineHelpingCanvas() {
+            var canvas = document.getElementById("municipal_line_helping_canvas");
+            var ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#8CAC9C";
+            ctx.fillRect(0, 0, 500, 500);
+            ctx.fillStyle = "#000000";
+            ctx.font = canvas.width * 0.03 + "px Arial";
+
+            var hydrant = new Image();
+            hydrant.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/hydrant_img.png';
+
+            hydrant.onload = function () {
+                ctx.drawImage(hydrant, 0, canvas.height - hydrant.height);
+            };
+
+            var pump = new Image();
+            pump.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/pump_img.png';
+
+            pump.onload = function () {
+                ctx.drawImage(pump, 160, canvas.height - pump.height - 33);
+            };
+
+            var toilet = new Image();
+            toilet.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/toilet_img.png';
+
+            toilet.onload = function () {
+                ctx.drawImage(toilet, canvas.width - 70 - toilet.width, 120);
+            };
+
+            var pressure = new Image();
+            pressure.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/pressure_img.png';
+
+            pressure.onload = function () {
+                ctx.drawImage(pressure, canvas.width - 180 - pressure.width, 100);
+            };
+
+            var irrigation = new Image();
+            irrigation.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/irrigation_img.png';
+
+            irrigation.onload = function () {
+                ctx.drawImage(irrigation, canvas.width - 75 - irrigation.width, 180);
+            };
+
+            let pressureVal = parseFloat(document.getElementById('municipal_line_discharge_lf_pr').value) || 0;
+            let totalPipeRun = parseFloat(document.getElementById('municipal_line_discharge_tpr').value) || 0;
+            let elevationFromPump = parseFloat(document.getElementById('municipal_line_discharge_lf_hp').value) || 0;
+            let linePressure = parseFloat(document.getElementById('municipal_line_suction_p').value) || 0;
+
+            if (linePressure < 0) {
+                linePressure *= -1;
+            }
+            ctx.fillText("Pressure", canvas.width * 0.5, canvas.height * 0.1);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(canvas.width * 0.5, canvas.height * 0.12, canvas.width * 0.2, canvas.height * 0.05);
+            ctx.fillStyle = "#000000";
+            ctx.fillText(pressureVal + " psi", canvas.width * 0.51, canvas.height * 0.155);
+
+            ctx.fillText("Total Pipe Run", canvas.width * 0.24, canvas.height * 0.44);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(canvas.width * 0.24, canvas.height * 0.46, canvas.width * 0.2, canvas.height * 0.05);
+            ctx.fillStyle = "#000000";
+            ctx.fillText(totalPipeRun + " ft", canvas.width * 0.25, canvas.height * 0.495);
+
+            ctx.fillText("Elevation From Booster Pump", canvas.width * 0.58, canvas.height * 0.7);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(canvas.width * 0.58, canvas.height * 0.72, canvas.width * 0.2, canvas.height * 0.05);
+            ctx.fillStyle = "#000000";
+            ctx.fillText(elevationFromPump + " ft", canvas.width * 0.59, canvas.height * 0.755);
+
+            ctx.fillText("Line Pressure", canvas.width * 0.26, canvas.height * 0.77);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(canvas.width * 0.26, canvas.height * 0.79, canvas.width * 0.2, canvas.height * 0.05);
+            ctx.fillStyle = "#000000";
+            ctx.fillText(linePressure + " psi", canvas.width * 0.27, canvas.height * 0.825);
+
+            ctx.fillText("Toilet", canvas.width * 0.84, canvas.height * 0.33);
+            ctx.fillText("Irrigation", canvas.width * 0.84, canvas.height * 0.43);
+
+            ctx.strokeStyle = "#0000ff"
+
+            ctx.beginPath();
+            ctx.moveTo(canvas.width * 0.33, canvas.height * 0.89);
+            ctx.lineTo(canvas.width * 0.25, canvas.height * 0.89);
+
+            ctx.moveTo(canvas.width * 0.48, canvas.height * 0.875);
+            ctx.lineTo(canvas.width * 0.38, canvas.height * 0.875);
+
+            ctx.moveTo(canvas.width * 0.48, canvas.height * 0.875);
+            ctx.lineTo(canvas.width * 0.48, canvas.height * 0.36);
+
+            ctx.moveTo(canvas.width * 0.56, canvas.height * 0.875);
+            ctx.lineTo(canvas.width * 0.56, canvas.height * 0.36);
+
+            ctx.moveTo(canvas.width * 0.72, canvas.height * 0.36);
+            ctx.lineTo(canvas.width * 0.48, canvas.height * 0.36);
+
+            ctx.stroke();
+        }
+        municipalLineHelpingCanvas();
+
+        function flowRateMunicipalLineChartV190() {
+            const canvas = document.getElementById("frmlv190");
+            canvas.classList.remove("cfrmlv190");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V190.png";
+
+            const municipalLineTotalHead = MunicipalLineTotalHeadBoosterPumpResult();
+            const flowRateResult = calculateTotalPumpFlow();
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (municipalLineTotalHead * 1.04));
+                ctx.lineTo(30 + (flowRateResult * 1.88), 440 - (municipalLineTotalHead * 1.04));
+                ctx.moveTo(30 + (flowRateResult * 1.88), 440 - (municipalLineTotalHead * 1.04));
+                ctx.lineTo(30 + (flowRateResult * 1.88), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function flowRateMunicipalLineChartV110() {
+            const canvas = document.getElementById("frmlv110");
+            canvas.classList.remove("cfrmlv110");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V110.png";
+
+            const MunicipalLineTotalHead = MunicipalLineTotalHeadBoosterPumpResult();
+            const flowRateResult = calculateTotalPumpFlow();
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (MunicipalLineTotalHead * .6));
+                ctx.lineTo(30 + (flowRateResult * 2.75), 440 - (MunicipalLineTotalHead * .6));
+                ctx.moveTo(30 + (flowRateResult * 2.75), 440 - (MunicipalLineTotalHead * .6));
+                ctx.lineTo(30 + (flowRateResult * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function municipalLinePumpType() {
+            var selectedPumpType = document.querySelector('input[name="municipal_line_pump_type"]:checked').value;
+            var imageContainer = document.getElementById('municipal_line_pump_type_images');
+            imageContainer.innerHTML = '';
+
+            var images = [];
+
+            // Add image paths based on selected pump type
+            if (selectedPumpType === 'vertical_multi-stage') {
+                images = ['path/to/image1.jpg', 'path/to/image2.jpg'];
+            } else if (selectedPumpType === 'submersible') {
+                images = ['path/to/image3.jpg', 'path/to/image4.jpg'];
+            } else if (selectedPumpType === 'self-priming') {
+                images = ['path/to/image5.jpg', 'path/to/image6.jpg'];
+            }
+
+            // Create and append image elements to the container
+            images.forEach(function (imagePath) {
+                var imageElement = document.createElement('img');
+                imageElement.src = imagePath;
+                imageElement.alt = 'Pump Image';
+                imageContainer.appendChild(imageElement);
+            });
+        }
+
+
+        function printPage() {
+            window.print();
+        }
+    </script>
+</body>
+
+</html>
