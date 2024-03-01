@@ -47,7 +47,7 @@
         }
 
         .rw_container_div {
-            flex-basis: 48%;
+            flex-basis: 47%;
             background-color: #c0c0c0;
             border-radius: 8px;
             padding: 0px 20px;
@@ -394,7 +394,7 @@
                 </div>
             </div>
         </div>
-        <div class="rainwater_div">
+        <!-- <div class="rainwater_div">
 
             <canvas id="frdtv190" class="cfrdtv190" width="720" height="460"></canvas>
             <br>
@@ -406,7 +406,7 @@
             <br>
             <button onclick="flowRateDayTankChartV110()">Flow Rate | Day Tank Chart V110</button>
 
-        </div>
+        </div> -->
         <div class="rw_container">
 
             <div class="rainwater_div">
@@ -423,11 +423,11 @@
                 <br><br>
                 <button onclick="dayTankPumpType()">Day Tank Pump Type</button>
             </div>
-
-            <div id="day_tank_pump_type_images">
-            </div>
-
         </div>
+        <br>
+        <div id="day_tank_pump_type_images">
+        </div>
+
     </div>
 
     <div>
@@ -513,7 +513,7 @@
                 </div>
             </div>
         </div>
-        <div class="rainwater_div">
+        <!-- <div class="rainwater_div">
 
             <canvas id="frmlv190" class="cfrmlv190" width="720" height="460"></canvas>
             <br>
@@ -525,7 +525,7 @@
             <br>
             <button onclick="flowRateMunicipalLineChartV110()">Flow Rate | Municipal Line Chart V110</button>
 
-        </div>
+        </div> -->
 
         <div class="rw_container">
 
@@ -543,10 +543,9 @@
                 <br><br>
                 <button onclick="municipalLinePumpType()">Municipal Line Pump Type</button>
             </div>
-
-            <div id="municipal_line_pump_type_images">
-            </div>
-
+        </div>
+        <br>
+        <div id="municipal_line_pump_type_images">
         </div>
 
     </div>
@@ -1203,50 +1202,579 @@
 
         }
 
-        function flowRateDayTankChartV190() {
-            const canvas = document.getElementById("frdtv190");
-            canvas.classList.remove("cfrdtv190");
+        // function flowRateDayTankChartV190() {
+        //     const canvas = document.getElementById("frdtv190");
+        //     canvas.classList.remove("cfrdtv190");
+
+        //     const ctx = canvas.getContext("2d");
+
+        //     const chartImage = new Image();
+        //     chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V190.png";
+
+        //     const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
+        //     const flowRateResult = flowRateSelector();
+        //     chartImage.onload = function () {
+        //         ctx.drawImage(chartImage, 0, 0);
+
+        //         ctx.beginPath();
+        //         ctx.moveTo(30, 440 - (daytankTotalHead * 1.04));
+        //         ctx.lineTo(30 + (flowRateResult * 1.88), 440 - (daytankTotalHead * 1.04));
+        //         ctx.moveTo(30 + (flowRateResult * 1.88), 440 - (daytankTotalHead * 1.04));
+        //         ctx.lineTo(30 + (flowRateResult * 1.88), 440);
+        //         ctx.strokeStyle = "red";
+        //         ctx.lineWidth = 3;
+        //         ctx.stroke();
+        //     };
+        // }
+
+        // function flowRateDayTankChartV110() {
+        //     const canvas = document.getElementById("frdtv110");
+        //     canvas.classList.remove("cfrdtv110");
+
+        //     const ctx = canvas.getContext("2d");
+
+        //     const chartImage = new Image();
+        //     chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V110.png";
+
+        //     const dayTankTotalHead = DayTankTotalHeadBoosterPumpResult();
+        //     const flowRateResult = flowRateSelector();
+        //     chartImage.onload = function () {
+        //         ctx.drawImage(chartImage, 0, 0);
+
+        //         ctx.beginPath();
+        //         ctx.moveTo(30, 440 - (dayTankTotalHead * .6));
+        //         ctx.lineTo(30 + (flowRateResult * 2.75), 440 - (dayTankTotalHead * .6));
+        //         ctx.moveTo(30 + (flowRateResult * 2.75), 440 - (dayTankTotalHead * .6));
+        //         ctx.lineTo(30 + (flowRateResult * 2.75), 440);
+        //         ctx.strokeStyle = "red";
+        //         ctx.lineWidth = 3;
+        //         ctx.stroke();
+        //     };
+        // }
+
+        // Submersible
+
+        function Wilo_SPI_6_50(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
 
             const ctx = canvas.getContext("2d");
 
             const chartImage = new Image();
-            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V190.png";
+            chartImage.src = "";
 
-            const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
-            const flowRateResult = flowRateSelector();
+            const H = totalHead;
+            const Q = flowRate;
             chartImage.onload = function () {
                 ctx.drawImage(chartImage, 0, 0);
 
                 ctx.beginPath();
-                ctx.moveTo(30, 440 - (daytankTotalHead * 1.04));
-                ctx.lineTo(30 + (flowRateResult * 1.88), 440 - (daytankTotalHead * 1.04));
-                ctx.moveTo(30 + (flowRateResult * 1.88), 440 - (daytankTotalHead * 1.04));
-                ctx.lineTo(30 + (flowRateResult * 1.88), 440);
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
                 ctx.strokeStyle = "red";
                 ctx.lineWidth = 3;
                 ctx.stroke();
             };
         }
 
-        function flowRateDayTankChartV110() {
-            const canvas = document.getElementById("frdtv110");
-            canvas.classList.remove("cfrdtv110");
+        function Wilo_SPI_6_90(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
 
             const ctx = canvas.getContext("2d");
 
             const chartImage = new Image();
-            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V110.png";
+            chartImage.src = "";
 
-            const dayTankTotalHead = DayTankTotalHeadBoosterPumpResult();
-            const flowRateResult = flowRateSelector();
+            const H = totalHead;
+            const Q = flowRate;
             chartImage.onload = function () {
                 ctx.drawImage(chartImage, 0, 0);
 
                 ctx.beginPath();
-                ctx.moveTo(30, 440 - (dayTankTotalHead * .6));
-                ctx.lineTo(30 + (flowRateResult * 2.75), 440 - (dayTankTotalHead * .6));
-                ctx.moveTo(30 + (flowRateResult * 2.75), 440 - (dayTankTotalHead * .6));
-                ctx.lineTo(30 + (flowRateResult * 2.75), 440);
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_6_150(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_6_180(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_6_230(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_6_300(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_7_400(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_7_500(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_7_550(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_8_550(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_8_650(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_8_800(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_10_1200(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        // Simplex Verticle Multistage
+
+        function Wilo_Helix_V110(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_Helix_V190(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_Helix_V270(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_Helix_V10(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_Helix_V20(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_Helix_V30(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_Helix_V50(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_Helix_V80(totalHead, flowRate) {
+            const canvas = document.getElementById("");
+            canvas.classList.remove("");
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
                 ctx.strokeStyle = "red";
                 ctx.lineWidth = 3;
                 ctx.stroke();
@@ -1254,38 +1782,207 @@
         }
 
         function dayTankPumpType() {
-            var selectedPumpType = document.querySelector('input[name="day_tank_pump_type"]:checked').value;
-            var imageContainer = document.getElementById('day_tank_pump_type_images');
+            const selectedPumpType = document.querySelector('input[name="day_tank_pump_type"]:checked').value;
+            const imageContainer = document.getElementById('day_tank_pump_type_images');
             const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
             imageContainer.innerHTML = '';
-            var images = [];
+            const images = getImagesForPumpType(selectedPumpType, daytankTotalHead);
 
+            appendImagesToContainer(images, imageContainer);
+        }
 
-            // Add image paths based on selected pump type
+        function getImagesForPumpType(selectedPumpType, daytankTotalHead) {
+            let images = [];
+
             if (selectedPumpType === 'vertical_multi-stage') {
-                if (daytankTotalHead) {
-                    images = ['path/to/image1.jpg', 'path/to/image2.jpg'];
-
+                if (daytankTotalHead <= 300) {
+                    images = [
+                        'simple verticle multistage/Wilo-Helix_V_110-270.png',
+                        'simple verticle multistage/Wilo-Helix_V_270.png',
+                        'simple verticle multistage/Wilo-Helix_V_190.png',
+                        'simple verticle multistage/Wilo-Helix_V_110.png',
+                        'simple verticle multistage/Wilo-Helix_V_10-80.png',
+                        'simple verticle multistage/Wilo-Helix_V_10.png',
+                        'simple verticle multistage/Wilo-Helix_V_20.png',
+                        'simple verticle multistage/Wilo-Helix_V_30.png',
+                        'simple verticle multistage/Wilo-Helix_V_50.png',
+                        'simple verticle multistage/Wilo-Helix_V_80.png'
+                    ];
                 }
+                else if (daytankTotalHead <= 400) {
+                    images = [
+                        'simple verticle multistage/Wilo-Helix_V_110-270.png',
+                        'simple verticle multistage/Wilo-Helix_V_190.png',
+                        'simple verticle multistage/Wilo-Helix_V_110.png',
+                        'simple verticle multistage/Wilo-Helix_V_10-80.png',
+                        'simple verticle multistage/Wilo-Helix_V_10.png',
+                        'simple verticle multistage/Wilo-Helix_V_20.png',
+                        'simple verticle multistage/Wilo-Helix_V_30.png',
+                        'simple verticle multistage/Wilo-Helix_V_50.png',
+                        'simple verticle multistage/Wilo-Helix_V_80.png'
+                    ];
+                }
+                else if (daytankTotalHead <= 600) {
+                    images = [
+                        'simple verticle multistage/Wilo-Helix_V_110-270.png',
+                        'simple verticle multistage/Wilo-Helix_V_110.png',
+                        'simple verticle multistage/Wilo-Helix_V_10-80.png',
+                        'simple verticle multistage/Wilo-Helix_V_10.png',
+                        'simple verticle multistage/Wilo-Helix_V_20.png',
+                        'simple verticle multistage/Wilo-Helix_V_30.png',
+                        'simple verticle multistage/Wilo-Helix_V_50.png'
+                    ];
+                }
+                else if (daytankTotalHead <= 700) {
+                    images = [
+                        'simple verticle multistage/Wilo-Helix_V_110-270.png',
+                        'simple verticle multistage/Wilo-Helix_V_110.png',
+                        'simple verticle multistage/Wilo-Helix_V_10-80.png',
+                        'simple verticle multistage/Wilo-Helix_V_10.png',
+                        'simple verticle multistage/Wilo-Helix_V_20.png',
+                        'simple verticle multistage/Wilo-Helix_V_30.png'
+                    ];
+                }
+                else if (daytankTotalHead <= 800) {
+                    images = [
+                        'simple verticle multistage/Wilo-Helix_V_110-270.png',
+                        'simple verticle multistage/Wilo-Helix_V_10-80.png',
+                        'simple verticle multistage/Wilo-Helix_V_10.png',
+                        'simple verticle multistage/Wilo-Helix_V_20.png',
+                        'simple verticle multistage/Wilo-Helix_V_30.png'
+                    ];
+                }
+                else if (daytankTotalHead <= 900) {
+                    images = [
+                        'simple verticle multistage/Wilo-Helix_V_110-270.png',
+                        'simple verticle multistage/Wilo-Helix_V_10-80.png',
+                        'simple verticle multistage/Wilo-Helix_V_10.png',
+                        'simple verticle multistage/Wilo-Helix_V_30.png'
+                    ];
+                }
+                else {
+                    images = [
+                        'simple verticle multistage/Wilo-Helix_V_110-270.png',
+                        'simple verticle multistage/Wilo-Helix_V_10-80.png'
+                    ];
+                }
+
             } else if (selectedPumpType === 'submersible') {
-                if (daytankTotalHead) {
-                    images = ['path/to/image3.jpg', 'path/to/image4.jpg'];
-
+                if (daytankTotalHead <= 800) {
+                    images = [
+                        'submersible/Wilo_SPI_6_7_8_10.png',
+                        'submersible/Wilo_SPI_6-50_S_1-17.png',
+                        'submersible/Wilo_SPI_6-90_S_1-15.png',
+                        'submersible/Wilo_SPI_6-150_S_1-17.png',
+                        'submersible/Wilo_SPI_6-180_S_1-15.png',
+                        'submersible/Wilo_SPI_6-230_S_1-11.png',
+                        'submersible/Wilo_SPI_6-300_S_1-11.png',
+                        'submersible/Wilo_SPI_7-400_S_1-15.png',
+                        'submersible/Wilo_SPI_7-500_S_1-11.png',
+                        'submersible/Wilo_SPI_7-550_S_1-11.png',
+                        'submersible/Wilo_SPI_8-550_S_1-15.png',
+                        'submersible/Wilo_SPI_8-650_S_1-11.png',
+                        'submersible/Wilo_SPI_8-800_S_1-9.png',
+                        'submersible/Wilo_SPI_10-1200_S_1-6.png'
+                    ];
                 }
+                else if (daytankTotalHead <= 1000) {
+                    images = [
+                        'submersible/Wilo_SPI_6_7_8_10.png',
+                        'submersible/Wilo_SPI_6-150_S_1-17.png',
+                        'submersible/Wilo_SPI_6-180_S_1-15.png',
+                        'submersible/Wilo_SPI_6-230_S_1-11.png',
+                        'submersible/Wilo_SPI_7-400_S_1-15.png',
+                        'submersible/Wilo_SPI_7-500_S_1-11.png',
+                        'submersible/Wilo_SPI_7-550_S_1-11.png',
+                        'submersible/Wilo_SPI_8-550_S_1-15.png',
+                        'submersible/Wilo_SPI_8-650_S_1-11.png',
+                        'submersible/Wilo_SPI_8-800_S_1-9.png',
+                        'submersible/Wilo_SPI_10-1200_S_1-6.png'
+                    ];
+                }
+                else if (daytankTotalHead <= 1200) {
+                    images = [
+                        'submersible/Wilo_SPI_6_7_8_10.png',
+                        'submersible/Wilo_SPI_6-150_S_1-17.png',
+                        'submersible/Wilo_SPI_6-180_S_1-15.png',
+                        'submersible/Wilo_SPI_7-400_S_1-15.png',
+                        'submersible/Wilo_SPI_7-500_S_1-11.png',
+                        'submersible/Wilo_SPI_7-550_S_1-11.png',
+                        'submersible/Wilo_SPI_8-550_S_1-15.png',
+                        'submersible/Wilo_SPI_8-650_S_1-11.png',
+                        'submersible/Wilo_SPI_8-800_S_1-9.png',
+                        'submersible/Wilo_SPI_10-1200_S_1-6.png'
+                    ];
+                }
+                else if (daytankTotalHead <= 1400) {
+                    images = [
+                        'submersible/Wilo_SPI_6_7_8_10.png',
+                        'submersible/Wilo_SPI_7-400_S_1-15.png',
+                        'submersible/Wilo_SPI_7-500_S_1-11.png',
+                        'submersible/Wilo_SPI_8-550_S_1-15.png',
+                        'submersible/Wilo_SPI_8-650_S_1-11.png',
+                        'submersible/Wilo_SPI_8-800_S_1-9.png',
+                    ];
+                }
+                else if (daytankTotalHead <= 1500) {
+                    images = [
+                        'submersible/Wilo_SPI_6_7_8_10.png',
+                        'submersible/Wilo_SPI_7-400_S_1-15.png',
+                        'submersible/Wilo_SPI_8-550_S_1-15.png',
+                        'submersible/Wilo_SPI_8-650_S_1-11.png',
+                    ];
+                }
+                else if (daytankTotalHead <= 1600) {
+                    images = [
+                        'submersible/Wilo_SPI_6_7_8_10.png',
+                        'submersible/Wilo_SPI_8-550_S_1-15.png',
+                        'submersible/Wilo_SPI_8-650_S_1-11.png',
+                    ];
+                }
+                else if (daytankTotalHead <= 2000) {
+                    images = [
+                        'submersible/Wilo_SPI_6_7_8_10.png',
+                        'submersible/Wilo_SPI_8-550_S_1-15.png',
+                    ];
+                }
+                else {
+                    images = [
+                        'submersible/Wilo_SPI_6_7_8_10.png',
+                    ];
+                }
+
             } else if (selectedPumpType === 'self-priming') {
                 if (daytankTotalHead) {
-                    images = ['path/to/image5.jpg', 'path/to/image6.jpg'];
+                    images = [];
 
                 }
             }
 
-            // Create and append image elements to the container
+            return images;
+        }
+
+        function appendImagesToContainer(images, container) {
             images.forEach(function (imagePath) {
-                var imageElement = document.createElement('img');
-                imageElement.src = imagePath;
-                imageElement.alt = 'Pump Image';
-                imageContainer.appendChild(imageElement);
+                const imageElement = createImageElement(imagePath);
+
+                // Set image style for centering
+                imageElement.style.display = 'block';
+                imageElement.style.margin = '0 auto';
+
+                // Append image and line break to the container
+                container.appendChild(imageElement);
+
+                const lineBreak = document.createElement('br');
+                container.appendChild(lineBreak);
             });
+        }
+
+        function createImageElement(imagePath) {
+            const imageElement = document.createElement('img');
+            imageElement.src = imagePath;
+            imageElement.alt = 'Pump Image';
+            return imageElement;
         }
 
         function MunicipalLineDischargeLossesFittings() {
@@ -1481,89 +2178,65 @@
         }
         municipalLineHelpingCanvas();
 
-        function flowRateMunicipalLineChartV190() {
-            const canvas = document.getElementById("frmlv190");
-            canvas.classList.remove("cfrmlv190");
+        // function flowRateMunicipalLineChartV190() {
+        //     const canvas = document.getElementById("frmlv190");
+        //     canvas.classList.remove("cfrmlv190");
 
-            const ctx = canvas.getContext("2d");
+        //     const ctx = canvas.getContext("2d");
 
-            const chartImage = new Image();
-            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V190.png";
+        //     const chartImage = new Image();
+        //     chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V190.png";
 
-            const municipalLineTotalHead = MunicipalLineTotalHeadBoosterPumpResult();
-            const flowRateResult = flowRateSelector();
-            chartImage.onload = function () {
-                ctx.drawImage(chartImage, 0, 0);
+        //     const municipalLineTotalHead = MunicipalLineTotalHeadBoosterPumpResult();
+        //     const flowRateResult = flowRateSelector();
+        //     chartImage.onload = function () {
+        //         ctx.drawImage(chartImage, 0, 0);
 
-                ctx.beginPath();
-                ctx.moveTo(30, 440 - (municipalLineTotalHead * 1.04));
-                ctx.lineTo(30 + (flowRateResult * 1.88), 440 - (municipalLineTotalHead * 1.04));
-                ctx.moveTo(30 + (flowRateResult * 1.88), 440 - (municipalLineTotalHead * 1.04));
-                ctx.lineTo(30 + (flowRateResult * 1.88), 440);
-                ctx.strokeStyle = "red";
-                ctx.lineWidth = 3;
-                ctx.stroke();
-            };
-        }
+        //         ctx.beginPath();
+        //         ctx.moveTo(30, 440 - (municipalLineTotalHead * 1.04));
+        //         ctx.lineTo(30 + (flowRateResult * 1.88), 440 - (municipalLineTotalHead * 1.04));
+        //         ctx.moveTo(30 + (flowRateResult * 1.88), 440 - (municipalLineTotalHead * 1.04));
+        //         ctx.lineTo(30 + (flowRateResult * 1.88), 440);
+        //         ctx.strokeStyle = "red";
+        //         ctx.lineWidth = 3;
+        //         ctx.stroke();
+        //     };
+        // }
 
-        function flowRateMunicipalLineChartV110() {
-            const canvas = document.getElementById("frmlv110");
-            canvas.classList.remove("cfrmlv110");
+        // function flowRateMunicipalLineChartV110() {
+        //     const canvas = document.getElementById("frmlv110");
+        //     canvas.classList.remove("cfrmlv110");
 
-            const ctx = canvas.getContext("2d");
+        //     const ctx = canvas.getContext("2d");
 
-            const chartImage = new Image();
-            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V110.png";
+        //     const chartImage = new Image();
+        //     chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V110.png";
 
-            const MunicipalLineTotalHead = MunicipalLineTotalHeadBoosterPumpResult();
-            const flowRateResult = flowRateSelector();
-            chartImage.onload = function () {
-                ctx.drawImage(chartImage, 0, 0);
+        //     const MunicipalLineTotalHead = MunicipalLineTotalHeadBoosterPumpResult();
+        //     const flowRateResult = flowRateSelector();
+        //     chartImage.onload = function () {
+        //         ctx.drawImage(chartImage, 0, 0);
 
-                ctx.beginPath();
-                ctx.moveTo(30, 440 - (MunicipalLineTotalHead * .6));
-                ctx.lineTo(30 + (flowRateResult * 2.75), 440 - (MunicipalLineTotalHead * .6));
-                ctx.moveTo(30 + (flowRateResult * 2.75), 440 - (MunicipalLineTotalHead * .6));
-                ctx.lineTo(30 + (flowRateResult * 2.75), 440);
-                ctx.strokeStyle = "red";
-                ctx.lineWidth = 3;
-                ctx.stroke();
-            };
-        }
+        //         ctx.beginPath();
+        //         ctx.moveTo(30, 440 - (MunicipalLineTotalHead * .6));
+        //         ctx.lineTo(30 + (flowRateResult * 2.75), 440 - (MunicipalLineTotalHead * .6));
+        //         ctx.moveTo(30 + (flowRateResult * 2.75), 440 - (MunicipalLineTotalHead * .6));
+        //         ctx.lineTo(30 + (flowRateResult * 2.75), 440);
+        //         ctx.strokeStyle = "red";
+        //         ctx.lineWidth = 3;
+        //         ctx.stroke();
+        //     };
+        // }
 
         function municipalLinePumpType() {
-            var selectedPumpType = document.querySelector('input[name="municipal_line_pump_type"]:checked').value;
-            var imageContainer = document.getElementById('municipal_line_pump_type_images');
+            const selectedPumpType = document.querySelector('input[name="municipal_line_pump_type"]:checked').value;
+            const imageContainer = document.getElementById('municipal_line_pump_type_images');
             const municipalLineTotalHead = MunicipalLineTotalHeadBoosterPumpResult();
             imageContainer.innerHTML = '';
-            var images = [];
+            const images = getImagesForPumpType(selectedPumpType, municipalLineTotalHead);
 
+            appendImagesToContainer(images, imageContainer);
 
-            // Add image paths based on selected pump type
-            if (selectedPumpType === 'vertical_multi-stage') {
-                if (municipalLineTotalHead) {
-                    images = ['path/to/image1.jpg', 'path/to/image2.jpg'];
-
-                }
-            } else if (selectedPumpType === 'submersible') {
-                if (municipalLineTotalHead) {
-                    images = ['path/to/image3.jpg', 'path/to/image4.jpg'];
-
-                }
-            } else if (selectedPumpType === 'self-priming') {
-                if (municipalLineTotalHead) {
-                    images = ['path/to/image5.jpg', 'path/to/image6.jpg'];
-
-                }
-            }
-
-            // Create and append image elements to the container
-            images.forEach(function (imagePath) {
-                var imageElement = document.createElement('img');
-                imageElement.src = imagePath;
-                imageElement.alt = 'Pump Image';
-                imageContainer.appendChild(imageElement);
-            });
         }
 
 
