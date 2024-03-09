@@ -153,19 +153,30 @@
             display: none;
         }
 
-        .cfrmlv190 {
+        #day_tank_pump_type_images,
+        #municipal_line_pump_type_images {
+            text-align: center;
+        }
+
+        #day_tank_pump_type_images img,
+        #municipal_line_pump_type_images img {
+            display: inline-block;
+        }
+
+
+        .cfrml {
             display: none;
         }
 
-        .cfrmlv110 {
+        .cfrdt {
             display: none;
         }
 
-        .cfrdtv190 {
+        #mlsvmc {
             display: none;
         }
 
-        .cfrdtv110 {
+        #dtsvmc {
             display: none;
         }
 
@@ -317,7 +328,6 @@
             </div>
         </div>
     </div>
-    </div>
 
     <div>
         <div class="rainwater_div" id="day_tank">
@@ -394,19 +404,6 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="rainwater_div">
-
-            <canvas id="frdtv190" class="cfrdtv190" width="720" height="460"></canvas>
-            <br>
-            <button onclick="flowRateDayTankChartV190()">Flow Rate | Day Tank Chart V190</button>
-
-            <div></div>
-
-            <canvas id="frdtv110" class="cfrdtv110" width="720" height="460"></canvas>
-            <br>
-            <button onclick="flowRateDayTankChartV110()">Flow Rate | Day Tank Chart V110</button>
-
-        </div> -->
         <div class="rw_container">
 
             <div class="rainwater_div">
@@ -426,6 +423,21 @@
         </div>
         <br>
         <div id="day_tank_pump_type_images">
+            <div id="dtsvmc">
+
+                <img src="simple vertical multistage/Wilo-Helix_V_110-270.png"
+                    alt="simple vertical multistage V110 to V270">
+                <br><canvas id="frdtv110" class="cfrdt" width="720" height="460"></canvas>
+                <br><canvas id="frdtv190" class="cfrdt" width="720" height="460"></canvas>
+                <br><canvas id="frdtv270" class="cfrdt" width="720" height="460"></canvas>
+                <br><img src="simple vertical multistage/Wilo-Helix_V_10-80.png"
+                    alt="simple vertical multistage V10 to V80">
+                <br><canvas id="frdtv10" class="cfrdt" width="1080" height="680"></canvas>
+                <br><canvas id="frdtv20" class="cfrdt" width="1080" height="680"></canvas>
+                <br><canvas id="frdtv30" class="cfrdt" width="1080" height="680"></canvas>
+                <br><canvas id="frdtv50" class="cfrdt" width="1080" height="680"></canvas>
+                <br><canvas id="frdtv80" class="cfrdt" width="1080" height="680"></canvas>
+            </div>
         </div>
 
     </div>
@@ -513,19 +525,6 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="rainwater_div">
-
-            <canvas id="frmlv190" class="cfrmlv190" width="720" height="460"></canvas>
-            <br>
-            <button onclick="flowRateMunicipalLineChartV190()">Flow Rate | Municipal Line Chart V190</button>
-
-            <div></div>
-
-            <canvas id="frmlv110" class="cfrmlv110" width="720" height="460"></canvas>
-            <br>
-            <button onclick="flowRateMunicipalLineChartV110()">Flow Rate | Municipal Line Chart V110</button>
-
-        </div> -->
 
         <div class="rw_container">
 
@@ -546,6 +545,20 @@
         </div>
         <br>
         <div id="municipal_line_pump_type_images">
+            <div id="mlsvmc">
+                <img src="simple vertical multistage/Wilo-Helix_V_110-270.png"
+                    alt="simple vertical multistage V110 to V270">
+                <br><canvas id="frmlv110" class="cfrml" width="720" height="460"></canvas>
+                <br><canvas id="frmlv190" class="cfrml" width="720" height="460"></canvas>
+                <br><canvas id="frmlv270" class="cfrml" width="720" height="460"></canvas>
+                <br><img src="simple vertical multistage/Wilo-Helix_V_10-80.png"
+                    alt="simple vertical multistage V10 to V80">
+                <br><canvas id="frmlv10" class="cfrml" width="1080" height="680"></canvas>
+                <br><canvas id="frmlv20" class="cfrml" width="1080" height="680"></canvas>
+                <br><canvas id="frmlv30" class="cfrml" width="1080" height="680"></canvas>
+                <br><canvas id="frmlv50" class="cfrml" width="1080" height="680"></canvas>
+                <br><canvas id="frmlv80" class="cfrml" width="1080" height="680"></canvas>
+            </div>
         </div>
 
     </div>
@@ -1202,61 +1215,11 @@
 
         }
 
-        // function flowRateDayTankChartV190() {
-        //     const canvas = document.getElementById("frdtv190");
-        //     canvas.classList.remove("cfrdtv190");
-
-        //     const ctx = canvas.getContext("2d");
-
-        //     const chartImage = new Image();
-        //     chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V190.png";
-
-        //     const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
-        //     const flowRateResult = flowRateSelector();
-        //     chartImage.onload = function () {
-        //         ctx.drawImage(chartImage, 0, 0);
-
-        //         ctx.beginPath();
-        //         ctx.moveTo(30, 440 - (daytankTotalHead * 1.04));
-        //         ctx.lineTo(30 + (flowRateResult * 1.88), 440 - (daytankTotalHead * 1.04));
-        //         ctx.moveTo(30 + (flowRateResult * 1.88), 440 - (daytankTotalHead * 1.04));
-        //         ctx.lineTo(30 + (flowRateResult * 1.88), 440);
-        //         ctx.strokeStyle = "red";
-        //         ctx.lineWidth = 3;
-        //         ctx.stroke();
-        //     };
-        // }
-
-        // function flowRateDayTankChartV110() {
-        //     const canvas = document.getElementById("frdtv110");
-        //     canvas.classList.remove("cfrdtv110");
-
-        //     const ctx = canvas.getContext("2d");
-
-        //     const chartImage = new Image();
-        //     chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V110.png";
-
-        //     const dayTankTotalHead = DayTankTotalHeadBoosterPumpResult();
-        //     const flowRateResult = flowRateSelector();
-        //     chartImage.onload = function () {
-        //         ctx.drawImage(chartImage, 0, 0);
-
-        //         ctx.beginPath();
-        //         ctx.moveTo(30, 440 - (dayTankTotalHead * .6));
-        //         ctx.lineTo(30 + (flowRateResult * 2.75), 440 - (dayTankTotalHead * .6));
-        //         ctx.moveTo(30 + (flowRateResult * 2.75), 440 - (dayTankTotalHead * .6));
-        //         ctx.lineTo(30 + (flowRateResult * 2.75), 440);
-        //         ctx.strokeStyle = "red";
-        //         ctx.lineWidth = 3;
-        //         ctx.stroke();
-        //     };
-        // }
-
         // Submersible
 
-        function Wilo_SPI_6_50(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
+        function Wilo_SPI_6_50(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
 
             const ctx = canvas.getContext("2d");
 
@@ -1279,9 +1242,9 @@
             };
         }
 
-        function Wilo_SPI_6_90(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
+        function Wilo_SPI_6_90(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
 
             const ctx = canvas.getContext("2d");
 
@@ -1304,9 +1267,9 @@
             };
         }
 
-        function Wilo_SPI_6_150(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
+        function Wilo_SPI_6_150(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
 
             const ctx = canvas.getContext("2d");
 
@@ -1329,9 +1292,9 @@
             };
         }
 
-        function Wilo_SPI_6_180(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
+        function Wilo_SPI_6_180(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
 
             const ctx = canvas.getContext("2d");
 
@@ -1354,9 +1317,9 @@
             };
         }
 
-        function Wilo_SPI_6_230(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
+        function Wilo_SPI_6_230(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
 
             const ctx = canvas.getContext("2d");
 
@@ -1379,9 +1342,9 @@
             };
         }
 
-        function Wilo_SPI_6_300(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
+        function Wilo_SPI_6_300(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
 
             const ctx = canvas.getContext("2d");
 
@@ -1404,9 +1367,33 @@
             };
         }
 
-        function Wilo_SPI_7_400(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
+        function Wilo_SPI_7_400(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_7_500(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
 
             const ctx = canvas.getContext("2d");
 
@@ -1429,9 +1416,9 @@
             };
         }
 
-        function Wilo_SPI_7_500(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
+        function Wilo_SPI_7_550(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
 
             const ctx = canvas.getContext("2d");
 
@@ -1454,9 +1441,33 @@
             };
         }
 
-        function Wilo_SPI_7_550(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
+        function Wilo_SPI_8_550(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_8_650(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
 
             const ctx = canvas.getContext("2d");
 
@@ -1479,9 +1490,9 @@
             };
         }
 
-        function Wilo_SPI_8_550(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
+        function Wilo_SPI_8_800(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
 
             const ctx = canvas.getContext("2d");
 
@@ -1504,9 +1515,9 @@
             };
         }
 
-        function Wilo_SPI_8_650(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
+        function Wilo_SPI_10_1200(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
 
             const ctx = canvas.getContext("2d");
 
@@ -1529,14 +1540,16 @@
             };
         }
 
-        function Wilo_SPI_8_800(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
+        // Simplex vertical Multistage
+
+        function Wilo_Helix_V110(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
 
             const ctx = canvas.getContext("2d");
 
             const chartImage = new Image();
-            chartImage.src = "";
+            chartImage.src = "simple vertical multistage/Wilo-Helix_V_110.png";
 
             const H = totalHead;
             const Q = flowRate;
@@ -1545,23 +1558,23 @@
 
                 ctx.beginPath();
                 ctx.moveTo(30, 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.lineTo(30 + (Q * 2.74), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.74), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.74), 440);
                 ctx.strokeStyle = "red";
                 ctx.lineWidth = 3;
                 ctx.stroke();
             };
         }
 
-        function Wilo_SPI_10_1200(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
+        function Wilo_Helix_V190(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
 
             const ctx = canvas.getContext("2d");
 
             const chartImage = new Image();
-            chartImage.src = "";
+            chartImage.src = "simple vertical multistage/Wilo-Helix_V_190.png";
 
             const H = totalHead;
             const Q = flowRate;
@@ -1569,26 +1582,24 @@
                 ctx.drawImage(chartImage, 0, 0);
 
                 ctx.beginPath();
-                ctx.moveTo(30, 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.moveTo(30, 440 - (H * 1.04));
+                ctx.lineTo(30 + (Q * 1.88), 440 - (H * 1.04));
+                ctx.moveTo(30 + (Q * 1.88), 440 - (H * 1.04));
+                ctx.lineTo(30 + (Q * 1.88), 440);
                 ctx.strokeStyle = "red";
                 ctx.lineWidth = 3;
                 ctx.stroke();
             };
         }
 
-        // Simplex Verticle Multistage
-
-        function Wilo_Helix_V110(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
+        function Wilo_Helix_V270(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
 
             const ctx = canvas.getContext("2d");
 
             const chartImage = new Image();
-            chartImage.src = "";
+            chartImage.src = "simple vertical multistage/Wilo-Helix_V_270.png";
 
             const H = totalHead;
             const Q = flowRate;
@@ -1596,24 +1607,24 @@
                 ctx.drawImage(chartImage, 0, 0);
 
                 ctx.beginPath();
-                ctx.moveTo(30, 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.moveTo(32, 440 - (H * 1.4));
+                ctx.lineTo(32 + (Q * 1.32), 440 - (H * 1.4));
+                ctx.moveTo(32 + (Q * 1.32), 440 - (H * 1.4));
+                ctx.lineTo(32 + (Q * 1.32), 440);
                 ctx.strokeStyle = "red";
                 ctx.lineWidth = 3;
                 ctx.stroke();
             };
         }
 
-        function Wilo_Helix_V190(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
+        function Wilo_Helix_V10(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
 
             const ctx = canvas.getContext("2d");
 
             const chartImage = new Image();
-            chartImage.src = "";
+            chartImage.src = "simple vertical multistage/Wilo-Helix_V_10.png";
 
             const H = totalHead;
             const Q = flowRate;
@@ -1621,24 +1632,24 @@
                 ctx.drawImage(chartImage, 0, 0);
 
                 ctx.beginPath();
-                ctx.moveTo(30, 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.moveTo(45, 650 - (H * .68));
+                ctx.lineTo(45 + (Q * 41.1), 650 - (H * .68));
+                ctx.moveTo(45 + (Q * 41.1), 650 - (H * .68));
+                ctx.lineTo(45 + (Q * 41.1), 650);
                 ctx.strokeStyle = "red";
                 ctx.lineWidth = 3;
                 ctx.stroke();
             };
         }
 
-        function Wilo_Helix_V270(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
+        function Wilo_Helix_V20(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
 
             const ctx = canvas.getContext("2d");
 
             const chartImage = new Image();
-            chartImage.src = "";
+            chartImage.src = "simple vertical multistage/Wilo-Helix_V_20.png";
 
             const H = totalHead;
             const Q = flowRate;
@@ -1646,24 +1657,24 @@
                 ctx.drawImage(chartImage, 0, 0);
 
                 ctx.beginPath();
-                ctx.moveTo(30, 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.moveTo(45, 650 - (H * .775));
+                ctx.lineTo(45 + (Q * 24.7), 650 - (H * .775));
+                ctx.moveTo(45 + (Q * 24.7), 650 - (H * .775));
+                ctx.lineTo(45 + (Q * 24.7), 650);
                 ctx.strokeStyle = "red";
                 ctx.lineWidth = 3;
                 ctx.stroke();
             };
         }
 
-        function Wilo_Helix_V10(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
+        function Wilo_Helix_V30(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
 
             const ctx = canvas.getContext("2d");
 
             const chartImage = new Image();
-            chartImage.src = "";
+            chartImage.src = "simple vertical multistage/Wilo-Helix_V_30.png";
 
             const H = totalHead;
             const Q = flowRate;
@@ -1671,24 +1682,24 @@
                 ctx.drawImage(chartImage, 0, 0);
 
                 ctx.beginPath();
-                ctx.moveTo(30, 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.moveTo(45, 650 - (H * .7));
+                ctx.lineTo(45 + (Q * 16.6), 650 - (H * .7));
+                ctx.moveTo(45 + (Q * 16.6), 650 - (H * .7));
+                ctx.lineTo(45 + (Q * 16.6), 650);
                 ctx.strokeStyle = "red";
                 ctx.lineWidth = 3;
                 ctx.stroke();
             };
         }
 
-        function Wilo_Helix_V20(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
+        function Wilo_Helix_V50(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
 
             const ctx = canvas.getContext("2d");
 
             const chartImage = new Image();
-            chartImage.src = "";
+            chartImage.src = "simple vertical multistage/Wilo-Helix_V_50.png";
 
             const H = totalHead;
             const Q = flowRate;
@@ -1696,24 +1707,24 @@
                 ctx.drawImage(chartImage, 0, 0);
 
                 ctx.beginPath();
-                ctx.moveTo(30, 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.moveTo(45, 650 - (H * 1.03));
+                ctx.lineTo(45 + (Q * 8.61), 650 - (H * 1.03));
+                ctx.moveTo(45 + (Q * 8.61), 650 - (H * 1.03));
+                ctx.lineTo(45 + (Q * 8.61), 650);
                 ctx.strokeStyle = "red";
                 ctx.lineWidth = 3;
                 ctx.stroke();
             };
         }
 
-        function Wilo_Helix_V30(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
+        function Wilo_Helix_V80(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
 
             const ctx = canvas.getContext("2d");
 
             const chartImage = new Image();
-            chartImage.src = "";
+            chartImage.src = "simple vertical multistage/Wilo-Helix_V_80.png";
 
             const H = totalHead;
             const Q = flowRate;
@@ -1721,60 +1732,10 @@
                 ctx.drawImage(chartImage, 0, 0);
 
                 ctx.beginPath();
-                ctx.moveTo(30, 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440);
-                ctx.strokeStyle = "red";
-                ctx.lineWidth = 3;
-                ctx.stroke();
-            };
-        }
-
-        function Wilo_Helix_V50(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
-
-            const ctx = canvas.getContext("2d");
-
-            const chartImage = new Image();
-            chartImage.src = "";
-
-            const H = totalHead;
-            const Q = flowRate;
-            chartImage.onload = function () {
-                ctx.drawImage(chartImage, 0, 0);
-
-                ctx.beginPath();
-                ctx.moveTo(30, 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440);
-                ctx.strokeStyle = "red";
-                ctx.lineWidth = 3;
-                ctx.stroke();
-            };
-        }
-
-        function Wilo_Helix_V80(totalHead, flowRate) {
-            const canvas = document.getElementById("");
-            canvas.classList.remove("");
-
-            const ctx = canvas.getContext("2d");
-
-            const chartImage = new Image();
-            chartImage.src = "";
-
-            const H = totalHead;
-            const Q = flowRate;
-            chartImage.onload = function () {
-                ctx.drawImage(chartImage, 0, 0);
-
-                ctx.beginPath();
-                ctx.moveTo(30, 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.moveTo(30 + (Q * 2.75), 440 - (H * .6));
-                ctx.lineTo(30 + (Q * 2.75), 440);
+                ctx.moveTo(45, 650 - (H * 1.23));
+                ctx.lineTo(45 + (Q * 6.34), 650 - (H * 1.23));
+                ctx.moveTo(45 + (Q * 6.34), 650 - (H * 1.23));
+                ctx.lineTo(45 + (Q * 6.34), 650);
                 ctx.strokeStyle = "red";
                 ctx.lineWidth = 3;
                 ctx.stroke();
@@ -1783,91 +1744,198 @@
 
         function dayTankPumpType() {
             const selectedPumpType = document.querySelector('input[name="day_tank_pump_type"]:checked').value;
-            const imageContainer = document.getElementById('day_tank_pump_type_images');
             const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
-            imageContainer.innerHTML = '';
-            const images = getImagesForPumpType(selectedPumpType, daytankTotalHead);
+            const flowRate = flowRateSelector();
 
-            appendImagesToContainer(images, imageContainer);
+
+            if (selectedPumpType === 'vertical_multi-stage') {
+                const div = document.getElementById('dtsvmc');
+                div.style.display = "inline-block";
+
+                if (daytankTotalHead <= 300) {
+                    if (flowRate <= 24) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                        Wilo_Helix_V190(daytankTotalHead, flowRate, 'frdtv190');
+                        Wilo_Helix_V270(daytankTotalHead, flowRate, 'frdtv270');
+                        Wilo_Helix_V10(daytankTotalHead, flowRate, 'frdtv10');
+                        Wilo_Helix_V20(daytankTotalHead, flowRate, 'frdtv20');
+                        Wilo_Helix_V30(daytankTotalHead, flowRate, 'frdtv30');
+                        Wilo_Helix_V50(daytankTotalHead, flowRate, 'frdtv50');
+                        Wilo_Helix_V80(daytankTotalHead, flowRate, 'frdtv80');
+                    }
+                    else if (flowRate <= 40) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                        Wilo_Helix_V190(daytankTotalHead, flowRate, 'frdtv190');
+                        Wilo_Helix_V270(daytankTotalHead, flowRate, 'frdtv270');
+                        Wilo_Helix_V20(daytankTotalHead, flowRate, 'frdtv20');
+                        Wilo_Helix_V30(daytankTotalHead, flowRate, 'frdtv30');
+                        Wilo_Helix_V50(daytankTotalHead, flowRate, 'frdtv50');
+                        Wilo_Helix_V80(daytankTotalHead, flowRate, 'frdtv80');
+                    }
+                    else if (flowRate <= 60) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                        Wilo_Helix_V190(daytankTotalHead, flowRate, 'frdtv190');
+                        Wilo_Helix_V270(daytankTotalHead, flowRate, 'frdtv270');
+                        Wilo_Helix_V30(daytankTotalHead, flowRate, 'frdtv30');
+                        Wilo_Helix_V50(daytankTotalHead, flowRate, 'frdtv50');
+                        Wilo_Helix_V80(daytankTotalHead, flowRate, 'frdtv80');
+                    }
+                    else if (flowRate <= 120) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                        Wilo_Helix_V190(daytankTotalHead, flowRate, 'frdtv190');
+                        Wilo_Helix_V270(daytankTotalHead, flowRate, 'frdtv270');
+                        Wilo_Helix_V50(daytankTotalHead, flowRate, 'frdtv50');
+                        Wilo_Helix_V80(daytankTotalHead, flowRate, 'frdtv80');
+                    }
+                    else if (flowRate <= 160) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                        Wilo_Helix_V190(daytankTotalHead, flowRate, 'frdtv190');
+                        Wilo_Helix_V270(daytankTotalHead, flowRate, 'frdtv270');
+                        Wilo_Helix_V80(daytankTotalHead, flowRate, 'frdtv80');
+                    }
+                    else if (flowRate <= 240) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                        Wilo_Helix_V190(daytankTotalHead, flowRate, 'frdtv190');
+                        Wilo_Helix_V270(daytankTotalHead, flowRate, 'frdtv270');
+                    }
+                    else if (flowRate <= 350) {
+                        Wilo_Helix_V190(daytankTotalHead, flowRate, 'frdtv190');
+                        Wilo_Helix_V270(daytankTotalHead, flowRate, 'frdtv270');
+                    }
+                    else if (flowRate <= 500) {
+                        Wilo_Helix_V270(daytankTotalHead, flowRate, 'frdtv270')
+                    }
+                }
+                else if (daytankTotalHead <= 400) {
+                    if (flowRate <= 24) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                        Wilo_Helix_V190(daytankTotalHead, flowRate, 'frdtv190');
+                        Wilo_Helix_V10(daytankTotalHead, flowRate, 'frdtv10');
+                        Wilo_Helix_V20(daytankTotalHead, flowRate, 'frdtv20');
+                        Wilo_Helix_V30(daytankTotalHead, flowRate, 'frdtv30');
+                        Wilo_Helix_V50(daytankTotalHead, flowRate, 'frdtv50');
+                        Wilo_Helix_V80(daytankTotalHead, flowRate, 'frdtv80');
+                    }
+                    else if (flowRate <= 40) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                        Wilo_Helix_V190(daytankTotalHead, flowRate, 'frdtv190');
+                        Wilo_Helix_V20(daytankTotalHead, flowRate, 'frdtv20');
+                        Wilo_Helix_V30(daytankTotalHead, flowRate, 'frdtv30');
+                        Wilo_Helix_V50(daytankTotalHead, flowRate, 'frdtv50');
+                        Wilo_Helix_V80(daytankTotalHead, flowRate, 'frdtv80');
+                    }
+                    else if (flowRate <= 60) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                        Wilo_Helix_V190(daytankTotalHead, flowRate, 'frdtv190');
+                        Wilo_Helix_V30(daytankTotalHead, flowRate, 'frdtv30');
+                        Wilo_Helix_V50(daytankTotalHead, flowRate, 'frdtv50');
+                        Wilo_Helix_V80(daytankTotalHead, flowRate, 'frdtv80');
+                    }
+                    else if (flowRate <= 120) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                        Wilo_Helix_V190(daytankTotalHead, flowRate, 'frdtv190');
+                        Wilo_Helix_V50(daytankTotalHead, flowRate, 'frdtv50');
+                        Wilo_Helix_V80(daytankTotalHead, flowRate, 'frdtv80');
+                    }
+                    else if (flowRate <= 160) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                        Wilo_Helix_V190(daytankTotalHead, flowRate, 'frdtv190');
+                        Wilo_Helix_V80(daytankTotalHead, flowRate, 'frdtv80');
+                    }
+                    else if (flowRate <= 240) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                        Wilo_Helix_V190(daytankTotalHead, flowRate, 'frdtv190');
+                    }
+                    else if (flowRate <= 350) {
+                        Wilo_Helix_V190(daytankTotalHead, flowRate, 'frdtv190');
+                    }
+                }
+                else if (daytankTotalHead <= 600) {
+                    if (flowRate <= 24) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                        Wilo_Helix_V10(daytankTotalHead, flowRate, 'frdtv10');
+                        Wilo_Helix_V20(daytankTotalHead, flowRate, 'frdtv20');
+                        Wilo_Helix_V30(daytankTotalHead, flowRate, 'frdtv30');
+                        Wilo_Helix_V50(daytankTotalHead, flowRate, 'frdtv50');
+                    }
+                    else if (flowRate <= 40) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                        Wilo_Helix_V20(daytankTotalHead, flowRate, 'frdtv20');
+                        Wilo_Helix_V30(daytankTotalHead, flowRate, 'frdtv30');
+                        Wilo_Helix_V50(daytankTotalHead, flowRate, 'frdtv50');
+                    }
+                    else if (flowRate <= 60) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                        Wilo_Helix_V30(daytankTotalHead, flowRate, 'frdtv30');
+                        Wilo_Helix_V50(daytankTotalHead, flowRate, 'frdtv50');
+                    }
+                    else if (flowRate <= 120) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                        Wilo_Helix_V50(daytankTotalHead, flowRate, 'frdtv50');
+                    }
+                    else if (flowRate <= 240) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                    }
+                }
+                else if (daytankTotalHead <= 700) {
+                    if (flowRate <= 24) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                        Wilo_Helix_V10(daytankTotalHead, flowRate, 'frdtv10');
+                        Wilo_Helix_V20(daytankTotalHead, flowRate, 'frdtv20');
+                        Wilo_Helix_V30(daytankTotalHead, flowRate, 'frdtv30');
+                    }
+                    else if (flowRate <= 40) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                        Wilo_Helix_V20(daytankTotalHead, flowRate, 'frdtv20');
+                        Wilo_Helix_V30(daytankTotalHead, flowRate, 'frdtv30');
+                    }
+                    else if (flowRate <= 60) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                        Wilo_Helix_V30(daytankTotalHead, flowRate, 'frdtv30');
+                    }
+                    else if (flowRate <= 240) {
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                    }
+                }
+                else if (daytankTotalHead <= 800) {
+                    if (flowRate <= 24) {
+                        Wilo_Helix_V10(daytankTotalHead, flowRate, 'frdtv10');
+                        Wilo_Helix_V20(daytankTotalHead, flowRate, 'frdtv20');
+                        Wilo_Helix_V30(daytankTotalHead, flowRate, 'frdtv30');
+                    }
+                    else if (flowRate <= 40) {
+                        Wilo_Helix_V20(daytankTotalHead, flowRate, 'frdtv20');
+                        Wilo_Helix_V30(daytankTotalHead, flowRate, 'frdtv30');
+                    }
+                    else if (flowRate <= 60) {
+                        Wilo_Helix_V30(daytankTotalHead, flowRate, 'frdtv30');
+                    }
+                }
+                else if (daytankTotalHead <= 900) {
+                    if (flowRate <= 24) {
+                        Wilo_Helix_V10(daytankTotalHead, flowRate, 'frdtv10');
+                        Wilo_Helix_V30(daytankTotalHead, flowRate, 'frdtv30');
+                    }
+                    else if (flowRate <= 60) {
+                        Wilo_Helix_V30(daytankTotalHead, flowRate, 'frdtv30');
+                    }
+                }
+                else {
+
+                }
+            }
+
+            else if (selectedPumpType === 'submersible') {
+                Wilo_SPI_6_50(daytankTotalHead, flowRate, 'frdt');
+                Wilo_SPI_6_90(daytankTotalHead, flowRate, 'frdt');
+                Wilo_SPI_6_150(daytankTotalHead, flowRate, 'frdt');
+            }
         }
 
         function getImagesForPumpType(selectedPumpType, daytankTotalHead) {
             let images = [];
 
-            if (selectedPumpType === 'vertical_multi-stage') {
-                if (daytankTotalHead <= 300) {
-                    images = [
-                        'simple verticle multistage/Wilo-Helix_V_110-270.png',
-                        'simple verticle multistage/Wilo-Helix_V_270.png',
-                        'simple verticle multistage/Wilo-Helix_V_190.png',
-                        'simple verticle multistage/Wilo-Helix_V_110.png',
-                        'simple verticle multistage/Wilo-Helix_V_10-80.png',
-                        'simple verticle multistage/Wilo-Helix_V_10.png',
-                        'simple verticle multistage/Wilo-Helix_V_20.png',
-                        'simple verticle multistage/Wilo-Helix_V_30.png',
-                        'simple verticle multistage/Wilo-Helix_V_50.png',
-                        'simple verticle multistage/Wilo-Helix_V_80.png'
-                    ];
-                }
-                else if (daytankTotalHead <= 400) {
-                    images = [
-                        'simple verticle multistage/Wilo-Helix_V_110-270.png',
-                        'simple verticle multistage/Wilo-Helix_V_190.png',
-                        'simple verticle multistage/Wilo-Helix_V_110.png',
-                        'simple verticle multistage/Wilo-Helix_V_10-80.png',
-                        'simple verticle multistage/Wilo-Helix_V_10.png',
-                        'simple verticle multistage/Wilo-Helix_V_20.png',
-                        'simple verticle multistage/Wilo-Helix_V_30.png',
-                        'simple verticle multistage/Wilo-Helix_V_50.png',
-                        'simple verticle multistage/Wilo-Helix_V_80.png'
-                    ];
-                }
-                else if (daytankTotalHead <= 600) {
-                    images = [
-                        'simple verticle multistage/Wilo-Helix_V_110-270.png',
-                        'simple verticle multistage/Wilo-Helix_V_110.png',
-                        'simple verticle multistage/Wilo-Helix_V_10-80.png',
-                        'simple verticle multistage/Wilo-Helix_V_10.png',
-                        'simple verticle multistage/Wilo-Helix_V_20.png',
-                        'simple verticle multistage/Wilo-Helix_V_30.png',
-                        'simple verticle multistage/Wilo-Helix_V_50.png'
-                    ];
-                }
-                else if (daytankTotalHead <= 700) {
-                    images = [
-                        'simple verticle multistage/Wilo-Helix_V_110-270.png',
-                        'simple verticle multistage/Wilo-Helix_V_110.png',
-                        'simple verticle multistage/Wilo-Helix_V_10-80.png',
-                        'simple verticle multistage/Wilo-Helix_V_10.png',
-                        'simple verticle multistage/Wilo-Helix_V_20.png',
-                        'simple verticle multistage/Wilo-Helix_V_30.png'
-                    ];
-                }
-                else if (daytankTotalHead <= 800) {
-                    images = [
-                        'simple verticle multistage/Wilo-Helix_V_110-270.png',
-                        'simple verticle multistage/Wilo-Helix_V_10-80.png',
-                        'simple verticle multistage/Wilo-Helix_V_10.png',
-                        'simple verticle multistage/Wilo-Helix_V_20.png',
-                        'simple verticle multistage/Wilo-Helix_V_30.png'
-                    ];
-                }
-                else if (daytankTotalHead <= 900) {
-                    images = [
-                        'simple verticle multistage/Wilo-Helix_V_110-270.png',
-                        'simple verticle multistage/Wilo-Helix_V_10-80.png',
-                        'simple verticle multistage/Wilo-Helix_V_10.png',
-                        'simple verticle multistage/Wilo-Helix_V_30.png'
-                    ];
-                }
-                else {
-                    images = [
-                        'simple verticle multistage/Wilo-Helix_V_110-270.png',
-                        'simple verticle multistage/Wilo-Helix_V_10-80.png'
-                    ];
-                }
-
-            } else if (selectedPumpType === 'submersible') {
+            if (selectedPumpType === 'submersible') {
                 if (daytankTotalHead <= 800) {
                     images = [
                         'submersible/Wilo_SPI_6_7_8_10.png',
@@ -1952,7 +2020,8 @@
                     ];
                 }
 
-            } else if (selectedPumpType === 'self-priming') {
+            }
+            else if (selectedPumpType === 'self-priming') {
                 if (daytankTotalHead) {
                     images = [];
 
@@ -1962,28 +2031,6 @@
             return images;
         }
 
-        function appendImagesToContainer(images, container) {
-            images.forEach(function (imagePath) {
-                const imageElement = createImageElement(imagePath);
-
-                // Set image style for centering
-                imageElement.style.display = 'block';
-                imageElement.style.margin = '0 auto';
-
-                // Append image and line break to the container
-                container.appendChild(imageElement);
-
-                const lineBreak = document.createElement('br');
-                container.appendChild(lineBreak);
-            });
-        }
-
-        function createImageElement(imagePath) {
-            const imageElement = document.createElement('img');
-            imageElement.src = imagePath;
-            imageElement.alt = 'Pump Image';
-            return imageElement;
-        }
 
         function MunicipalLineDischargeLossesFittings() {
             const municipalLineDischargeTPR = parseFloat(document.getElementById('municipal_line_discharge_tpr').value);
@@ -2178,64 +2225,195 @@
         }
         municipalLineHelpingCanvas();
 
-        // function flowRateMunicipalLineChartV190() {
-        //     const canvas = document.getElementById("frmlv190");
-        //     canvas.classList.remove("cfrmlv190");
-
-        //     const ctx = canvas.getContext("2d");
-
-        //     const chartImage = new Image();
-        //     chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V190.png";
-
-        //     const municipalLineTotalHead = MunicipalLineTotalHeadBoosterPumpResult();
-        //     const flowRateResult = flowRateSelector();
-        //     chartImage.onload = function () {
-        //         ctx.drawImage(chartImage, 0, 0);
-
-        //         ctx.beginPath();
-        //         ctx.moveTo(30, 440 - (municipalLineTotalHead * 1.04));
-        //         ctx.lineTo(30 + (flowRateResult * 1.88), 440 - (municipalLineTotalHead * 1.04));
-        //         ctx.moveTo(30 + (flowRateResult * 1.88), 440 - (municipalLineTotalHead * 1.04));
-        //         ctx.lineTo(30 + (flowRateResult * 1.88), 440);
-        //         ctx.strokeStyle = "red";
-        //         ctx.lineWidth = 3;
-        //         ctx.stroke();
-        //     };
-        // }
-
-        // function flowRateMunicipalLineChartV110() {
-        //     const canvas = document.getElementById("frmlv110");
-        //     canvas.classList.remove("cfrmlv110");
-
-        //     const ctx = canvas.getContext("2d");
-
-        //     const chartImage = new Image();
-        //     chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V110.png";
-
-        //     const MunicipalLineTotalHead = MunicipalLineTotalHeadBoosterPumpResult();
-        //     const flowRateResult = flowRateSelector();
-        //     chartImage.onload = function () {
-        //         ctx.drawImage(chartImage, 0, 0);
-
-        //         ctx.beginPath();
-        //         ctx.moveTo(30, 440 - (MunicipalLineTotalHead * .6));
-        //         ctx.lineTo(30 + (flowRateResult * 2.75), 440 - (MunicipalLineTotalHead * .6));
-        //         ctx.moveTo(30 + (flowRateResult * 2.75), 440 - (MunicipalLineTotalHead * .6));
-        //         ctx.lineTo(30 + (flowRateResult * 2.75), 440);
-        //         ctx.strokeStyle = "red";
-        //         ctx.lineWidth = 3;
-        //         ctx.stroke();
-        //     };
-        // }
-
         function municipalLinePumpType() {
             const selectedPumpType = document.querySelector('input[name="municipal_line_pump_type"]:checked').value;
-            const imageContainer = document.getElementById('municipal_line_pump_type_images');
             const municipalLineTotalHead = MunicipalLineTotalHeadBoosterPumpResult();
-            imageContainer.innerHTML = '';
-            const images = getImagesForPumpType(selectedPumpType, municipalLineTotalHead);
+            const flowRate = flowRateSelector();
 
-            appendImagesToContainer(images, imageContainer);
+
+            if (selectedPumpType === 'vertical_multi-stage') {
+                const div = document.getElementById('mlsvmc');
+                div.style.display = "inline-block";
+
+
+                if (municipalLineTotalHead <= 300) {
+                    if (flowRate <= 24) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                        Wilo_Helix_V190(municipalLineTotalHead, flowRate, 'frmlv190');
+                        Wilo_Helix_V270(municipalLineTotalHead, flowRate, 'frmlv270');
+                        Wilo_Helix_V10(municipalLineTotalHead, flowRate, 'frmlv10');
+                        Wilo_Helix_V20(municipalLineTotalHead, flowRate, 'frmlv20');
+                        Wilo_Helix_V30(municipalLineTotalHead, flowRate, 'frmlv30');
+                        Wilo_Helix_V50(municipalLineTotalHead, flowRate, 'frmlv50');
+                        Wilo_Helix_V80(municipalLineTotalHead, flowRate, 'frmlv80');
+                    }
+                    else if (flowRate <= 40) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                        Wilo_Helix_V190(municipalLineTotalHead, flowRate, 'frmlv190');
+                        Wilo_Helix_V270(municipalLineTotalHead, flowRate, 'frmlv270');
+                        Wilo_Helix_V20(municipalLineTotalHead, flowRate, 'frmlv20');
+                        Wilo_Helix_V30(municipalLineTotalHead, flowRate, 'frmlv30');
+                        Wilo_Helix_V50(municipalLineTotalHead, flowRate, 'frmlv50');
+                        Wilo_Helix_V80(municipalLineTotalHead, flowRate, 'frmlv80');
+                    }
+                    else if (flowRate <= 60) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                        Wilo_Helix_V190(municipalLineTotalHead, flowRate, 'frmlv190');
+                        Wilo_Helix_V270(municipalLineTotalHead, flowRate, 'frmlv270');
+                        Wilo_Helix_V30(municipalLineTotalHead, flowRate, 'frmlv30');
+                        Wilo_Helix_V50(municipalLineTotalHead, flowRate, 'frmlv50');
+                        Wilo_Helix_V80(municipalLineTotalHead, flowRate, 'frmlv80');
+                    }
+                    else if (flowRate <= 120) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                        Wilo_Helix_V190(municipalLineTotalHead, flowRate, 'frmlv190');
+                        Wilo_Helix_V270(municipalLineTotalHead, flowRate, 'frmlv270');
+                        Wilo_Helix_V50(municipalLineTotalHead, flowRate, 'frmlv50');
+                        Wilo_Helix_V80(municipalLineTotalHead, flowRate, 'frmlv80');
+                    }
+                    else if (flowRate <= 160) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                        Wilo_Helix_V190(municipalLineTotalHead, flowRate, 'frmlv190');
+                        Wilo_Helix_V270(municipalLineTotalHead, flowRate, 'frmlv270');
+                        Wilo_Helix_V80(municipalLineTotalHead, flowRate, 'frmlv80');
+                    }
+                    else if (flowRate <= 240) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                        Wilo_Helix_V190(municipalLineTotalHead, flowRate, 'frmlv190');
+                        Wilo_Helix_V270(municipalLineTotalHead, flowRate, 'frmlv270');
+                    }
+                    else if (flowRate <= 350) {
+                        Wilo_Helix_V190(municipalLineTotalHead, flowRate, 'frmlv190');
+                        Wilo_Helix_V270(municipalLineTotalHead, flowRate, 'frmlv270');
+                    }
+                    else if (flowRate <= 500) {
+                        Wilo_Helix_V270(municipalLineTotalHead, flowRate, 'frmlv270')
+                    }
+                }
+                else if (municipalLineTotalHead <= 400) {
+                    if (flowRate <= 24) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                        Wilo_Helix_V190(municipalLineTotalHead, flowRate, 'frmlv190');
+                        Wilo_Helix_V10(municipalLineTotalHead, flowRate, 'frmlv10');
+                        Wilo_Helix_V20(municipalLineTotalHead, flowRate, 'frmlv20');
+                        Wilo_Helix_V30(municipalLineTotalHead, flowRate, 'frmlv30');
+                        Wilo_Helix_V50(municipalLineTotalHead, flowRate, 'frmlv50');
+                        Wilo_Helix_V80(municipalLineTotalHead, flowRate, 'frmlv80');
+                    }
+                    else if (flowRate <= 40) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                        Wilo_Helix_V190(municipalLineTotalHead, flowRate, 'frmlv190');
+                        Wilo_Helix_V20(municipalLineTotalHead, flowRate, 'frmlv20');
+                        Wilo_Helix_V30(municipalLineTotalHead, flowRate, 'frmlv30');
+                        Wilo_Helix_V50(municipalLineTotalHead, flowRate, 'frmlv50');
+                        Wilo_Helix_V80(municipalLineTotalHead, flowRate, 'frmlv80');
+                    }
+                    else if (flowRate <= 60) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                        Wilo_Helix_V190(municipalLineTotalHead, flowRate, 'frmlv190');
+                        Wilo_Helix_V30(municipalLineTotalHead, flowRate, 'frmlv30');
+                        Wilo_Helix_V50(municipalLineTotalHead, flowRate, 'frmlv50');
+                        Wilo_Helix_V80(municipalLineTotalHead, flowRate, 'frmlv80');
+                    }
+                    else if (flowRate <= 120) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                        Wilo_Helix_V190(municipalLineTotalHead, flowRate, 'frmlv190');
+                        Wilo_Helix_V50(municipalLineTotalHead, flowRate, 'frmlv50');
+                        Wilo_Helix_V80(municipalLineTotalHead, flowRate, 'frmlv80');
+                    }
+                    else if (flowRate <= 160) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                        Wilo_Helix_V190(municipalLineTotalHead, flowRate, 'frmlv190');
+                        Wilo_Helix_V80(municipalLineTotalHead, flowRate, 'frmlv80');
+                    }
+                    else if (flowRate <= 240) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                        Wilo_Helix_V190(municipalLineTotalHead, flowRate, 'frmlv190');
+                    }
+                    else if (flowRate <= 350) {
+                        Wilo_Helix_V190(municipalLineTotalHead, flowRate, 'frmlv190');
+                    }
+                }
+                else if (municipalLineTotalHead <= 600) {
+                    if (flowRate <= 24) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                        Wilo_Helix_V10(municipalLineTotalHead, flowRate, 'frmlv10');
+                        Wilo_Helix_V20(municipalLineTotalHead, flowRate, 'frmlv20');
+                        Wilo_Helix_V30(municipalLineTotalHead, flowRate, 'frmlv30');
+                        Wilo_Helix_V50(municipalLineTotalHead, flowRate, 'frmlv50');
+                    }
+                    else if (flowRate <= 40) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                        Wilo_Helix_V20(municipalLineTotalHead, flowRate, 'frmlv20');
+                        Wilo_Helix_V30(municipalLineTotalHead, flowRate, 'frmlv30');
+                        Wilo_Helix_V50(municipalLineTotalHead, flowRate, 'frmlv50');
+                    }
+                    else if (flowRate <= 60) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                        Wilo_Helix_V30(municipalLineTotalHead, flowRate, 'frmlv30');
+                        Wilo_Helix_V50(municipalLineTotalHead, flowRate, 'frmlv50');
+                    }
+                    else if (flowRate <= 120) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                        Wilo_Helix_V50(municipalLineTotalHead, flowRate, 'frmlv50');
+                    }
+                    else if (flowRate <= 240) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                    }
+                }
+                else if (municipalLineTotalHead <= 700) {
+                    if (flowRate <= 24) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                        Wilo_Helix_V10(municipalLineTotalHead, flowRate, 'frmlv10');
+                        Wilo_Helix_V20(municipalLineTotalHead, flowRate, 'frmlv20');
+                        Wilo_Helix_V30(municipalLineTotalHead, flowRate, 'frmlv30');
+                    }
+                    else if (flowRate <= 40) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                        Wilo_Helix_V20(municipalLineTotalHead, flowRate, 'frmlv20');
+                        Wilo_Helix_V30(municipalLineTotalHead, flowRate, 'frmlv30');
+                    }
+                    else if (flowRate <= 60) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                        Wilo_Helix_V30(municipalLineTotalHead, flowRate, 'frmlv30');
+                    }
+                    else if (flowRate <= 240) {
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                    }
+                }
+                else if (municipalLineTotalHead <= 800) {
+                    if (flowRate <= 24) {
+                        Wilo_Helix_V10(municipalLineTotalHead, flowRate, 'frmlv10');
+                        Wilo_Helix_V20(municipalLineTotalHead, flowRate, 'frmlv20');
+                        Wilo_Helix_V30(municipalLineTotalHead, flowRate, 'frmlv30');
+                    }
+                    else if (flowRate <= 40) {
+                        Wilo_Helix_V20(municipalLineTotalHead, flowRate, 'frmlv20');
+                        Wilo_Helix_V30(municipalLineTotalHead, flowRate, 'frmlv30');
+                    }
+                    else if (flowRate <= 60) {
+                        Wilo_Helix_V30(municipalLineTotalHead, flowRate, 'frmlv30');
+                    }
+                }
+                else if (municipalLineTotalHead <= 900) {
+                    if (flowRate <= 24) {
+                        Wilo_Helix_V10(municipalLineTotalHead, flowRate, 'frmlv10');
+                        Wilo_Helix_V30(municipalLineTotalHead, flowRate, 'frmlv30');
+                    }
+                    else if (flowRate <= 60) {
+                        Wilo_Helix_V30(municipalLineTotalHead, flowRate, 'frmlv30');
+                    }
+                }
+                else {
+
+                }
+            }
+
+            else if (selectedPumpType === 'submersible') {
+                Wilo_SPI_6_50(municipalLineTotalHead, flowRate, 'frml');
+                Wilo_SPI_6_90(municipalLineTotalHead, flowRate, 'frml');
+                Wilo_SPI_6_150(municipalLineTotalHead, flowRate, 'frml');
+            }
 
         }
 
