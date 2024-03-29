@@ -1622,12 +1622,8 @@
 
         function municipalLinePumpType() {
             const selectedPumpType = document.querySelector('input[name="municipal_line_pump_type"]:checked').value;
-            // const municipalLineTotalHead = MunicipalLineTotalHeadBoosterPumpResult();
-            // const flowRate = flowRateSelector();
-
-            const municipalLineTotalHead = 1000;
-            const flowRate = 240;
-
+            const municipalLineTotalHead = MunicipalLineTotalHeadBoosterPumpResult();
+            const flowRate = flowRateSelector();
 
             if (municipalLineTotalHead && flowRate) {
                 document.getElementById('mlvme').innerHTML = '';
@@ -1785,7 +1781,6 @@
         }
 
 
-        // Submersible
 
         function Wilo_TWI_4_05(totalHead, flowRate, canvasID) {
             const canvas = document.getElementById(canvasID);
