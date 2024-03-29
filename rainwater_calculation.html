@@ -14,16 +14,21 @@
 
         #flow_rate {
             padding-bottom: 20px;
+            background-color: #033C59;
 
         }
 
         #day_tank {
             padding-bottom: 20px;
+            background-color: #FFBA41;
+
 
         }
 
         #municipal_line {
             padding-bottom: 20px;
+            background-color: #033C59;
+
 
         }
 
@@ -40,19 +45,31 @@
         }
 
         .rw_container_div {
-            flex-basis: 48%;
+            flex-basis: 47%;
             background-color: #c0c0c0;
             border-radius: 8px;
-            padding: 20px;
+            padding: 0px 20px;
+            margin: 10px 0px;
         }
 
         h2 {
             text-align: center;
-            color: #333;
+            color: #FFBA41;
+        }
+
+        #flow_rate_h2,
+        #municipal_line_h2 {
+            text-align: center;
+            color: #FFBA41;
+        }
+
+        #day_tank_h2 {
+            text-align: center;
+            color: #033C59;
         }
 
         h3 {
-            color: #666;
+            color: #033C59;
         }
 
         .rainwater_div {
@@ -92,14 +109,15 @@
             font-size: medium;
             padding: 10px 20px;
             border: none;
-            background-color: #225050;
-            color: white;
+            background-color: #033C59;
+            color: #FFBA41;
             border-radius: 5px;
             cursor: pointer;
         }
 
         button:hover {
-            background-color: #B2B788;
+            background-color: #FFBA41;
+            color: #033C59;
         }
 
         p {
@@ -129,19 +147,38 @@
             text-align: center;
         }
 
-        .cfrmlv190 {
+        .pumpResult {
             display: none;
         }
 
-        .cfrmlv110 {
+        #day_tank_pump_type_images,
+        #municipal_line_pump_type_images {
+            text-align: center;
+        }
+
+        #day_tank_pump_type_images img,
+        #municipal_line_pump_type_images img {
+            display: inline-block;
+        }
+
+
+        .cfrml {
             display: none;
         }
 
-        .cfrdtv190 {
+        .cfrdt {
             display: none;
         }
 
-        .cfrdtv110 {
+        #mlsvmc,
+        #mlsc {
+            display: none;
+        }
+
+
+
+        #dtsvmc,
+        #dtsc {
             display: none;
         }
 
@@ -161,7 +198,13 @@
         }
 
         .delete_btn {
-            background-color: #c38e58;
+            background-color: #FFBA41;
+            color: #033C59;
+        }
+
+        .delete_btn:hover {
+            background-color: #033C59;
+            color: #FFBA41;
         }
 
         .small_text {
@@ -186,9 +229,9 @@
 
 <body>
 
-    <div id="flow_rate">
-        <div class="rainwater_div">
-            <h2>Flow Rate Calculator</h2>
+    <div>
+        <div class="rainwater_div" id="flow_rate">
+            <h2 id="flow_rate_h2">Flow Rate Calculator</h2>
             <div class="rw_container">
                 <div class="rw_container_div">
                     <form id="addFixturesForm" onsubmit="addFixtures()">
@@ -262,15 +305,35 @@
                     <p id="irrigationFlowRateError" class="required_message"></p>
 
                     <button onclick="calculateTotalPumpFlow()">Calculate Total Pump Flow Rate</button>
-                    <h3 id="pumpResult"></h3>
+
+                    <h3>
+                        <div class="pumpResult">
+                            <input type="radio" id="flow_rate_simplex" name="flow_rate_sdt" value="flow_rate_simplex"
+                                checked="checked">
+                            <label for="flow_rate_simplex">Simplex: &nbsp;<span id="pumpResultSimplex"></span>&nbsp;
+                                GPM</label>
+                        </div>
+                        <div class="pumpResult">
+                            <input type="radio" id="flow_rate_duplex" name="flow_rate_sdt" value="flow_rate_duplex">
+                            <label for="flow_rate_duplex">Duplex: &nbsp;<span id="pumpResultDuplex"></span>&nbsp;
+                                GPM</label>
+                        </div>
+                        <div class="pumpResult">
+                            <input type="radio" id="flow_rate_triplex" name="flow_rate_sdt" value="flow_rate_triplex">
+                            <label for="flow_rate_triplex">Triplex: &nbsp;<span id="pumpResultTriplex"></span>&nbsp;
+                                GPM</label>
+                        </div>
+                    </h3>
+
+
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="day_tank">
-        <div class="rainwater_div">
-            <h2>Day Tank Calculation</h2>
+    <div>
+        <div class="rainwater_div" id="day_tank">
+            <h2 id="day_tank_h2">Day Tank Calculation</h2>
             <div class="helping_canvas">
                 <canvas id="day_tank_helping_canvas" width="500" height="500"></canvas>
             </div>
@@ -343,45 +406,83 @@
                 </div>
             </div>
         </div>
-        <div class="rainwater_div">
-
-            <canvas id="frdtv190" class="cfrdtv190" width="720" height="460"></canvas>
-            <br>
-            <button onclick="flowRateDayTankChartV190()">Flow Rate | Day Tank Chart V190</button>
-
-            <div></div>
-
-            <canvas id="frdtv110" class="cfrdtv110" width="720" height="460"></canvas>
-            <br>
-            <button onclick="flowRateDayTankChartV110()">Flow Rate | Day Tank Chart V110</button>
-
-        </div>
         <div class="rw_container">
 
             <div class="rainwater_div">
                 <h3>Pump Type</h3>
 
                 <p>Please select pump type:</p>
-                <input type="radio" id="vertical_multi-stage" name="day_tank_pump_type" value="vertical_multi-stage"
+                <input type="radio" id="dt_vertical_multi-stage" name="day_tank_pump_type" value="vertical_multi-stage"
                     checked="checked">
-                <label for="vertical_multi-stage">Vertical Multi-Stage Pump</label>
-                <input type="radio" id="submersible" name="day_tank_pump_type" value="submersible">
-                <label for="submersible">Submersible Pump</label>
-                <input type="radio" id="self-priming" name="day_tank_pump_type" value="self-priming">
-                <label for="self-priming">Self-Priming Pump</label>
+                <label for="dt_vertical_multi-stage">Vertical Multi-Stage Pump</label>
+                <input type="radio" id="dt_submersible" name="day_tank_pump_type" value="submersible">
+                <label for="dt_submersible">Submersible Pump</label>
                 <br><br>
                 <button onclick="dayTankPumpType()">Day Tank Pump Type</button>
             </div>
+        </div>
+        <br>
+        <div id="day_tank_pump_type_images">
+            <div id="dtsvmc">
+                <h3 id="dtvme" class="required_message"></h3>
 
-            <div id="day_tank_pump_type_images">
+                <img src="https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo-Helix_V_110-270.jpg"
+                    alt="simple vertical multistage V110 to V270">
+                <br><canvas id="frdtv110" class="cfrdt" width="720" height="460"></canvas>
+                <br><canvas id="frdtv190" class="cfrdt" width="720" height="460"></canvas>
+                <br><canvas id="frdtv270" class="cfrdt" width="720" height="460"></canvas>
+                <br><img src="https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo-Helix_V_10-80.jpg"
+                    alt="simple vertical multistage V10 to V80">
+                <br><canvas id="frdtv10" class="cfrdt" width="1080" height="680"></canvas>
+                <br><canvas id="frdtv20" class="cfrdt" width="1080" height="680"></canvas>
+                <br><canvas id="frdtv30" class="cfrdt" width="1080" height="680"></canvas>
+                <br><canvas id="frdtv50" class="cfrdt" width="1080" height="680"></canvas>
+                <br><canvas id="frdtv80" class="cfrdt" width="1080" height="680"></canvas>
             </div>
 
+            <div id="dtsc">
+                <h3 id="dtse" class="required_message"></h3>
+
+                <img src="https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_TWI_4.jpg"
+                    alt="submersible Wilo TWI 4">
+                <br><canvas id="frdttwi4-05" class="cfrdt" width="720" height="980"></canvas>
+                <br><canvas id="frdttwi4-07" class="cfrdt" width="720" height="980"></canvas>
+                <br><canvas id="frdttwi4-10" class="cfrdt" width="720" height="980"></canvas>
+                <br><canvas id="frdttwi4-18" class="cfrdt" width="720" height="980"></canvas>
+                <br><canvas id="frdttwi4-25" class="cfrdt" width="720" height="980"></canvas>
+                <br><canvas id="frdttwi4-40" class="cfrdt" width="720" height="980"></canvas>
+                <br><canvas id="frdttwi4-70" class="cfrdt" width="720" height="980"></canvas>
+                <br><img src="https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_6_7_8_10.jpg"
+                    alt="submersible Wilo SPI 4-6-8-10">
+                <br><canvas id="frdtspi650s1" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi650s2" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi650s3" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi690s1" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi690s2" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi690s3" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi6150s1" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi6150s2" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi6180s1" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi6180s2" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi6230s1" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi6230s2" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi6300s1" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi6300s2" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi7400s1" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi7500s1" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi7550s1" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi8550s1" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi8650s1" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi8800s1" class="cfrdt" width="1080" height="990"></canvas>
+                <br><canvas id="frdtspi101200s1" class="cfrdt" width="1080" height="990"></canvas>
+            </div>
         </div>
+
     </div>
 
-    <div id="municipal_line">
-        <div class="rainwater_div">
-            <h2>Municipal Line Calculation</h2>
+    <div>
+        <div class="rainwater_div" id="municipal_line">
+            <h2 id="municipal_line_h2">Municipal Line Calculation</h2>
             <div class="helping_canvas">
                 <canvas id="municipal_line_helping_canvas" width="500" height="500"></canvas>
             </div>
@@ -462,19 +563,6 @@
                 </div>
             </div>
         </div>
-        <div class="rainwater_div">
-
-            <canvas id="frmlv190" class="cfrmlv190" width="720" height="460"></canvas>
-            <br>
-            <button onclick="flowRateMunicipalLineChartV190()">Flow Rate | Municipal Line Chart V190</button>
-
-            <div></div>
-
-            <canvas id="frmlv110" class="cfrmlv110" width="720" height="460"></canvas>
-            <br>
-            <button onclick="flowRateMunicipalLineChartV110()">Flow Rate | Municipal Line Chart V110</button>
-
-        </div>
 
         <div class="rw_container">
 
@@ -482,20 +570,68 @@
                 <h3>Pump Type</h3>
 
                 <p>Please select pump type:</p>
-                <input type="radio" id="vertical_multi-stage" name="municipal_line_pump_type"
+                <input type="radio" id="ml_vertical_multi-stage" name="municipal_line_pump_type"
                     value="vertical_multi-stage" checked="checked">
-                <label for="vertical_multi-stage">Vertical Multi-Stage Pump</label>
-                <input type="radio" id="submersible" name="municipal_line_pump_type" value="submersible">
-                <label for="submersible">Submersible Pump</label>
-                <input type="radio" id="self-priming" name="municipal_line_pump_type" value="self-priming">
-                <label for="self-priming">Self-Priming Pump</label>
+                <label for="ml_vertical_multi-stage">Vertical Multi-Stage Pump</label>
+                <input type="radio" id="ml_submersible" name="municipal_line_pump_type" value="submersible">
+                <label for="ml_submersible">Submersible Pump</label>
                 <br><br>
                 <button onclick="municipalLinePumpType()">Municipal Line Pump Type</button>
             </div>
+        </div>
+        <br>
+        <div id="municipal_line_pump_type_images">
+            <div id="mlsvmc">
+                <h3 id="mlvme" class="required_message"></h3>
 
-            <div id="municipal_line_pump_type_images">
+                <img src="https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo-Helix_V_110-270.jpg"
+                    alt="simple vertical multistage V110 to V270">
+                <br><canvas id="frmlv110" class="cfrml" width="720" height="460"></canvas>
+                <br><canvas id="frmlv190" class="cfrml" width="720" height="460"></canvas>
+                <br><canvas id="frmlv270" class="cfrml" width="720" height="460"></canvas>
+                <br><img src="https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo-Helix_V_10-80.jpg"
+                    alt="simple vertical multistage V10 to V80">
+                <br><canvas id="frmlv10" class="cfrml" width="1080" height="680"></canvas>
+                <br><canvas id="frmlv20" class="cfrml" width="1080" height="680"></canvas>
+                <br><canvas id="frmlv30" class="cfrml" width="1080" height="680"></canvas>
+                <br><canvas id="frmlv50" class="cfrml" width="1080" height="680"></canvas>
+                <br><canvas id="frmlv80" class="cfrml" width="1080" height="680"></canvas>
             </div>
-
+            <div id="mlsc">
+                <h3 id="mlse" class="required_message"></h3>
+                <img src="https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_TWI_4.jpg"
+                    alt="submersible Wilo TWI 4">
+                <br><canvas id="frmltwi4-05" class="cfrml" width="720" height="980"></canvas>
+                <br><canvas id="frmltwi4-07" class="cfrml" width="720" height="980"></canvas>
+                <br><canvas id="frmltwi4-10" class="cfrml" width="720" height="980"></canvas>
+                <br><canvas id="frmltwi4-18" class="cfrml" width="720" height="980"></canvas>
+                <br><canvas id="frmltwi4-25" class="cfrml" width="720" height="980"></canvas>
+                <br><canvas id="frmltwi4-40" class="cfrml" width="720" height="980"></canvas>
+                <br><canvas id="frmltwi4-70" class="cfrml" width="720" height="980"></canvas>
+                <br><img src="https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_6_7_8_10.jpg"
+                    alt="submersible Wilo SPI 4-6-8-10">
+                <br><canvas id="frmlspi650s1" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi650s2" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi650s3" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi690s1" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi690s2" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi690s3" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi6150s1" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi6150s2" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi6180s1" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi6180s2" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi6230s1" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi6230s2" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi6300s1" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi6300s2" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi7400s1" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi7500s1" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi7550s1" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi8550s1" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi8650s1" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi8800s1" class="cfrml" width="1080" height="990"></canvas>
+                <br><canvas id="frmlspi101200s1" class="cfrml" width="1080" height="990"></canvas>
+            </div>
         </div>
 
     </div>
@@ -925,12 +1061,21 @@
             if (isNaN(totalIrrigationFlowRate) || fixtureGPM == 0.00) {
                 return;
             }
-            const simplexFlow = totalIrrigationFlowRate + fixtureGPM;
-            const duplexFlow = simplexFlow * 0.70;
-            const triplexFlow = simplexFlow * 0.35;
 
-            document.getElementById('pumpResult').innerHTML = `Simplex: ${simplexFlow.toFixed(2)} GPM<br>Duplex: ${duplexFlow.toFixed(2)} GPM<br>Triplex: ${triplexFlow.toFixed(2)} GPM`;
-            return simplexFlow.toFixed(0);
+            var pumpResults = document.querySelectorAll('.pumpResult');
+            pumpResults.forEach(function (element) {
+                element.style.display = 'block';
+            });
+
+            const simplexFlow = totalIrrigationFlowRate + fixtureGPM;
+            const duplexFlow = simplexFlow * (1.5 / 2);
+            const triplexFlow = simplexFlow / 3;
+
+            document.getElementById('pumpResultSimplex').innerHTML = simplexFlow.toFixed(2);
+            document.getElementById('pumpResultDuplex').innerHTML = duplexFlow.toFixed(2);
+            document.getElementById('pumpResultTriplex').innerHTML = triplexFlow.toFixed(2);
+
+
 
         }
 
@@ -1125,82 +1270,209 @@
 
             ctx.stroke();
         }
-
         dayTankHelpingCanvas();
 
-        function flowRateDayTankChartV190() {
-            const canvas = document.getElementById("frdtv190");
-            canvas.classList.remove("cfrdtv190");
+        function flowRateSelector() {
+            calculateTotalPumpFlow();
+            var selectedFlowRate = document.querySelector('input[name="flow_rate_sdt"]:checked').value;
+            if (selectedFlowRate == 'flow_rate_simplex') {
+                return document.getElementById('pumpResultSimplex').innerText
+            } else if (selectedFlowRate == 'flow_rate_duplex') {
+                return document.getElementById('pumpResultDuplex').innerText
+            } else if (selectedFlowRate == 'flow_rate_triplex') {
+                return document.getElementById('pumpResultTriplex').innerText
+            } else {
+                return document.getElementById('pumpResultSimplex').innerText
+            }
 
-            const ctx = canvas.getContext("2d");
 
-            const chartImage = new Image();
-            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V190.png";
-
-            const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
-            const flowRateResult = calculateTotalPumpFlow();
-            chartImage.onload = function () {
-                ctx.drawImage(chartImage, 0, 0);
-
-                ctx.beginPath();
-                ctx.moveTo(30, 440 - (daytankTotalHead * 1.04));
-                ctx.lineTo(30 + (flowRateResult * 1.88), 440 - (daytankTotalHead * 1.04));
-                ctx.moveTo(30 + (flowRateResult * 1.88), 440 - (daytankTotalHead * 1.04));
-                ctx.lineTo(30 + (flowRateResult * 1.88), 440);
-                ctx.strokeStyle = "red";
-                ctx.lineWidth = 3;
-                ctx.stroke();
-            };
-        }
-
-        function flowRateDayTankChartV110() {
-            const canvas = document.getElementById("frdtv110");
-            canvas.classList.remove("cfrdtv110");
-
-            const ctx = canvas.getContext("2d");
-
-            const chartImage = new Image();
-            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V110.png";
-
-            const dayTankTotalHead = DayTankTotalHeadBoosterPumpResult();
-            const flowRateResult = calculateTotalPumpFlow();
-            chartImage.onload = function () {
-                ctx.drawImage(chartImage, 0, 0);
-
-                ctx.beginPath();
-                ctx.moveTo(30, 440 - (dayTankTotalHead * .6));
-                ctx.lineTo(30 + (flowRateResult * 2.75), 440 - (dayTankTotalHead * .6));
-                ctx.moveTo(30 + (flowRateResult * 2.75), 440 - (dayTankTotalHead * .6));
-                ctx.lineTo(30 + (flowRateResult * 2.75), 440);
-                ctx.strokeStyle = "red";
-                ctx.lineWidth = 3;
-                ctx.stroke();
-            };
         }
 
         function dayTankPumpType() {
-            var selectedPumpType = document.querySelector('input[name="day_tank_pump_type"]:checked').value;
-            var imageContainer = document.getElementById('day_tank_pump_type_images');
-            imageContainer.innerHTML = '';
+            const selectedPumpType = document.querySelector('input[name="day_tank_pump_type"]:checked').value;
+            const daytankTotalHead = DayTankTotalHeadBoosterPumpResult();
+            const flowRate = flowRateSelector();
 
-            var images = [];
+            document.getElementById('dtvme').innerHTML = '';
+            document.getElementById('dtse').innerHTML = '';
 
-            // Add image paths based on selected pump type
-            if (selectedPumpType === 'vertical_multi-stage') {
-                images = ['path/to/image1.jpg', 'path/to/image2.jpg'];
-            } else if (selectedPumpType === 'submersible') {
-                images = ['path/to/image3.jpg', 'path/to/image4.jpg'];
-            } else if (selectedPumpType === 'self-priming') {
-                images = ['path/to/image5.jpg', 'path/to/image6.jpg'];
+            if (daytankTotalHead && flowRate) {
+                if (selectedPumpType === 'vertical_multi-stage') {
+                    const divsc = document.getElementById('dtsc');
+                    divsc.style.display = "none";
+                    document.querySelectorAll('#dtsvmc canvas').forEach(function (canvas) {
+                        canvas.style.display = 'none';
+                    });
+                    const divsvmc = document.getElementById('dtsvmc');
+                    divsvmc.style.display = "inline-block";
+
+                    let noPlotVerticalDT = false;
+                    if ((flowRate > 0 && flowRate < 200) && (daytankTotalHead > 0 && daytankTotalHead < 600)) {
+                        noPlotVerticalDT = true;
+                        Wilo_Helix_V110(daytankTotalHead, flowRate, 'frdtv110');
+                    }
+                    if ((flowRate > 0 && flowRate < 300) && (daytankTotalHead > 0 && daytankTotalHead < 400)) {
+                        noPlotVerticalDT = true;
+                        Wilo_Helix_V190(daytankTotalHead, flowRate, 'frdtv190');
+                    }
+                    if ((flowRate > 0 && flowRate < 425) && (daytankTotalHead > 0 && daytankTotalHead < 300)) {
+                        noPlotVerticalDT = true;
+                        Wilo_Helix_V270(daytankTotalHead, flowRate, 'frdtv270');
+                    }
+                    if ((flowRate > 0 && flowRate < 25) && (daytankTotalHead > 0 && daytankTotalHead < 800)) {
+                        noPlotVerticalDT = true;
+                        Wilo_Helix_V10(daytankTotalHead, flowRate, 'frdtv10');
+                    }
+                    if ((flowRate > 0 && flowRate < 40) && (daytankTotalHead > 0 && daytankTotalHead < 700)) {
+                        noPlotVerticalDT = true;
+                        Wilo_Helix_V20(daytankTotalHead, flowRate, 'frdtv20');
+                    }
+                    if ((flowRate > 0 && flowRate < 60) && (daytankTotalHead > 0 && daytankTotalHead < 800)) {
+                        noPlotVerticalDT = true;
+                        Wilo_Helix_V30(daytankTotalHead, flowRate, 'frdtv30');
+                    }
+                    if ((flowRate > 0 && flowRate < 100) && (daytankTotalHead > 0 && daytankTotalHead < 600)) {
+                        noPlotVerticalDT = true;
+                        Wilo_Helix_V50(daytankTotalHead, flowRate, 'frdtv50');
+                    }
+                    if ((flowRate > 0 && flowRate < 140) && (daytankTotalHead > 0 && daytankTotalHead < 400)) {
+                        noPlotVerticalDT = true;
+                        Wilo_Helix_V80(daytankTotalHead, flowRate, 'frdtv80');
+
+                    }
+                    if (!noPlotVerticalDT) {
+                        document.getElementById('dtvme').innerHTML = "There are no models that match the criteria you selected (Municipal Line Total Head is Out of Bound).Try changing some values and click on Municipal Line Pump Type Button to try again.";
+                    }
+                }
+
+                else if (selectedPumpType === 'submersible') {
+                    const divsvmc = document.getElementById('dtsvmc');
+                    divsvmc.style.display = "none";
+                    document.querySelectorAll('#dtsc canvas').forEach(function (canvas) {
+                        canvas.style.display = 'none';
+                    });
+                    const divsc = document.getElementById('dtsc');
+                    divsc.style.display = "inline-block";
+
+                    let noPlotSubmersibleDT = false;
+
+                    if ((flowRate > 0 && flowRate <= 8) && (daytankTotalHead > 100 && daytankTotalHead < 851)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_TWI_4_05(daytankTotalHead, flowRate, 'frdttwi4-05');
+                    }
+                    if ((flowRate > 0 && flowRate <= 10) && (daytankTotalHead > 80 && daytankTotalHead < 870)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_TWI_4_07(daytankTotalHead, flowRate, 'frdttwi4-07');
+                    }
+                    if ((flowRate > 0 && flowRate <= 16) && (daytankTotalHead > 150 && daytankTotalHead < 1700)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_TWI_4_10(daytankTotalHead, flowRate, 'frdttwi4-10');
+                    }
+                    if ((flowRate > 0 && flowRate <= 26) && (daytankTotalHead > 0 && daytankTotalHead <= 2200)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_TWI_4_18(daytankTotalHead, flowRate, 'frdttwi4-18');
+                    }
+                    if ((flowRate > 0 && flowRate <= 40) && (daytankTotalHead > 0 && daytankTotalHead < 1450)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_TWI_4_25(daytankTotalHead, flowRate, 'frdttwi4-25');
+                    }
+                    if ((flowRate > 0 && flowRate < 70) && (daytankTotalHead > 0 && daytankTotalHead < 1800)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_TWI_4_40(daytankTotalHead, flowRate, 'frdttwi4-40');
+                    }
+                    if ((flowRate > 0 && flowRate < 120) && (daytankTotalHead > 0 && daytankTotalHead < 501)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_TWI_4_70(daytankTotalHead, flowRate, 'frdttwi4-70');
+                    }
+                    if ((flowRate > 0 && flowRate < 100) && (daytankTotalHead > 0 && daytankTotalHead < 800)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_6_50_S_1_17(daytankTotalHead, flowRate, 'frdtspi650s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 100) && (daytankTotalHead > 300 && daytankTotalHead < 1551)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_6_50_S_18_34(daytankTotalHead, flowRate, 'frdtspi650s2');
+                    }
+                    if ((flowRate > 0 && flowRate < 100) && (daytankTotalHead > 600 && daytankTotalHead < 2451)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_6_50_S_35_55(daytankTotalHead, flowRate, 'frdtspi650s3');
+                    }
+                    if ((flowRate > 0 && flowRate < 126) && (daytankTotalHead > 0 && daytankTotalHead < 851)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_6_90_S_1_15(daytankTotalHead, flowRate, 'frdtspi690s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 126) && (daytankTotalHead > 300 && daytankTotalHead < 1750)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_6_90_S_16_31(daytankTotalHead, flowRate, 'frdtspi690s2');
+                    }
+                    if ((flowRate > 0 && flowRate < 126) && (daytankTotalHead > 700 && daytankTotalHead < 2800)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_6_90_S_32_50(daytankTotalHead, flowRate, 'frdtspi690s3');
+                    }
+                    if ((flowRate > 0 && flowRate < 225) && (daytankTotalHead > 0 && daytankTotalHead < 1000)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_6_150_S_1_17(daytankTotalHead, flowRate, 'frdtspi6150s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 225) && (daytankTotalHead > 260 && daytankTotalHead < 2225)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_6_150_S_18_39(daytankTotalHead, flowRate, 'frdtspi6150s2');
+                    }
+                    if ((flowRate > 0 && flowRate < 301) && (daytankTotalHead > 0 && daytankTotalHead < 1050)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_6_180_S_1_15(daytankTotalHead, flowRate, 'frdtspi6180s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 301) && (daytankTotalHead > 400 && daytankTotalHead < 1750)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_6_180_S_16_26(daytankTotalHead, flowRate, 'frdtspi6180s2');
+                    }
+                    if ((flowRate > 0 && flowRate < 351) && (daytankTotalHead > 0 && daytankTotalHead < 800)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_6_230_S_1_11(daytankTotalHead, flowRate, 'frdtspi6230s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 351) && (daytankTotalHead > 300 && daytankTotalHead < 1750)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_6_230_S_12_24(daytankTotalHead, flowRate, 'frdtspi6230s2');
+                    }
+                    if ((flowRate > 0 && flowRate < 450) && (daytankTotalHead > 0 && daytankTotalHead < 776)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_6_300_S_1_11(daytankTotalHead, flowRate, 'frdtspi6300s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 450) && (daytankTotalHead > 200 && daytankTotalHead < 1400)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_6_300_S_12_21(daytankTotalHead, flowRate, 'frdtspi6300s2');
+                    }
+                    if ((flowRate > 0 && flowRate < 580) && (daytankTotalHead > 0 && daytankTotalHead < 1351)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_7_400(daytankTotalHead, flowRate, 'frdtspi7400s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 625) && (daytankTotalHead > 0 && daytankTotalHead < 1300)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_7_500(daytankTotalHead, flowRate, 'frdtspi7500s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 690) && (daytankTotalHead > 0 && daytankTotalHead < 1150)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_7_550(daytankTotalHead, flowRate, 'frdtspi7550s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 751) && (daytankTotalHead > 0 && daytankTotalHead < 1900)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_8_550(daytankTotalHead, flowRate, 'frdtspi8550s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 1000) && (daytankTotalHead > 0 && daytankTotalHead < 1701)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_8_650(daytankTotalHead, flowRate, 'frdtspi8650s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 1101) && (daytankTotalHead > 0 && daytankTotalHead < 1301)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_8_800(daytankTotalHead, flowRate, 'frdtspi8800s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 1600) && (daytankTotalHead > 0 && daytankTotalHead < 1125)) {
+                        noPlotSubmersibleDT = true;
+                        Wilo_SPI_10_1200(daytankTotalHead, flowRate, 'frdtspi101200s1');
+                    }
+                    if (!noPlotSubmersibleDT) {
+                        document.getElementById('dtse').innerHTML = "There are no models that match the criteria you selected.Try changing some values and click on Municipal Line Pump Type Button to try again.";
+                    }
+                }
             }
-
-            // Create and append image elements to the container
-            images.forEach(function (imagePath) {
-                var imageElement = document.createElement('img');
-                imageElement.src = imagePath;
-                imageElement.alt = 'Pump Image';
-                imageContainer.appendChild(imageElement);
-            });
         }
 
         function MunicipalLineDischargeLossesFittings() {
@@ -1396,81 +1668,1109 @@
         }
         municipalLineHelpingCanvas();
 
-        function flowRateMunicipalLineChartV190() {
-            const canvas = document.getElementById("frmlv190");
-            canvas.classList.remove("cfrmlv190");
-
-            const ctx = canvas.getContext("2d");
-
-            const chartImage = new Image();
-            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V190.png";
-
-            const municipalLineTotalHead = MunicipalLineTotalHeadBoosterPumpResult();
-            const flowRateResult = calculateTotalPumpFlow();
-            chartImage.onload = function () {
-                ctx.drawImage(chartImage, 0, 0);
-
-                ctx.beginPath();
-                ctx.moveTo(30, 440 - (municipalLineTotalHead * 1.04));
-                ctx.lineTo(30 + (flowRateResult * 1.88), 440 - (municipalLineTotalHead * 1.04));
-                ctx.moveTo(30 + (flowRateResult * 1.88), 440 - (municipalLineTotalHead * 1.04));
-                ctx.lineTo(30 + (flowRateResult * 1.88), 440);
-                ctx.strokeStyle = "red";
-                ctx.lineWidth = 3;
-                ctx.stroke();
-            };
-        }
-
-        function flowRateMunicipalLineChartV110() {
-            const canvas = document.getElementById("frmlv110");
-            canvas.classList.remove("cfrmlv110");
-
-            const ctx = canvas.getContext("2d");
-
-            const chartImage = new Image();
-            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2023/12/V110.png";
-
-            const MunicipalLineTotalHead = MunicipalLineTotalHeadBoosterPumpResult();
-            const flowRateResult = calculateTotalPumpFlow();
-            chartImage.onload = function () {
-                ctx.drawImage(chartImage, 0, 0);
-
-                ctx.beginPath();
-                ctx.moveTo(30, 440 - (MunicipalLineTotalHead * .6));
-                ctx.lineTo(30 + (flowRateResult * 2.75), 440 - (MunicipalLineTotalHead * .6));
-                ctx.moveTo(30 + (flowRateResult * 2.75), 440 - (MunicipalLineTotalHead * .6));
-                ctx.lineTo(30 + (flowRateResult * 2.75), 440);
-                ctx.strokeStyle = "red";
-                ctx.lineWidth = 3;
-                ctx.stroke();
-            };
-        }
-
         function municipalLinePumpType() {
-            var selectedPumpType = document.querySelector('input[name="municipal_line_pump_type"]:checked').value;
-            var imageContainer = document.getElementById('municipal_line_pump_type_images');
-            imageContainer.innerHTML = '';
+            const selectedPumpType = document.querySelector('input[name="municipal_line_pump_type"]:checked').value;
+            // const municipalLineTotalHead = MunicipalLineTotalHeadBoosterPumpResult();
+            // const flowRate = flowRateSelector();
 
-            var images = [];
+            const municipalLineTotalHead = 1000;
+            const flowRate = 240;
 
-            // Add image paths based on selected pump type
-            if (selectedPumpType === 'vertical_multi-stage') {
-                images = ['path/to/image1.jpg', 'path/to/image2.jpg'];
-            } else if (selectedPumpType === 'submersible') {
-                images = ['path/to/image3.jpg', 'path/to/image4.jpg'];
-            } else if (selectedPumpType === 'self-priming') {
-                images = ['path/to/image5.jpg', 'path/to/image6.jpg'];
+
+            if (municipalLineTotalHead && flowRate) {
+                document.getElementById('mlvme').innerHTML = '';
+                document.getElementById('mlse').innerHTML = '';
+
+
+                if (selectedPumpType === 'vertical_multi-stage') {
+                    const divsc = document.getElementById('mlsc');
+                    divsc.style.display = "none";
+                    document.querySelectorAll('#mlsvmc canvas').forEach(function (canvas) {
+                        canvas.style.display = 'none';
+                    });
+                    const divsvmc = document.getElementById('mlsvmc');
+                    divsvmc.style.display = "inline-block";
+
+                    let noPlotVerticalML = false;
+                   
+                    if ((flowRate > 0 && flowRate < 200) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 600)) {
+                        noPlotVerticalML = true;
+                        Wilo_Helix_V110(municipalLineTotalHead, flowRate, 'frmlv110');
+                    }
+                    if ((flowRate > 0 && flowRate < 300) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 400)) {
+                        noPlotVerticalML = true;
+                        Wilo_Helix_V190(municipalLineTotalHead, flowRate, 'frmlv190');
+                    }
+                    if ((flowRate > 0 && flowRate < 425) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 300)) {
+                        noPlotVerticalML = true;
+                        Wilo_Helix_V270(municipalLineTotalHead, flowRate, 'frmlv270');
+                    }
+                    if ((flowRate > 0 && flowRate < 25) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 800)) {
+                        noPlotVerticalML = true;
+                        Wilo_Helix_V10(municipalLineTotalHead, flowRate, 'frmlv10');
+                    }
+                    if ((flowRate > 0 && flowRate < 40) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 700)) {
+                        noPlotVerticalML = true;
+                        Wilo_Helix_V20(municipalLineTotalHead, flowRate, 'frmlv20');
+                    }
+                    if ((flowRate > 0 && flowRate < 60) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 800)) {
+                        noPlotVerticalML = true;
+                        Wilo_Helix_V30(municipalLineTotalHead, flowRate, 'frmlv30');
+                    }
+                    if ((flowRate > 0 && flowRate < 100) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 600)) {
+                        noPlotVerticalML = true;
+                        Wilo_Helix_V50(municipalLineTotalHead, flowRate, 'frmlv50');
+                    }
+                    if ((flowRate > 0 && flowRate < 140) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 400)) {
+                        noPlotVerticalML = true;
+                        Wilo_Helix_V80(municipalLineTotalHead, flowRate, 'frmlv80');
+
+                    }
+                    if (!noPlotVerticalML) {
+                        document.getElementById('mlvme').innerHTML = "There are no models that match the criteria you selected.Try changing some values and click on Municipal Line Pump Type Button to try again.";
+                    }
+                }
+
+                else if (selectedPumpType === 'submersible') {
+                    const divsvmc = document.getElementById('mlsvmc');
+                    divsvmc.style.display = "none";
+                    document.querySelectorAll('#mlsc canvas').forEach(function (canvas) {
+                        canvas.style.display = 'none';
+                    });
+
+                    const divsc = document.getElementById('mlsc');
+                    divsc.style.display = "inline-block";
+
+                    let noPlotSubmersibleML = false;
+
+                    if ((flowRate > 0 && flowRate <= 8) && (municipalLineTotalHead > 100 && municipalLineTotalHead < 851)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_TWI_4_05(municipalLineTotalHead, flowRate, 'frmltwi4-05');
+                    }
+                    if ((flowRate > 0 && flowRate <= 10) && (municipalLineTotalHead > 80 && municipalLineTotalHead < 870)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_TWI_4_07(municipalLineTotalHead, flowRate, 'frmltwi4-07');
+                    }
+                    if ((flowRate > 0 && flowRate <= 16) && (municipalLineTotalHead > 150 && municipalLineTotalHead < 1700)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_TWI_4_10(municipalLineTotalHead, flowRate, 'frmltwi4-10');
+                    }
+                    if ((flowRate > 0 && flowRate <= 26) && (municipalLineTotalHead > 0 && municipalLineTotalHead <= 2200)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_TWI_4_18(municipalLineTotalHead, flowRate, 'frmltwi4-18');
+                    }
+                    if ((flowRate > 0 && flowRate <= 40) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 1450)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_TWI_4_25(municipalLineTotalHead, flowRate, 'frmltwi4-25');
+                    }
+                    if ((flowRate > 0 && flowRate < 70) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 1800)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_TWI_4_40(municipalLineTotalHead, flowRate, 'frmltwi4-40');
+                    }
+                    if ((flowRate > 0 && flowRate < 120) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 501)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_TWI_4_70(municipalLineTotalHead, flowRate, 'frmltwi4-70');
+                    }
+                    if ((flowRate > 0 && flowRate < 100) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 800)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_6_50_S_1_17(municipalLineTotalHead, flowRate, 'frmlspi650s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 100) && (municipalLineTotalHead > 300 && municipalLineTotalHead < 1551)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_6_50_S_18_34(municipalLineTotalHead, flowRate, 'frmlspi650s2');
+                    }
+                    if ((flowRate > 0 && flowRate < 100) && (municipalLineTotalHead > 600 && municipalLineTotalHead < 2451)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_6_50_S_35_55(municipalLineTotalHead, flowRate, 'frmlspi650s3');
+                    }
+                    if ((flowRate > 0 && flowRate < 126) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 851)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_6_90_S_1_15(municipalLineTotalHead, flowRate, 'frmlspi690s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 126) && (municipalLineTotalHead > 300 && municipalLineTotalHead < 1750)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_6_90_S_16_31(municipalLineTotalHead, flowRate, 'frmlspi690s2');
+                    }
+                    if ((flowRate > 0 && flowRate < 126) && (municipalLineTotalHead > 700 && municipalLineTotalHead < 2800)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_6_90_S_32_50(municipalLineTotalHead, flowRate, 'frmlspi690s3');
+                    }
+                    if ((flowRate > 0 && flowRate < 225) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 1000)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_6_150_S_1_17(municipalLineTotalHead, flowRate, 'frmlspi6150s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 225) && (municipalLineTotalHead > 260 && municipalLineTotalHead < 2225)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_6_150_S_18_39(municipalLineTotalHead, flowRate, 'frmlspi6150s2');
+                    }
+                    if ((flowRate > 0 && flowRate < 301) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 1050)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_6_180_S_1_15(municipalLineTotalHead, flowRate, 'frmlspi6180s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 301) && (municipalLineTotalHead > 400 && municipalLineTotalHead < 1750)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_6_180_S_16_26(municipalLineTotalHead, flowRate, 'frmlspi6180s2');
+                    }
+                    if ((flowRate > 0 && flowRate < 351) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 800)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_6_230_S_1_11(municipalLineTotalHead, flowRate, 'frmlspi6230s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 351) && (municipalLineTotalHead > 300 && municipalLineTotalHead < 1750)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_6_230_S_12_24(municipalLineTotalHead, flowRate, 'frmlspi6230s2');
+                    }
+                    if ((flowRate > 0 && flowRate < 450) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 776)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_6_300_S_1_11(municipalLineTotalHead, flowRate, 'frmlspi6300s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 450) && (municipalLineTotalHead > 200 && municipalLineTotalHead < 1400)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_6_300_S_12_21(municipalLineTotalHead, flowRate, 'frmlspi6300s2');
+                    }
+                    if ((flowRate > 0 && flowRate < 580) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 1351)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_7_400(municipalLineTotalHead, flowRate, 'frmlspi7400s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 625) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 1300)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_7_500(municipalLineTotalHead, flowRate, 'frmlspi7500s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 690) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 1150)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_7_550(municipalLineTotalHead, flowRate, 'frmlspi7550s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 751) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 1900)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_8_550(municipalLineTotalHead, flowRate, 'frmlspi8550s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 1000) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 1701)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_8_650(municipalLineTotalHead, flowRate, 'frmlspi8650s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 1101) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 1301)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_8_800(municipalLineTotalHead, flowRate, 'frmlspi8800s1');
+                    }
+                    if ((flowRate > 0 && flowRate < 1600) && (municipalLineTotalHead > 0 && municipalLineTotalHead < 1125)) {
+                        noPlotSubmersibleML = true;
+                        Wilo_SPI_10_1200(municipalLineTotalHead, flowRate, 'frmlspi101200s1');
+                    }
+                    if (!noPlotSubmersibleML) {
+                        document.getElementById('mlse').innerHTML = "There are no models that match the criteria you selected.Try changing some values and click on Municipal Line Pump Type Button to try again.";
+                    }
+
+                }
             }
 
-            // Create and append image elements to the container
-            images.forEach(function (imagePath) {
-                var imageElement = document.createElement('img');
-                imageElement.src = imagePath;
-                imageElement.alt = 'Pump Image';
-                imageContainer.appendChild(imageElement);
-            });
         }
 
+
+        // Submersible
+
+        function Wilo_TWI_4_05(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_TWI_4-05.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(50, 940 - (H * 1.02));
+                ctx.lineTo(50 + (Q * 73), 940 - (H * 1.02));
+                ctx.moveTo(50 + (Q * 73), 940 - (H * 1.02));
+                ctx.lineTo(50 + (Q * 73), 940);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_TWI_4_07(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_TWI_4-07.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(55, 940 - (H * 1.035));
+                ctx.lineTo(55 + (Q * 64), 940 - (H * 1.035));
+                ctx.moveTo(55 + (Q * 64), 940 - (H * 1.035));
+                ctx.lineTo(55 + (Q * 64), 940);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_TWI_4_10(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_TWI_4-10.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(62, 935 - (H * .515));
+                ctx.lineTo(62 + (Q * 40.3), 935 - (H * .515));
+                ctx.moveTo(62 + (Q * 40.3), 935 - (H * .515));
+                ctx.lineTo(62 + (Q * 40.3), 935);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_TWI_4_18(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_TWI_4-18.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(63, 940 - (H * .42));
+                ctx.lineTo(63 + (Q * 22.9), 940 - (H * .42));
+                ctx.moveTo(63 + (Q * 22.9), 940 - (H * .42));
+                ctx.lineTo(63 + (Q * 22.9), 940);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_TWI_4_25(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_TWI_4-25.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(58, 940 - (H * .582));
+                ctx.lineTo(58 + (Q * 16.05), 940 - (H * .582));
+                ctx.moveTo(58 + (Q * 16.05), 940 - (H * .582));
+                ctx.lineTo(58 + (Q * 16.05), 940);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_TWI_4_40(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_TWI_4-40.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(56, 940 - (H * .515));
+                ctx.lineTo(56 + (Q * 9.3), 940 - (H * .515));
+                ctx.moveTo(56 + (Q * 9.3), 940 - (H * .515));
+                ctx.lineTo(56 + (Q * 9.3), 940);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_TWI_4_70(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_TWI_4-70.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(55, 940 - (H * 1.69));
+                ctx.lineTo(55 + (Q * 5.42), 940 - (H * 1.69));
+                ctx.moveTo(55 + (Q * 5.42), 940 - (H * 1.69));
+                ctx.lineTo(55 + (Q * 5.42), 940);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_6_50_S_1_17(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_6-50_S_1-17.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(84, 940 - (H * .93));
+                ctx.lineTo(84 + (Q * 8.95), 940 - (H * .93));
+                ctx.moveTo(84 + (Q * 8.95), 940 - (H * .93));
+                ctx.lineTo(84 + (Q * 8.95), 940);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_6_50_S_18_34(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_6-50_S_18-34.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(84, 940 - (H * .465));
+                ctx.lineTo(84 + (Q * 8.95), 940 - (H * .465));
+                ctx.moveTo(84 + (Q * 8.95), 940 - (H * .465));
+                ctx.lineTo(84 + (Q * 8.95), 940);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        // Heigth adjustment for irregular graph
+        function Wilo_SPI_6_50_S_35_55(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_6-50_S_35-55.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(80, 940 - (H * .238));
+                ctx.lineTo(80 + (Q * 9), 940 - (H * .238));
+                ctx.moveTo(80 + (Q * 9), 940 - (H * .238));
+                ctx.lineTo(80 + (Q * 9), 940);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_6_90_S_1_15(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_6-90_S_1-15.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(85, 940 - (H * .935));
+                ctx.lineTo(85 + (Q * 7.3), 940 - (H * .935));
+                ctx.moveTo(85 + (Q * 7.3), 940 - (H * .935));
+                ctx.lineTo(85 + (Q * 7.3), 940);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        // height adjustment for head
+        function Wilo_SPI_6_90_S_16_31(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_6-90_S_16-31.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(80, 940 - (H * .35));
+                ctx.lineTo(80 + (Q * 7.4), 940 - (H * .35));
+                ctx.moveTo(80 + (Q * 7.4), 940 - (H * .35));
+                ctx.lineTo(80 + (Q * 7.4), 940);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        // height adjustment for head and minor flow rate
+
+        function Wilo_SPI_6_90_S_32_50(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_6-90_S_32-50.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(85, 940 - (H * .23));
+                ctx.lineTo(85 + (Q * 7.3), 940 - (H * .23));
+                ctx.moveTo(85 + (Q * 7.3), 940 - (H * .23));
+                ctx.lineTo(85 + (Q * 7.3), 940);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_6_150_S_1_17(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_6-150_S_1-17.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(84, 950 - (H * .78));
+                ctx.lineTo(84 + (Q * 3.7), 950 - (H * .78));
+                ctx.moveTo(84 + (Q * 3.7), 950 - (H * .78));
+                ctx.lineTo(84 + (Q * 3.7), 950);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_6_150_S_18_39(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_6-150_S_18-39.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(84, 950 - (H * .351));
+                ctx.lineTo(84 + (Q * 3.71), 950 - (H * .351));
+                ctx.moveTo(84 + (Q * 3.71), 950 - (H * .351));
+                ctx.lineTo(84 + (Q * 3.71), 950);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_6_180_S_1_15(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_6-180_S_1-15.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(85, 950 - (H * .785));
+                ctx.lineTo(85 + (Q * 3.17), 950 - (H * .785));
+                ctx.moveTo(85 + (Q * 3.17), 950 - (H * .785));
+                ctx.lineTo(85 + (Q * 3.17), 950);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        // height adjustment
+        function Wilo_SPI_6_180_S_16_26(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_6-180_S_16-26.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(86, 950 - (H * .37));
+                ctx.lineTo(86 + (Q * 3.17), 950 - (H * .37));
+                ctx.moveTo(86 + (Q * 3.17), 950 - (H * .37));
+                ctx.lineTo(86 + (Q * 3.17), 950);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_6_230_S_1_11(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_6-230_S_1-11.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(86, 960 - (H * .945));
+                ctx.lineTo(86 + (Q * 2.73), 960 - (H * .945));
+                ctx.moveTo(86 + (Q * 2.73), 960 - (H * .945));
+                ctx.lineTo(86 + (Q * 2.73), 960);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_6_230_S_12_24(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_6-230_S_12-24.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(88, 955 - (H * .469));
+                ctx.lineTo(88 + (Q * 2.72), 955 - (H * .469));
+                ctx.moveTo(88 + (Q * 2.72), 955 - (H * .469));
+                ctx.lineTo(88 + (Q * 2.72), 955);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_6_300_S_1_11(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_6-300_S_1-11.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(90, 955 - (H * 1.12));
+                ctx.lineTo(90 + (Q * 2.19), 955 - (H * 1.12));
+                ctx.moveTo(90 + (Q * 2.19), 955 - (H * 1.12));
+                ctx.lineTo(90 + (Q * 2.19), 955);
+                ctx.strokeStyle = "red";
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        // height adjustment and minor flowrate
+        function Wilo_SPI_6_300_S_12_21(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_6-300_S_12-21.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(85, 1055 - (H * .496));
+                ctx.lineTo(85 + (Q * 2.2), 1055 - (H * .496));
+                ctx.moveTo(85 + (Q * 2.2), 1055 - (H * .496));
+                ctx.lineTo(85 + (Q * 2.2), 955);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_7_400(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_7-400_S_1-15.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(86, 955 - (H * .626));
+                ctx.lineTo(86 + (Q * 1.58), 955 - (H * .626));
+                ctx.moveTo(86 + (Q * 1.58), 955 - (H * .626));
+                ctx.lineTo(86 + (Q * 1.58), 955);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_7_500(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_7-500_S_1-11.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(86, 955 - (H * .624));
+                ctx.lineTo(86 + (Q * 1.39), 955 - (H * .624));
+                ctx.moveTo(86 + (Q * 1.39), 955 - (H * .624));
+                ctx.lineTo(86 + (Q * 1.39), 955);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_7_550(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_7-550_S_1-11.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(86, 955 - (H * .71));
+                ctx.lineTo(86 + (Q * 1.23), 955 - (H * .71));
+                ctx.moveTo(86 + (Q * 1.23), 955 - (H * .71));
+                ctx.lineTo(86 + (Q * 1.23), 955);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_8_550(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_8-550_S_1-15.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(85, 955 - (H * .403));
+                ctx.lineTo(85 + (Q * 1.232), 955 - (H * .403));
+                ctx.moveTo(85 + (Q * 1.232), 955 - (H * .403));
+                ctx.lineTo(85 + (Q * 1.232), 955);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_8_650(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_8-650_S_1-11.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(80, 960 - (H * .468));
+                ctx.lineTo(80 + (Q * .905), 960 - (H * .468));
+                ctx.moveTo(80 + (Q * .905), 960 - (H * .468));
+                ctx.lineTo(80 + (Q * .905), 960);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_8_800(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_8-800_S_1-9.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(85, 958 - (H * .63));
+                ctx.lineTo(85 + (Q * .74), 958 - (H * .63));
+                ctx.moveTo(85 + (Q * .74), 958 - (H * .63));
+                ctx.lineTo(85 + (Q * .74), 958);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_SPI_10_1200(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_10-1200_S_1-6.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(85, 958 - (H * .695));
+                ctx.lineTo(85 + (Q * .55), 958 - (H * .695));
+                ctx.moveTo(85 + (Q * .55), 958 - (H * .695));
+                ctx.lineTo(85 + (Q * .55), 958);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_Helix_V110(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo-Helix_V_110.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.74), 440 - (H * .6));
+                ctx.moveTo(30 + (Q * 2.74), 440 - (H * .6));
+                ctx.lineTo(30 + (Q * 2.74), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_Helix_V190(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo-Helix_V_190.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(30, 440 - (H * 1.04));
+                ctx.lineTo(30 + (Q * 1.88), 440 - (H * 1.04));
+                ctx.moveTo(30 + (Q * 1.88), 440 - (H * 1.04));
+                ctx.lineTo(30 + (Q * 1.88), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_Helix_V270(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo-Helix_V_270.png";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(32, 440 - (H * 1.4));
+                ctx.lineTo(32 + (Q * 1.32), 440 - (H * 1.4));
+                ctx.moveTo(32 + (Q * 1.32), 440 - (H * 1.4));
+                ctx.lineTo(32 + (Q * 1.32), 440);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_Helix_V10(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo-Helix_V_10.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(45, 650 - (H * .68));
+                ctx.lineTo(45 + (Q * 41.1), 650 - (H * .68));
+                ctx.moveTo(45 + (Q * 41.1), 650 - (H * .68));
+                ctx.lineTo(45 + (Q * 41.1), 650);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_Helix_V20(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo-Helix_V_20.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(45, 648 - (H * .77));
+                ctx.lineTo(45 + (Q * 24.7), 648 - (H * .77));
+                ctx.moveTo(45 + (Q * 24.7), 648 - (H * .77));
+                ctx.lineTo(45 + (Q * 24.7), 648);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_Helix_V30(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo-Helix_V_30.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(46, 648 - (H * .685));
+                ctx.lineTo(46 + (Q * 16.46), 648 - (H * .685));
+                ctx.moveTo(46 + (Q * 16.46), 648 - (H * .685));
+                ctx.lineTo(46 + (Q * 16.46), 648);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_Helix_V50(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo-Helix_V_50.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(50, 650 - (H * 1.03));
+                ctx.lineTo(50 + (Q * 8.18), 650 - (H * 1.03));
+                ctx.moveTo(50 + (Q * 8.18), 650 - (H * 1.03));
+                ctx.lineTo(50 + (Q * 8.18), 650);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
+
+        function Wilo_Helix_V80(totalHead, flowRate, canvasID) {
+            const canvas = document.getElementById(canvasID);
+            canvas.style.display = "inline-block";
+
+            const ctx = canvas.getContext("2d");
+
+            const chartImage = new Image();
+            chartImage.src = "https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo-Helix_V_80.jpg";
+
+            const H = totalHead;
+            const Q = flowRate;
+            chartImage.onload = function () {
+                ctx.drawImage(chartImage, 0, 0);
+
+                ctx.beginPath();
+                ctx.moveTo(45, 650 - (H * 1.225));
+                ctx.lineTo(45 + (Q * 6.2), 650 - (H * 1.225));
+                ctx.moveTo(45 + (Q * 6.2), 650 - (H * 1.225));
+                ctx.lineTo(45 + (Q * 6.2), 650);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            };
+        }
 
         function printPage() {
             window.print();
