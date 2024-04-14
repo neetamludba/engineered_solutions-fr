@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Enqueue</title>
+</head>
+
+<body>
+    <div>
+        <br>
+        <input type="text" placeholder="input text" id="enqueuetext">
+        <button class="btn btn-outline-danger btn-lg" onclick="q.enQueue()">En-Queue()</button>
+        <br><br>
+        <button class="btn btn-outline-danger btn-lg" onclick="q.isFull()">Is-Full()</button>
+        <button class="btn btn-outline-danger btn-lg" onclick="q.isEmpty()">Is-Empty()</button>
+        <button class="btn btn-outline-danger btn-lg" onclick="q.deQueue()">De-Queue()</button>
+        <button class="btn btn-outline-danger btn-lg" onclick="q.display()">Display()</button>
+    </div>
+    <div id="output"></div>
+    <br><br>
+    <h3 id="display"></h3>
+
+    <script>
+        class Queue {
+            constructor() {
+                this.SIZE = 10;
+                this.items = new Array(this.SIZE);
+                this.front = -1;
+                this.rear = -1;
+            }
+            isFullCheck() {
+                return this.front === 0 && this.rear === this.SIZE - 1;
+            }
+
+            isFull() {
+                const outputDiv = document.getElementById("output");
+
+                outputDiv.innerHTML += 'isFull:  ' + (this.front === 0 && this.rear === this.SIZE - 1) + '<br>';
+            }
+            isEmpty() {
+                const outputDiv = document.getElementById("output");
+
+                outputDiv.innerHTML += 'isEmpty:  ' + (this.front === -1) + '<br>';
+            }
+            isEmptyCheck() {
+                return this.front === -1;
+            }
+            enQueue() {
+                let element = document.getElementById('enqueuetext').value;
+                const outputDiv = document.getElementById("output");
+
+                if (this.isFullCheck()) {
+                    outputDiv.innerHTML += "Queue is full <br>";
+                } else {
+                    if (this.front === -1) this.front = 0;
+                    this.rear++;
+                    this.items[this.rear] = element;
+
+                    outputDiv.innerHTML += "Inserted " + element + '<br>';
+
+                    document.getElementById('enqueuetext').value = ''
+                }
+            }
+            deQueue() {
+                const outputDiv = document.getElementById("output");
+
+                if (this.isEmpty()) {
+                    outputDiv.innerHTML += "Queue is empty <br>";
+                    return -1;
+                } else {
+                    const element = this.items[this.front];
+                    if (this.front >= this.rear) {
+                        this.front = -1;
+                        this.rear = -1;
+                    } else {
+                        this.front++;
+                    }
+                    outputDiv.innerHTML += "Deleted -> " + element + ' <br>'
+                }
+            }
+            display() {
+                const outputDiv = document.getElementById("display");
+                outputDiv.innerHTML = '';
+                if (this.isEmptyCheck()) {
+                    outputDiv.innerHTML += "Queue is empty <br>";
+                } else {
+                    outputDiv.innerHTML += 'Front index ->   ' + this.front + '<br>';
+                    outputDiv.innerHTML += "Items ";
+                    for (let i = this.front; i <= this.rear; i++)
+                        outputDiv.innerHTML += '=>  ' + this.items[i] + "\t";
+                    outputDiv.innerHTML += "<br>Rear index ->  " + this.rear + '<br>';
+                }
+            }
+        }
+
+
+        const q = new Queue();
+
+
+    </script>
+</body>
+
+</html>

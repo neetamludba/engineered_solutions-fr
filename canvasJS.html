@@ -1,166 +1,230 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 
 <head>
+    <title>Wilo-Helix V 110 | canvasJS </title>
+
+    <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+
+</head>
+
+<body>
+    <div id="chartContainer" style="height: 720px; width: 100%;"></div>
+
     <script>
         window.onload = function () {
 
             var chart = new CanvasJS.Chart("chartContainer", {
                 theme: "light2",
-                animationEnabled: true,
+                animationEnabled: false,
                 title: {
-                    text: "Game of Thrones Viewers of the First Airing on HBO"
+                    text: "Wilo-Helix V 110"
                 },
                 axisY: {
-                    title: "Number of Viewers",
-                    suffix: "mn"
+                    title: "Head Pressure (H)",
+                    suffix: " ft",
+                    maximum: 650,
+                    crosshair: {
+                        enabled: true,
+                        snapToDataPoint: true,
+                    }
+                },
+                axisX: {
+                    title: "Flow Rate (Q)",
+                    suffix: " gpm",
+                    maximum: 220,
+                    crosshair: {
+                        enabled: true,
+                        snapToDataPoint: true,
+                    }
                 },
                 toolTip: {
                     shared: "true"
                 },
                 legend: {
                     cursor: "pointer",
+                    fontSize: 14,
                     itemclick: toggleDataSeries
                 },
                 data: [{
                     type: "spline",
-                    visible: false,
+                    visible: true,
                     showInLegend: true,
-                    yValueFormatString: "##.00mn",
-                    name: "Season 1",
+                    markerSize: 0,
+                    yValueFormatString: "##",
+                    indexLabelFontSize: 12,
+                    name: "Helix V110-07/1",
                     dataPoints: [
-                        { label: "Ep. 1", y: 2.22 },
-                        { label: "Ep. 2", y: 2.20 },
-                        { label: "Ep. 3", y: 2.44 },
-                        { label: "Ep. 4", y: 2.45 },
-                        { label: "Ep. 5", y: 2.58 },
-                        { label: "Ep. 6", y: 2.44 },
-                        { label: "Ep. 7", y: 2.40 },
-                        { label: "Ep. 8", y: 2.72 },
-                        { label: "Ep. 9", y: 2.66 },
-                        { label: "Ep. 10", y: 3.04 }
+                        { x: 0, y: 590 },
+                        { x: 40, y: 570, indexLabel: "Helix V110-07/1" },
+                        { x: 80, y: 530 },
+                        { x: 120, y: 450 },
+                        { x: 160, y: 305 },
+                        { x: 200, y: 100 }
                     ]
                 },
                 {
                     type: "spline",
                     showInLegend: true,
-                    visible: false,
-                    yValueFormatString: "##.00mn",
-                    name: "Season 2",
+                    visible: true,
+                    markerSize: 0,
+                    yValueFormatString: "##",
+                    indexLabelFontSize: 12,
+                    name: "Helix V110-06",
                     dataPoints: [
-                        { label: "Ep. 1", y: 3.86 },
-                        { label: "Ep. 2", y: 3.76 },
-                        { label: "Ep. 3", y: 3.77 },
-                        { label: "Ep. 4", y: 3.65 },
-                        { label: "Ep. 5", y: 3.90 },
-                        { label: "Ep. 6", y: 3.88 },
-                        { label: "Ep. 7", y: 3.69 },
-                        { label: "Ep. 8", y: 3.86 },
-                        { label: "Ep. 9", y: 3.38 },
-                        { label: "Ep. 10", y: 4.20 }
+
+                        { x: 0, y: 515 },
+                        { x: 40, y: 495, indexLabel: "Helix V110-06" },
+                        { x: 80, y: 460 },
+                        { x: 120, y: 395 },
+                        { x: 160, y: 270 },
+                        { x: 200, y: 95 }
                     ]
                 },
                 {
                     type: "spline",
-                    visible: false,
-                    showInLegend: true,
-                    yValueFormatString: "##.00mn",
-                    name: "Season 3",
+                    visible: true,
+                    showInLegend: true, markerSize: 0,
+                    yValueFormatString: "##",
+                    indexLabelFontSize: 12,
+                    name: "Helix V110-06/3",
                     dataPoints: [
-                        { label: "Ep. 1", y: 4.37 },
-                        { label: "Ep. 2", y: 4.27 },
-                        { label: "Ep. 3", y: 4.72 },
-                        { label: "Ep. 4", y: 4.87 },
-                        { label: "Ep. 5", y: 5.35 },
-                        { label: "Ep. 6", y: 5.50 },
-                        { label: "Ep. 7", y: 4.84 },
-                        { label: "Ep. 8", y: 4.13 },
-                        { label: "Ep. 9", y: 5.22 },
-                        { label: "Ep. 10", y: 5.39 }
+
+                        { x: 0, y: 485 },
+                        { x: 40, y: 470, indexLabel: "Helix V110-06/3" },
+                        { x: 80, y: 440 },
+                        { x: 120, y: 365 },
+                        { x: 160, y: 240 },
+                        { x: 200, y: 65 }
                     ]
                 },
                 {
                     type: "spline",
-                    visible: false,
-                    showInLegend: true,
-                    yValueFormatString: "##.00mn",
-                    name: "Season 4",
+                    visible: true,
+                    showInLegend: true, markerSize: 0,
+                    yValueFormatString: "##",
+                    indexLabelFontSize: 12,
+                    name: "Helix V110-05",
                     dataPoints: [
-                        { label: "Ep. 1", y: 6.64 },
-                        { label: "Ep. 2", y: 6.31 },
-                        { label: "Ep. 3", y: 6.59 },
-                        { label: "Ep. 4", y: 6.95 },
-                        { label: "Ep. 5", y: 7.16 },
-                        { label: "Ep. 6", y: 6.40 },
-                        { label: "Ep. 7", y: 7.20 },
-                        { label: "Ep. 8", y: 7.17 },
-                        { label: "Ep. 9", y: 6.95 },
-                        { label: "Ep. 10", y: 7.09 }
+
+                        { x: 0, y: 430 },
+                        { x: 40, y: 410, indexLabel: "Helix V110-05" },
+                        { x: 80, y: 380 },
+                        { x: 120, y: 325 },
+                        { x: 160, y: 220 },
+                        { x: 200, y: 80 }
                     ]
                 },
                 {
                     type: "spline",
-                    showInLegend: true,
-                    yValueFormatString: "##.00mn",
-                    name: "Season 5",
+                    showInLegend: true, markerSize: 0,
+                    yValueFormatString: "##",
+                    indexLabelFontSize: 12,
+                    name: "Helix V110-05/3",
                     dataPoints: [
-                        { label: "Ep. 1", y: 8 },
-                        { label: "Ep. 2", y: 6.81 },
-                        { label: "Ep. 3", y: 6.71 },
-                        { label: "Ep. 4", y: 6.82 },
-                        { label: "Ep. 5", y: 6.56 },
-                        { label: "Ep. 6", y: 6.24 },
-                        { label: "Ep. 7", y: 5.40 },
-                        { label: "Ep. 8", y: 7.01 },
-                        { label: "Ep. 9", y: 7.14 },
-                        { label: "Ep. 10", y: 8.11 }
+
+                        { x: 0, y: 400 },
+                        { x: 40, y: 385, indexLabel: "Helix V110-05/3" },
+                        { x: 80, y: 360 },
+                        { x: 120, y: 290 },
+                        { x: 160, y: 190 },
+                        { x: 200, y: 45 }
                     ]
                 },
                 {
                     type: "spline",
-                    showInLegend: true,
-                    yValueFormatString: "##.00mn",
-                    name: "Season 6",
+                    showInLegend: true, markerSize: 0,
+                    yValueFormatString: "##",
+                    indexLabelFontSize: 12,
+                    name: "Helix V110-04",
                     dataPoints: [
-                        { label: "Ep. 1", y: 7.94 },
-                        { label: "Ep. 2", y: 7.29 },
-                        { label: "Ep. 3", y: 7.28 },
-                        { label: "Ep. 4", y: 7.82 },
-                        { label: "Ep. 5", y: 7.89 },
-                        { label: "Ep. 6", y: 6.71 },
-                        { label: "Ep. 7", y: 7.80 },
-                        { label: "Ep. 8", y: 7.60 },
-                        { label: "Ep. 9", y: 7.66 },
-                        { label: "Ep. 10", y: 8.89 }
+
+                        { x: 0, y: 340 },
+                        { x: 40, y: 325, indexLabel: "Helix V110-04" },
+                        { x: 80, y: 305 },
+                        { x: 120, y: 260 },
+                        { x: 160, y: 175 },
+                        { x: 200, y: 65 }
                     ]
                 },
                 {
                     type: "spline",
-                    showInLegend: true,
-                    yValueFormatString: "##.00mn",
-                    name: "Season 7",
+                    showInLegend: true, markerSize: 0,
+                    yValueFormatString: "##",
+                    indexLabelFontSize: 12,
+                    name: "Helix V110-04/3",
                     dataPoints: [
-                        { label: "Ep. 1", y: 10.11 },
-                        { label: "Ep. 2", y: 9.27 },
-                        { label: "Ep. 3", y: 9.25 },
-                        { label: "Ep. 4", y: 10.17 },
-                        { label: "Ep. 5", y: 10.72 },
-                        { label: "Ep. 6", y: 10.24 },
-                        { label: "Ep. 7", y: 12.07 }
+
+                        { x: 0, y: 310 },
+                        { x: 40, y: 300, indexLabel: "Helix V110-04/3" },
+                        { x: 80, y: 275 },
+                        { x: 120, y: 225 },
+                        { x: 160, y: 140 },
+                        { x: 200, y: 25 }
                     ]
                 },
                 {
                     type: "spline",
-                    showInLegend: true,
-                    yValueFormatString: "##.00mn",
-                    name: "Season 8",
+                    showInLegend: true, markerSize: 0,
+                    yValueFormatString: "##",
+                    indexLabelFontSize: 12,
+                    name: "Helix V110-03",
                     dataPoints: [
-                        { label: "Ep. 1", y: 11.76 },
-                        { label: "Ep. 2", y: 10.29 },
-                        { label: "Ep. 3", y: 12.02 },
-                        { label: "Ep. 4", y: 11.80 },
-                        { label: "Ep. 5", y: 12.48 },
-                        { label: "Ep. 6", y: 13.61 }
+
+                        { x: 0, y: 255 },
+                        { x: 40, y: 245, indexLabel: "Helix V110-03" },
+                        { x: 80, y: 225 },
+                        { x: 120, y: 190 },
+                        { x: 160, y: 130 },
+                        { x: 200, y: 40 }
+                    ]
+                },
+                {
+                    type: "spline",
+                    showInLegend: true, markerSize: 0,
+                    yValueFormatString: "##",
+                    indexLabelFontSize: 12,
+                    name: "Helix V110-03/2",
+                    dataPoints: [
+
+                        { x: 0, y: 235 },
+                        { x: 40, y: 225, indexLabel: "Helix V110-03/2" },
+                        { x: 80, y: 205 },
+                        { x: 120, y: 160 },
+                        { x: 160, y: 100 },
+                        { x: 200, y: 15 }
+                    ]
+                },
+                {
+                    type: "spline",
+                    showInLegend: true, markerSize: 0,
+                    yValueFormatString: "##",
+                    indexLabelFontSize: 12,
+                    name: "Helix V110-02",
+                    dataPoints: [
+
+                        { x: 0, y: 170 },
+                        { x: 40, y: 160, indexLabel: "Helix V110-02" },
+                        { x: 80, y: 150 },
+                        { x: 120, y: 135 },
+                        { x: 160, y: 85 },
+                        { x: 200, y: 25 }
+                    ]
+                },
+                {
+                    type: "spline",
+                    showInLegend: true, markerSize: 0,
+                    yValueFormatString: "##",
+                    indexLabelFontSize: 12,
+                    name: "Helix V110-02/2",
+                    dataPoints: [
+
+                        { x: 0, y: 150 },
+                        { x: 40, y: 140, indexLabel: "Helix V110-02/2" },
+                        { x: 80, y: 130 },
+                        { x: 120, y: 100 },
+                        { x: 160, y: 60 },
+                        { x: 200, y: 0 }
                     ]
                 }]
             });
@@ -177,11 +241,6 @@
 
         }
     </script>
-</head>
-
-<body>
-    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
-    <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
 </body>
 
 </html>

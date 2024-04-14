@@ -8,33 +8,34 @@
 
         function drawChart() {
             var data = new google.visualization.DataTable();
-            data.addColumn('number', 'Day');
-            data.addColumn('number', 'Guardians of the Galaxy');
-            data.addColumn('number', 'The Avengers');
-            data.addColumn('number', 'Transformers: Age of Extinction');
+            data.addColumn('number', 'Flow Rate');
+            data.addColumn('number', 'Model 01');
+            data.addColumn('number', 'Model 02');
+            data.addColumn('number', 'Model 03');
+            data.addColumn('number', 'Model 04');
 
             data.addRows([
-                [0, 37.8, 80.8, 41.8],
-                [10, 37.8, 80.8, 41.8],
-                [20, 30.9, 69.5, 32.4],
-                [30, 25.4, 57, 25.7],
-                [40, 11.7, 18.8, 10.5],
-                [50, 11.9, 17.6, 10.4],
-                [60, 8.8, 13.6, 7.7],
-                [70, 7.6, 12.3, 9.6],
-                [80, 12.3, 29.2, 10.6],
-                [90, 16.9, 42.9, 14.8],
-                [100, 12.8, 30.9, 11.6],
-                [110, 5.3, 7.9, 4.7],
-                [120, 6.6, 8.4, 5.2],
-                [130, 4.8, 6.3, 3.6],
-                [140, 4.2, 6.2, 3.4]
+                [0, 37.8, 80.8, 41.8,20],
+                [10, 37.8, 80.8, 41.8,1],
+                [20, 30.9, 69.5, 32.4,21],
+                [30, 25.4, 57, 25.7,12],
+                [40, 11.7, 18.8, 10.5,22],
+                [50, 11.9, 17.6, 10.4,23],
+                [60, 8.8, 13.6, 7.7,12],
+                [70, 7.6, 12.3, 9.6,22],
+                [80, 12.3, 29.2, 10.6,40],
+                [90, 16.9, 42.9, 14.8,12],
+                [100, 12.8, 30.9, 11.6,11],
+                [110, 5.3, 7.9, 4.7,2],
+                [120, 6.6, 8.4, 5.2,12],
+                [130, 4.8, 6.3, 3.6,21],
+                [140, 4.2, 6.2, 3.4,22]
             ]);
 
             var options = {
                 title: 'Wilo-Helix V 110',
                 curveType: 'function',
-                legend: { position: 'none' }
+                legend: { position: 'bottom' }
             };
 
             var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
