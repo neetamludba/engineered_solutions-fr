@@ -1,53 +1,124 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
+    <title>Google Chart</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
         google.charts.load('current', { 'packages': ['corechart'] });
-        google.charts.setOnLoadCallback(drawChart);
+        google.charts.setOnLoadCallback(function () {
+            updateChart(0, 0); // Initial call with default values
+        });
 
-        function drawChart() {
+        function updateChart(flowRate, head) {
             var data = new google.visualization.DataTable();
             data.addColumn('number', 'Flow Rate');
-            data.addColumn('number', 'Model 01');
-            data.addColumn('number', 'Model 02');
-            data.addColumn('number', 'Model 03');
-            data.addColumn('number', 'Model 04');
+            data.addColumn('number', 'Helix V110-07/1');
+            data.addColumn('number', 'Helix V110-06');
+            data.addColumn('number', 'Helix V110-06/3');
+            data.addColumn('number', 'Helix V110-05');
+            data.addColumn('number', 'Helix V110-05/3');
+            data.addColumn('number', 'Helix V110-04');
+            data.addColumn('number', 'Helix V110-04/3');
+            data.addColumn('number', 'Helix V110-03');
+            data.addColumn('number', 'Helix V110-03/2');
+            data.addColumn('number', 'Helix V110-02');
+            data.addColumn('number', 'Helix V110-02/2');
 
             data.addRows([
-                [0, 37.8, 80.8, 41.8,20],
-                [10, 37.8, 80.8, 41.8,1],
-                [20, 30.9, 69.5, 32.4,21],
-                [30, 25.4, 57, 25.7,12],
-                [40, 11.7, 18.8, 10.5,22],
-                [50, 11.9, 17.6, 10.4,23],
-                [60, 8.8, 13.6, 7.7,12],
-                [70, 7.6, 12.3, 9.6,22],
-                [80, 12.3, 29.2, 10.6,40],
-                [90, 16.9, 42.9, 14.8,12],
-                [100, 12.8, 30.9, 11.6,11],
-                [110, 5.3, 7.9, 4.7,2],
-                [120, 6.6, 8.4, 5.2,12],
-                [130, 4.8, 6.3, 3.6,21],
-                [140, 4.2, 6.2, 3.4,22]
+                [0, 590, 515, 485, 430, 400, 340, 310, 255, 235, 170, 150],
+                [10, 585, 510, 481, 425, 396, 336, 307.5, 252.5, 232.5, 167.5, 147.5],
+                [20, 580, 505, 478, 420, 392, 332, 305, 250, 230, 165, 145],
+                [30, 575, 500, 474, 415, 388, 329, 302.5, 247.5, 227.5, 162.5, 142.5],
+                [40, 568, 494, 470, 410, 385, 325, 300, 245, 225, 160, 140],
+                [50, 560, 487, 464, 404, 380, 320, 295, 240, 220, 157.5, 137.5],
+                [60, 550, 478, 456, 398, 372, 315, 289, 235, 215, 155, 135],
+                [70, 540, 469, 448, 389, 367, 310, 282, 230, 210, 152.5, 132.5],
+                [80, 530, 460, 440, 380, 360, 305, 275, 225, 205, 150, 130],
+                [90, 510, 445, 425, 370, 350, 295, 265, 218, 195, 147, 125],
+                [100, 490, 430, 405, 355, 335, 285, 253, 209, 185, 143, 118],
+                [110, 470, 415, 385, 340, 315, 275, 240, 200, 173, 139, 109],
+                [120, 450, 395, 365, 325, 290, 260, 225, 190, 160, 135, 100],
+                [130, 420, 365, 335, 305, 270, 245, 205, 180, 150, 125, 90],
+                [140, 385, 335, 305, 280, 245, 225, 185, 165, 135, 115, 80],
+                [150, 345, 305, 275, 245, 220, 200, 165, 150, 120, 100, 70],
+                [160, 305, 270, 240, 220, 190, 175, 140, 130, 100, 85, 60],
+                [170, 270, 230, 200, 190, 160, 150, 115, 105, 80, 70, 50],
+                [180, 220, 195, 160, 160, 125, 125, 85, 80, 60, 55, 40],
+                [190, 160, 145, 110, 120, 85, 95, 55, 60, 40, 40, 25],
+                [200, 100, 95, 65, 80, 45, 65, 25, 40, 15, 25, 0],
             ]);
 
             var options = {
                 title: 'Wilo-Helix V 110',
                 curveType: 'function',
-                legend: { position: 'bottom' }
+                legend: { position: 'bottom' },
+                series: {}
             };
+
+            // Highlight only the curve where head and flow rate exactly match or are slightly below
+            var highlightedCurve = -1;
+            var closestFlowRateIndex = -1;
+            var minDiff = Number.MAX_VALUE;
+            var closestGreaterHead = Number.MAX_VALUE;
+
+            // Find the closest flow rate in the data to the input flow rate
+            for (var i = 0; i < data.getNumberOfRows(); i++) {
+                var diff = Math.abs(data.getValue(i, 0) - flowRate);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closestFlowRateIndex = i;
+                }
+            }
+
+            if (closestFlowRateIndex !== -1) {
+                // Iterate through each curve and find the one with the head value closest to the input head
+                for (var i = 1; i < data.getNumberOfColumns(); i++) {
+                    var curveHead = data.getValue(closestFlowRateIndex, i);
+                    // If the curve's head value is greater than or equal to the input head and closer than previously found, mark it as highlighted
+                    if (curveHead >= head && curveHead < closestGreaterHead) {
+                        closestGreaterHead = curveHead;
+                        highlightedCurve = i - 1;
+                    }
+                }
+            }
+
+            // Set color to blue and line width for the highlighted curve
+            if (highlightedCurve !== -1) {
+                options.series[highlightedCurve] = { color: '#0000ff', lineWidth: 2 };
+            }
+
+
+            // Grayscale all other curves
+            for (var i = 0; i < data.getNumberOfColumns(); i++) {
+                if (i !== highlightedCurve) {
+                    options.series[i] = { color: '#CCCCCC', lineWidth: 2 };
+                }
+            }
 
             var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
 
             chart.draw(data, options);
         }
-
     </script>
 </head>
 
-<body>
-    <div id="curve_chart" style="width: 900px; height: 500px"></div>
+
+<div>
+    <label for="flow_rate">Flow Rate:</label>
+    <input type="number" id="flow_rate" class="no-spinner" placeholder="Enter number" value="0" required
+        step="any"><br><br>
+
+
+    <label for="head">Head:</label>
+    <input type="number" id="head" class="no-spinner" placeholder="Enter number" value="0" required step="any">
+    <br><br>
+    <button
+        onclick="updateChart(parseFloat(document.getElementById('flow_rate').value), parseFloat(document.getElementById('head').value))">Update
+        Graph</button>
+</div>
+
+<div id="curve_chart" style="width: 900px; height: 500px"></div>
 </body>
 
 </html>
