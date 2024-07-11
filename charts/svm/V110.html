@@ -31,7 +31,7 @@
         <label for="head">Head:</label>
         <input type="number" id="head" class="no-spinner" placeholder="Enter number" value="230" required step="any">
         <br><br>
-        <button onclick="pocChart()">Wilo-Helix V 110 Graph</button>
+        <button onclick="GC_V110()">Wilo-Helix V 110 Graph</button>
     </div>
 
     <div class="chart-container">
@@ -41,14 +41,14 @@
         </div>
     </div>
     <script type="text/javascript">
-        pocChart();
-        function pocChart() {
+        GC_V110();
+        function GC_V110() {
             google.charts.load('current', { 'packages': ['corechart'] });
             google.charts.setOnLoadCallback(function () {
-                Chart1(parseFloat(document.getElementById('flow_rate').value), parseFloat(document.getElementById('head').value)); // Initial call with default values
+                updateChart(parseFloat(document.getElementById('flow_rate').value), parseFloat(document.getElementById('head').value)); // Initial call with default values
             });
         }
-        function Chart1(flowRate, head) {
+        function updateChart(flowRate, head) {
             var data = new google.visualization.DataTable();
             data.addColumn('number', 'Flow Rate');
             data.addColumn('number', 'Helix V110-07/1');
@@ -295,9 +295,6 @@
             }
 
             // Now add the red dot using a separate DataTable and DataView
-
-
-
             var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
             chart.draw(joinedData, options);
             chart.setSelection([{ row: closestFlowRateIndex, column: redDotIndex }]);
