@@ -6,6 +6,9 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
     <style>
         .page__banner-content {
             text-align: center
@@ -18,21 +21,16 @@
         #flow_rate {
             padding-bottom: 20px;
             background-color: #033C59;
-
         }
 
         #day_tank {
             padding-bottom: 20px;
             background-color: #FFBA41;
-
-
         }
 
         #municipal_line {
             padding-bottom: 20px;
             background-color: #033C59;
-
-
         }
 
         #addedFixtures,
@@ -220,17 +218,33 @@
 
         .chart-container {
             display: none;
-            /* Initially hidden */
             position: relative;
-            width: 900px;
-            height: 500px;
+            width: 1080px;
+            height: 720px;
         }
 
         .chart-overlay {
             position: absolute;
-            top: 460px;
-            right: 160px;
+            top: 665px;
+            right: 760px;
             z-index: 1;
+        }
+
+        .summary-overlay {
+            position: absolute;
+            top: 665px;
+            right: 140px;
+            z-index: 1;
+        }
+
+        .summary-button {
+            background-color: green;
+            color: rgb(163, 35, 163);
+        }
+
+        .summary-button:hover {
+            background-color: orangered;
+            color: greenyellow;
         }
     </style>
 </head>
@@ -272,7 +286,7 @@
                         </div>
                         <div class="button_inline">
                             <button type="submit">Add Fixture</button>
-                            <button class="delete_btn" onclick="removeLastFixture()">Remove Last
+                            <button type="button" class="delete_btn" onclick="removeLastFixture()">Remove Last
                                 Fixture</button>
                         </div>
 
@@ -313,7 +327,11 @@
                     </div>
                     <p id="irrigationFlowRateError" class="required_message"></p>
 
-                    <button onclick="calculateTotalPumpFlow()">Calculate Total Pump Flow Rate</button>
+
+                    <div><button type="button" onclick="calculateTotalPumpFlow()">Calculate Total Pump Flow
+                            Rate</button>
+                        <p id="fr_message" style="display: inline-block; margin-left: 10px; color: red;"></p>
+                    </div>
 
                     <h3>
                         <div class="pumpResult">
@@ -333,8 +351,6 @@
                                 GPM</label>
                         </div>
                     </h3>
-
-
                 </div>
             </div>
         </div>
@@ -373,7 +389,6 @@
                                 placeholder="Enter number" required step="any">
                             <p class="small_text">Assuming 10% of Total Pipe Run</p>
 
-
                         </div>
                         <button type="submit">Calculate Discharge Side</button>
                     </form>
@@ -408,11 +423,15 @@
                     <p class="required_message" id="DayTankSuctionResultError"></p>
                     <h4 id="DayTankSuctionResult"></h4>
 
+                    <div>
+                        <button type="button" onclick="DayTankTotalHeadBoosterPumpResult()"> Calculate Day Tank Total
+                            Head
+                            of Booster
+                            Pump</button>
+                        <p id="dt_message" style="display: inline-block; margin-left: 10px; color: red;"></p>
 
-                    <button onclick="DayTankTotalHeadBoosterPumpResult()"> Calculate Day Tank Total Head
-                        of Booster
-                        Pump</button>
-                    <h3 id="DayTankTotalHeadBoosterPumpResult"></h3>
+                        <h3 id="DayTankTotalHeadBoosterPumpResult"></h3>
+                    </div>
                 </div>
             </div>
         </div>
@@ -428,8 +447,10 @@
                 <input type="radio" id="dt_submersible" name="day_tank_pump_type" value="submersible">
                 <label for="dt_submersible">Submersible Pump</label>
                 <br><br>
-                <button onclick="dayTankPumpType()">Click to view available pump models for Day
+                <button type="button" onclick="dayTankPumpType()">Click to view available pump models for Day
                     Tank</button>
+                <span id="dayTankMessage" style="font-size: small; margin-left: 10px; color: red;"></span>
+
             </div>
         </div>
         <br>
@@ -442,24 +463,42 @@
                 <br>
                 <div class="chart-container">
                     <div id="frdtv110" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv110')">Select
+                            this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 110.pdf')">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 110.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
                 <br>
                 <div class="chart-container">
                     <div id="frdtv190" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv190')">Select
+                            this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 190.pdf')">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 190.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
                 <br>
                 <div class="chart-container">
                     <div id="frdtv270" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv270')">Select
+                            this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 270.pdf')">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 270.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -468,40 +507,70 @@
                 <br>
                 <div class="chart-container">
                     <div id="frdtv10" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv10')">Select
+                            this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 10.pdf')">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 10.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
                 <br>
                 <div class="chart-container">
                     <div id="frdtv20" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv20')">Select
+                            this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 20.pdf')">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 20.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
                 <br>
                 <div class="chart-container">
                     <div id="frdtv30" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv30')">Select
+                            this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 30.pdf')">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 30.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
                 <br>
                 <div class="chart-container">
                     <div id="frdtv50" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv50')">Select
+                            this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 50.pdf')">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 50.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
                 <br>
                 <div class="chart-container">
                     <div id="frdtv80" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv80')">Select
+                            this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 80.pdf')">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 80.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -516,50 +585,92 @@
                 <br>
                 <div class="chart-container">
                     <div id="frdttwi4-05" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdttwi4-05')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',6)">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',6)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frdttwi4-07" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdttwi4-07')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',8)">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',8)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frdttwi4-10" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdttwi4-10')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',10)">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',10)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frdttwi4-18" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdttwi4-18')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',12)">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',12)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frdttwi4-25" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdttwi4-25')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',14)">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',14)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frdttwi4-40" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdttwi4-40')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',16)">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',16)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frdttwi4-70" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdttwi4-70')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',18)">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',18)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -568,93 +679,184 @@
                 <br>
                 <div class="chart-container">
                     <div id="frdtspi650s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdtspi650s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',6)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',6)">Pump
                             Details</button>
                     </div>
                 </div>
                 <br>
                 <div class="chart-container">
-                    <div id="frdtspi690s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtspi650s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdtspi650s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',9)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',9)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frdtspi6150s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdtspi6150s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',12)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',12)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frdtspi6180s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdtspi6180s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',14)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',14)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frdtspi6230s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdtspi6230s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',16)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',16)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frdtspi6300s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdtspi6300s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',18)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',18)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frdtspi7400s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdtspi7400s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',32)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',32)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frdtspi7500s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdtspi7500s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',33)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',33)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frdtspi7550s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdtspi7550s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',34)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',34)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frdtspi8550s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdtspi8550s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',39)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',39)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frdtspi8650s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdtspi8650s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',40)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',40)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frdtspi8800s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdtspi8800s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',41)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',41)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frdtspi101200s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('dt','frdtspi101200s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',46)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',46)">Pump
                             Details</button>
                     </div>
                 </div>
@@ -739,10 +941,13 @@
 
                     <h4 id="MunicipalLineSuctionResult"></h4>
 
+                    <div>
+                        <button type="button" onclick="MunicipalLineTotalHeadBoosterPumpResult()">
+                            Calculate Day Tank Total Head of Booster Pump</button>
+                        <p id="ml_message" style="display: inline-block; margin-left: 10px; color: red;"></p>
 
-                    <button onclick="MunicipalLineTotalHeadBoosterPumpResult()">
-                        Calculate Day Tank Total Head of Booster Pump</button>
-                    <h3 id="MunicipalLineTotalHeadBoosterPumpResult"></h3>
+                        <h3 id="MunicipalLineTotalHeadBoosterPumpResult"></h3>
+                    </div>
                 </div>
             </div>
         </div>
@@ -759,7 +964,7 @@
                 <input type="radio" id="ml_submersible" name="municipal_line_pump_type" value="submersible">
                 <label for="ml_submersible">Submersible Pump</label>
                 <br><br>
-                <button onclick="municipalLinePumpType()">Click to view available pump models for
+                <button type="button" onclick="municipalLinePumpType()">Click to view available pump models for
                     Municipal
                     Line</button>
             </div>
@@ -774,24 +979,42 @@
                 <br>
                 <div class="chart-container">
                     <div id="frmlv110" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv110')">Select
+                            this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 110.pdf')">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 110.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
                 <br>
                 <div class="chart-container">
                     <div id="frmlv190" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv190')">Select
+                            this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 190.pdf')">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 190.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
                 <br>
                 <div class="chart-container">
                     <div id="frmlv270" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv270')">Select
+                            this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 270.pdf')">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 270.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -800,40 +1023,70 @@
                 <br>
                 <div class="chart-container">
                     <div id="frmlv10" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv10')">Select
+                            this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 10.pdf')">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 10.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
                 <br>
                 <div class="chart-container">
                     <div id="frmlv20" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv20')">Select
+                            this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 20.pdf')">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 20.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
                 <br>
                 <div class="chart-container">
                     <div id="frmlv30" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv30')">Select
+                            this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 30.pdf')">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 30.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
                 <br>
                 <div class="chart-container">
                     <div id="frmlv50" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv50')">Select
+                            this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 50.pdf')">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 50.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
                 <br>
                 <div class="chart-container">
                     <div id="frmlv80" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv80')">Select
+                            this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 80.pdf')">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 80.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -845,50 +1098,92 @@
                 <br>
                 <div class="chart-container">
                     <div id="frmltwi4-05" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmltwi4-05')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',6)">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',6)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frmltwi4-07" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmltwi4-07')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',8)">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',8)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frmltwi4-10" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmltwi4-10')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',10)">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',10)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frmltwi4-18" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmltwi4-18')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',12)">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',12)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frmltwi4-25" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmltwi4-25')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',14)">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',14)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frmltwi4-40" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmltwi4-40')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',16)">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',16)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frmltwi4-70" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmltwi4-70')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',18)">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',18)">Pump
                             Details</button>
                     </div>
                 </div>
@@ -897,92 +1192,182 @@
                 <br>
                 <div class="chart-container">
                     <div id="frmlspi650s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmlspi650s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',6)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',6)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frmlspi690s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmlspi690s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',9)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',9)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frmlspi6150s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmlspi6150s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',12)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',12)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frmlspi6180s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmlspi6180s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',14)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',14)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frmlspi6230s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmlspi6230s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',16)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',16)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frmlspi6300s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmlspi6300s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',18)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',18)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frmlspi7400s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmlspi7400s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',)">Pump
+                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frmlspi7500s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmlspi7500s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',32)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',32)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frmlspi7550s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmlspi7550s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',33)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',33)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frmlspi8550s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmlspi8550s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',34)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',34)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frmlspi8650s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmlspi8650s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',39)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',39)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frmlspi8800s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmlspi8800s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',41)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',41)">Pump
                             Details</button>
                     </div>
                 </div><br>
                 <div class="chart-container">
                     <div id="frmlspi101200s1" style="width: 100%; height: 100%;"></div>
+                    <div class="summary-overlay">
+                        <button type="button" class="summary-button"
+                            onclick="updateSummaryPage('ml','frmlspi101200s1')">Select this model and
+                            continue
+                        </button>
+                    </div>
                     <div class="chart-overlay">
-                        <button id="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',46)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',46)">Pump
                             Details</button>
                     </div>
                 </div>
@@ -990,9 +1375,104 @@
         </div>
 
     </div>
-    <button id="print_btn" onclick="printPage()">Print</button>
+    <button type="button" id="print_btn" onclick="printPage()">Print</button>
 
     <script>
+        function updateSummaryPage(type, modelId) {
+            localStorage.clear()
+
+            // Get fixtures data
+            const addedFixtures = document.getElementById('addedFixtures').innerHTML;
+            const fixtureResult = document.getElementById('fixtureResult').innerHTML;
+
+            // Get total irrigation flow rate
+            const totalIrrigationFlowRate = document.getElementById('total_irrigation_flow_rate').value;
+
+            // Get selected pump results
+            const pumpResultSimplex = document.getElementById('pumpResultSimplex').innerText;
+            const pumpResultDuplex = document.getElementById('pumpResultDuplex').innerText;
+            const pumpResultTriplex = document.getElementById('pumpResultTriplex').innerText;
+
+            // Determine which radio button is checked
+            let selectedPump;
+            if (document.getElementById('flow_rate_simplex').checked) {
+                selectedPump = 'Simplex: ' + pumpResultSimplex + ' GPM';
+            } else if (document.getElementById('flow_rate_duplex').checked) {
+                selectedPump = 'Duplex: ' + pumpResultDuplex + ' GPM';
+            } else if (document.getElementById('flow_rate_triplex').checked) {
+                selectedPump = 'Triplex: ' + pumpResultTriplex + ' GPM';
+            }
+
+            let dischargeResult, suctionResult, totalHeadBoosterPumpResult, selectedPumpType, suctionForm, dischargeForm, helpingCanvas;
+            let dischargeHeightFromPump, dischargePressureRequirement, dischargeTotalPipeRun, dischargeLossesOnValves, dischargeLossesOnFittings;
+            let suctionHead, suctionTotalPipeRun, suctionLossesOnValves, suctionLossesOnFittings;
+            if (type == 'dt') {
+                helpingCanvas = document.getElementById('day_tank_helping_canvas').toDataURL();
+                dischargePressureRequirement = document.getElementById('day_tank_discharge_lf_pr').value;
+                dischargeHeightFromPump = document.getElementById('day_tank_discharge_lf_hp').value;
+                dischargeTotalPipeRun = document.getElementById('day_tank_discharge_tpr').value;
+                dischargeLossesOnValves = document.getElementById('day_tank_discharge_lov').value;
+                dischargeLossesOnFittings = document.getElementById('day_tank_discharge_lof').value;
+                dischargeResult = document.getElementById('DayTankDischargeResult').innerHTML;
+                suctionHead = document.getElementById('day_tank_suction_h').value;
+                suctionTotalPipeRun = document.getElementById('day_tank_suction_tpr').value;
+                suctionLossesOnValves = document.getElementById('day_tank_suction_lov').value;
+                suctionLossesOnFittings = document.getElementById('day_tank_suction_lof').value;
+                suctionResult = document.getElementById('DayTankSuctionResult').innerHTML;
+                totalHeadBoosterPumpResult = document.getElementById('DayTankTotalHeadBoosterPumpResult').innerHTML;
+
+                // Get selected pump type (Vertical Multistage or Submersible)
+                selectedPumpType = document.querySelector('input[name="day_tank_pump_type"]:checked').value; // Assuming radio buttons or similar input for pump type
+
+            }
+            else if (type == 'ml') {
+                helpingCanvas = document.getElementById('municipal_line_helping_canvas').toDataURL();
+                dischargePressureRequirement = document.getElementById('municipal_line_discharge_lf_pr').value;
+                dischargeHeightFromPump = document.getElementById('municipal_line_discharge_lf_hp').value;
+                dischargeTotalPipeRun = document.getElementById('municipal_line_discharge_tpr').value;
+                dischargeLossesOnValves = document.getElementById('municipal_line_discharge_lov').value;
+                dischargeLossesOnFittings = document.getElementById('municipal_line_discharge_lof').value;
+                dischargeResult = document.getElementById('MunicipalLineDischargeResult').innerHTML;
+                suctionHead = document.getElementById('municipal_line_suction_p').value;
+                suctionTotalPipeRun = document.getElementById('municipal_line_suction_tpr').value;
+                suctionLossesOnValves = document.getElementById('municipal_line_suction_lov').value;
+                suctionLossesOnFittings = document.getElementById('municipal_line_suction_lof').value;
+                suctionResult = document.getElementById('MunicipalLineSuctionResult').innerHTML;
+                totalHeadBoosterPumpResult = document.getElementById('MunicipalLineTotalHeadBoosterPumpResult').innerHTML;
+
+                // Get selected pump type (Vertical Multistage or Submersible)
+                selectedPumpType = document.querySelector('input[name="municipal_line_pump_type"]:checked').value; // Assuming radio buttons or similar input for pump type
+
+            }
+
+            // Get the selected model's chart
+            const selectedModelChart = document.getElementById(modelId).innerHTML; // Assuming the selected model has a class 'selected'
+
+            // Store data in localStorage
+            localStorage.setItem('addedFixtures', addedFixtures);
+            localStorage.setItem('fixtureResult', fixtureResult);
+            localStorage.setItem('totalIrrigationFlowRate', totalIrrigationFlowRate + ' GPM');
+            localStorage.setItem('selectedPump', selectedPump);
+            localStorage.setItem('helpingCanvas', helpingCanvas);
+            localStorage.setItem('dischargePressureRequirement', dischargePressureRequirement);
+            localStorage.setItem('dischargeHeightFromPump', dischargeHeightFromPump);
+            localStorage.setItem('dischargeTotalPipeRun', dischargeTotalPipeRun);
+            localStorage.setItem('dischargeLossesOnValves', dischargeLossesOnValves);
+            localStorage.setItem('dischargeLossesOnFittings', dischargeLossesOnFittings);
+            localStorage.setItem('dischargeResult', dischargeResult);
+            localStorage.setItem('suctionHead', suctionHead);
+            localStorage.setItem('suctionTotalPipeRun', suctionTotalPipeRun);
+            localStorage.setItem('suctionLossesOnValves', suctionLossesOnValves);
+            localStorage.setItem('suctionLossesOnFittings', suctionLossesOnFittings);
+            localStorage.setItem('suctionResult', suctionResult);
+            localStorage.setItem('totalHeadBoosterPumpResult', totalHeadBoosterPumpResult);
+            localStorage.setItem('selectedPumpType', selectedPumpType);
+            localStorage.setItem('selectedModelChart', selectedModelChart);
+
+            // Redirect to the summary page
+            window.location.href = 'https://rainwaterharvesting.services/model-summary/';
+        }
+
 
         const fixturesData = [
             {
@@ -1391,6 +1871,8 @@
             document.getElementById('total_irrigation_flow_rate').value = totalFlow.toFixed(2);
             document.getElementById('irrigationFlowRateError').innerHTML = "";
 
+            triggerInputEvent('total_irrigation_flow_rate');
+
         }
 
         function calculateTotalPumpFlow() {
@@ -1429,10 +1911,73 @@
             document.getElementById('pumpResultSimplex').innerHTML = simplexFlow.toFixed(2);
             document.getElementById('pumpResultDuplex').innerHTML = duplexFlow.toFixed(2);
             document.getElementById('pumpResultTriplex').innerHTML = triplexFlow.toFixed(2);
-
-
-
+            document.getElementById('fl_message'), textContent = '';
         }
+
+        function triggerInputEvent(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                const event = new Event('input', { bubbles: true });
+                element.dispatchEvent(event);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Define the fields you want to watch
+            const formFields = ['total_irrigation_flow_rate'];
+
+            // Get the message element
+            const messageElement = document.getElementById('fr_message');
+
+            // Set up the MutationObserver to watch for changes to the fixtureResult element
+            const fixtureResultElement = document.getElementById('fixtureResult');
+            const observer = new MutationObserver(() => {
+                updateMessage("The fixture result has been updated. Please review.");
+            });
+
+            // Configure the observer
+            if (fixtureResultElement) {
+                observer.observe(fixtureResultElement, { childList: true, subtree: true });
+            }
+
+            // Function to update the message element
+            function updateMessage(text) {
+                if (messageElement && isEventButtonClicked) {
+                    messageElement.textContent = text;
+                }
+            }
+
+            // Function to hide the message
+            function hideMessage() {
+                if (messageElement) {
+                    messageElement.textContent = ''; // Clear the message
+                }
+            }
+
+            // Attach input event listeners to the form fields
+            formFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', () => {
+                        updateMessage("You have changed a form value. Please review your inputs.");
+                    });
+                }
+            });
+
+            // Function to handle the button click event and hide the message
+            function handleButtonClick() {
+                // Add any necessary validation here
+                if (fixtureResultElement && fixtureResultElement.textContent.trim() !== '') {
+                    hideMessage(); // Hide the message if everything is good
+                }
+            }
+
+            // Attach the button click event listener
+            const button = document.querySelector('button[onclick="calculateTotalPumpFlow()"]'); // Ensure this selector matches your button
+            if (button) {
+                button.addEventListener('click', handleButtonClick);
+            }
+        });
 
         function DayTankDischargeLossesFittings() {
             const dayTankDischargeTPR = parseFloat(document.getElementById('day_tank_discharge_tpr').value);
@@ -1522,8 +2067,58 @@
 
             document.getElementById('DayTankTotalHeadBoosterPumpResult').innerHTML = `Total Head of Booster Pump: ${dayTankTotalHeadOfBoosterPump.toFixed(2)} feet`;
 
+            document.getElementById('dt_message').textContent = '';
             return +dayTankTotalHeadOfBoosterPump.toFixed(0);
         }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Get the elements to observe
+            const dischargeResultElement = document.getElementById('DayTankDischargeResult');
+            const suctionResultElement = document.getElementById('DayTankSuctionResult');
+            const button = document.querySelector('button[onclick="DayTankTotalHeadBoosterPumpResult()"]'); // Select button by its onclick handler
+
+            // Get the message element for displaying updates
+            const messageElement = document.getElementById('dt_message');
+
+            // Create a MutationObserver to watch for changes to the <h4> elements
+            const observer = new MutationObserver(() => {
+                updateButtonState();
+                updateMessage("The Day Tank results have changed. Please review the new values.");
+            });
+
+            // Configure the observer to watch for changes in the child list of the <h4> elements
+            observer.observe(dischargeResultElement, { childList: true, subtree: true });
+            observer.observe(suctionResultElement, { childList: true, subtree: true });
+
+            // Function to update the message element
+            function updateMessage(text) {
+                if (messageElement && isEventButtonClicked) {
+                    messageElement.textContent = text;
+                }
+            }
+
+            // Function to update button state based on the content of the <h4> elements
+            function updateButtonState() {
+                const hasDischargeResult = dischargeResultElement.textContent.trim() !== '';
+                const hasSuctionResult = suctionResultElement.textContent.trim() !== '';
+                button.disabled = !(hasDischargeResult && hasSuctionResult); // Enable button only if both <h4> elements have content
+            }
+
+            // Function to hide the message
+            function hideMessage() {
+                if (messageElement) {
+                    messageElement.textContent = ''; // Clear the message
+                }
+            }
+
+            // Attach click event listener to the button
+            button.addEventListener('click', (event) => {
+                // Optionally: Add validation or condition checks here
+                if (dischargeResultElement.textContent.trim() !== '' && suctionResultElement.textContent.trim() !== '') {
+                    hideMessage(); // Hide the message if everything is good
+                }
+            });
+        });
 
         function dayTankHelpingCanvas() {
             var canvas = document.getElementById("day_tank_helping_canvas");
@@ -1720,6 +2315,55 @@
             return +municipalLineTotalHeadOfBoosterPump.toFixed(0);
         }
 
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Get the elements to observe
+            const dischargeResultElement = document.getElementById('MunicipalLineDischargeResult');
+            const suctionResultElement = document.getElementById('MunicipalLineSuctionResult');
+            const button = document.querySelector('button[onclick="MunicipalLineTotalHeadBoosterPumpResult()"]'); // Select button by its onclick handler
+
+            // Get the message element for displaying updates
+            const messageElement = document.getElementById('ml_message');
+
+            // Create a MutationObserver to watch for changes to the <h4> elements
+            const observer = new MutationObserver(() => {
+                updateButtonState();
+                updateMessage("The Day Tank results have changed. Please review the new values.");
+            });
+
+            // Configure the observer to watch for changes in the child list of the <h4> elements
+            observer.observe(dischargeResultElement, { childList: true, subtree: true });
+            observer.observe(suctionResultElement, { childList: true, subtree: true });
+
+            // Function to update the message element
+            function updateMessage(text) {
+                if (messageElement && isEventButtonClicked) {
+                    messageElement.textContent = text;
+                }
+            }
+
+            // Function to update button state based on the content of the <h4> elements
+            function updateButtonState() {
+                const hasDischargeResult = dischargeResultElement.textContent.trim() !== '';
+                const hasSuctionResult = suctionResultElement.textContent.trim() !== '';
+                button.disabled = !(hasDischargeResult && hasSuctionResult); // Enable button only if both <h4> elements have content
+            }
+
+            // Function to hide the message
+            function hideMessage() {
+                if (messageElement) {
+                    messageElement.textContent = ''; // Clear the message
+                }
+            }
+
+            // Attach click event listener to the button
+            button.addEventListener('click', (event) => {
+                // Optionally: Add validation or condition checks here
+                if (dischargeResultElement.textContent.trim() !== '' && suctionResultElement.textContent.trim() !== '') {
+                    hideMessage(); // Hide the message if everything is good
+                }
+            });
+        });
+
         function municipalLineHelpingCanvas() {
             var canvas = document.getElementById("municipal_line_helping_canvas");
             var ctx = canvas.getContext("2d");
@@ -1835,8 +2479,71 @@
 
 
         }
+        let isEventButtonClicked = true;
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Get the elements
+            const messageElement = document.getElementById('dayTankMessage');
+            const dayTankResultElement = document.getElementById('DayTankTotalHeadBoosterPumpResult');
+            const pumpResultDivs = document.querySelectorAll('.pumpResult');
+
+            // Function to update the message
+            function updateMessage(text) {
+                if (messageElement) {
+                    messageElement.textContent = text;
+                }
+            }
+
+            // Function to hide the message
+            function hideMessage() {
+                if (messageElement) {
+                    messageElement.textContent = ''; // Clear the message
+                }
+            }
+
+            // Add event listeners to radio buttons inside .pumpResult
+            pumpResultDivs.forEach(div => {
+                const radioButtons = div.querySelectorAll('input[type="radio"]');
+                radioButtons.forEach(button => {
+                    button.addEventListener('change', () => {
+                        updateMessage("The pump selection has been updated. Please review.");
+                    });
+                });
+            });
+
+            // Add event listener for changes to the DayTankTotalHeadBoosterPumpResult element
+            const observer = new MutationObserver(() => {
+                updateMessage("The total head booster pump result has been updated. Please review.");
+            });
+
+            if (dayTankResultElement) {
+                observer.observe(dayTankResultElement, { childList: true, subtree: true });
+            }
+
+            // Function to handle the button click event
+            function dayTankPumpType() {
+                // Add any necessary validation or actions here
+                hideMessage(); // Hide the message when the button is clicked
+            }
+
+            // Attach the button click event listener
+            const button = document.querySelector('button[onclick="dayTankPumpType()"]');
+            if (button) {
+                button.addEventListener('click', dayTankPumpType);
+            }
+
+            // Optional: Observe changes in the .pumpResult divs
+            pumpResultDivs.forEach(div => {
+                const observerDiv = new MutationObserver(() => {
+                    updateMessage("The pump result details have been updated. Please review.");
+                });
+
+                observerDiv.observe(div, { childList: true, subtree: true });
+            });
+        });
 
         function dayTankPumpType() {
+            isEventButtonClicked = false;
             handlePumpType(
                 'day_tank_pump_type',
                 DayTankTotalHeadBoosterPumpResult(),
@@ -1847,9 +2554,11 @@
                 getDayTankVerticalPumps(),
                 getDayTankSubmersiblePumps()
             );
+
         }
 
         function municipalLinePumpType() {
+            isEventButtonClicked = false;
             handlePumpType(
                 'municipal_line_pump_type',
                 MunicipalLineTotalHeadBoosterPumpResult(),
@@ -1860,6 +2569,7 @@
                 getMunicipalLineVerticalPumps(),
                 getMunicipalLineSubmersiblePumps()
             );
+
         }
 
         function handlePumpType(pumpTypeInputName, totalHead, errorMsgVM, errorMsgS, hiddenDivId, visibleDivId, verticalPumps, submersiblePumps) {
@@ -1903,6 +2613,8 @@
             } else {
                 document.getElementById(noMatchMsgElemId).innerHTML = "";
             }
+            isEventButtonClicked = true;
+
         }
 
         async function handlePumpSelection(pumps, totalHead, flowRate) {
