@@ -2,13 +2,14 @@
 <html lang="en">
 
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Rain-Water Calculator</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-
+   
     <style>
         .page__banner-content {
             text-align: center
@@ -239,12 +240,16 @@
 
         .summary-button {
             background-color: green;
-            color: rgb(163, 35, 163);
         }
 
         .summary-button:hover {
             background-color: orangered;
             color: greenyellow;
+        }
+        .red_message{
+            font-size: small;
+            margin-left: 10px; 
+            color: red;
         }
     </style>
 </head>
@@ -330,7 +335,7 @@
 
                     <div><button type="button" onclick="calculateTotalPumpFlow()">Calculate Total Pump Flow
                             Rate</button>
-                        <p id="fr_message" style="display: inline-block; margin-left: 10px; color: red;"></p>
+                        <p id="fr_message" class='red_message'></p>
                     </div>
 
                     <h3>
@@ -428,7 +433,7 @@
                             Head
                             of Booster
                             Pump</button>
-                        <p id="dt_message" style="display: inline-block; margin-left: 10px; color: red;"></p>
+                        <p id="dt_message" class='red_message'></p>
 
                         <h3 id="DayTankTotalHeadBoosterPumpResult"></h3>
                     </div>
@@ -449,7 +454,7 @@
                 <br><br>
                 <button type="button" onclick="dayTankPumpType()">Click to view available pump models for Day
                     Tank</button>
-                <span id="dayTankMessage" style="font-size: small; margin-left: 10px; color: red;"></span>
+                <span id="dayTankMessage" class='red_message'></span>
 
             </div>
         </div>
@@ -462,7 +467,7 @@
                     alt="simple vertical multistage V110 to V270">
                 <br>
                 <div class="chart-container">
-                    <div id="frdtv110" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtv110" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv110')">Select
                             this model and
@@ -476,7 +481,7 @@
                 </div>
                 <br>
                 <div class="chart-container">
-                    <div id="frdtv190" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtv190" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv190')">Select
                             this model and
@@ -490,7 +495,7 @@
                 </div>
                 <br>
                 <div class="chart-container">
-                    <div id="frdtv270" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtv270" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv270')">Select
                             this model and
@@ -506,7 +511,7 @@
                     alt="simple vertical multistage V10 to V80">
                 <br>
                 <div class="chart-container">
-                    <div id="frdtv10" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtv10" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv10')">Select
                             this model and
@@ -520,7 +525,7 @@
                 </div>
                 <br>
                 <div class="chart-container">
-                    <div id="frdtv20" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtv20" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv20')">Select
                             this model and
@@ -534,7 +539,7 @@
                 </div>
                 <br>
                 <div class="chart-container">
-                    <div id="frdtv30" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtv30" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv30')">Select
                             this model and
@@ -548,7 +553,7 @@
                 </div>
                 <br>
                 <div class="chart-container">
-                    <div id="frdtv50" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtv50" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv50')">Select
                             this model and
@@ -562,7 +567,7 @@
                 </div>
                 <br>
                 <div class="chart-container">
-                    <div id="frdtv80" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtv80" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv80')">Select
                             this model and
@@ -584,7 +589,7 @@
                     alt="submersible Wilo TWI 4">
                 <br>
                 <div class="chart-container">
-                    <div id="frdttwi4-05" style="width: 100%; height: 100%;"></div>
+                    <div id="frdttwi4-05" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdttwi4-05')">Select this model and
@@ -597,7 +602,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frdttwi4-07" style="width: 100%; height: 100%;"></div>
+                    <div id="frdttwi4-07" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdttwi4-07')">Select this model and
@@ -610,7 +615,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frdttwi4-10" style="width: 100%; height: 100%;"></div>
+                    <div id="frdttwi4-10" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdttwi4-10')">Select this model and
@@ -623,7 +628,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frdttwi4-18" style="width: 100%; height: 100%;"></div>
+                    <div id="frdttwi4-18" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdttwi4-18')">Select this model and
@@ -636,7 +641,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frdttwi4-25" style="width: 100%; height: 100%;"></div>
+                    <div id="frdttwi4-25" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdttwi4-25')">Select this model and
@@ -649,7 +654,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frdttwi4-40" style="width: 100%; height: 100%;"></div>
+                    <div id="frdttwi4-40" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdttwi4-40')">Select this model and
@@ -662,7 +667,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frdttwi4-70" style="width: 100%; height: 100%;"></div>
+                    <div id="frdttwi4-70" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdttwi4-70')">Select this model and
@@ -678,7 +683,7 @@
                     alt="submersible Wilo SPI 4-6-8-10">
                 <br>
                 <div class="chart-container">
-                    <div id="frdtspi650s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtspi650s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdtspi650s1')">Select this model and
@@ -693,7 +698,7 @@
                 </div>
                 <br>
                 <div class="chart-container">
-                    <div id="frdtspi650s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtspi650s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdtspi650s1')">Select this model and
@@ -707,7 +712,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frdtspi6150s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtspi6150s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdtspi6150s1')">Select this model and
@@ -721,7 +726,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frdtspi6180s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtspi6180s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdtspi6180s1')">Select this model and
@@ -735,7 +740,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frdtspi6230s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtspi6230s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdtspi6230s1')">Select this model and
@@ -749,7 +754,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frdtspi6300s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtspi6300s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdtspi6300s1')">Select this model and
@@ -763,7 +768,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frdtspi7400s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtspi7400s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdtspi7400s1')">Select this model and
@@ -777,7 +782,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frdtspi7500s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtspi7500s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdtspi7500s1')">Select this model and
@@ -791,7 +796,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frdtspi7550s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtspi7550s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdtspi7550s1')">Select this model and
@@ -805,7 +810,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frdtspi8550s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtspi8550s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdtspi8550s1')">Select this model and
@@ -819,7 +824,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frdtspi8650s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtspi8650s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdtspi8650s1')">Select this model and
@@ -833,7 +838,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frdtspi8800s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtspi8800s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdtspi8800s1')">Select this model and
@@ -847,7 +852,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frdtspi101200s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frdtspi101200s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdtspi101200s1')">Select this model and
@@ -944,7 +949,7 @@
                     <div>
                         <button type="button" onclick="MunicipalLineTotalHeadBoosterPumpResult()">
                             Calculate Day Tank Total Head of Booster Pump</button>
-                        <p id="ml_message" style="display: inline-block; margin-left: 10px; color: red;"></p>
+                        <p id="ml_message" class='red_message'></p>
 
                         <h3 id="MunicipalLineTotalHeadBoosterPumpResult"></h3>
                     </div>
@@ -978,7 +983,7 @@
                     alt="simple vertical multistage V110 to V270">
                 <br>
                 <div class="chart-container">
-                    <div id="frmlv110" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlv110" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv110')">Select
                             this model and
@@ -992,7 +997,7 @@
                 </div>
                 <br>
                 <div class="chart-container">
-                    <div id="frmlv190" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlv190" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv190')">Select
                             this model and
@@ -1006,7 +1011,7 @@
                 </div>
                 <br>
                 <div class="chart-container">
-                    <div id="frmlv270" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlv270" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv270')">Select
                             this model and
@@ -1022,7 +1027,7 @@
                     alt="simple vertical multistage V10 to V80">
                 <br>
                 <div class="chart-container">
-                    <div id="frmlv10" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlv10" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv10')">Select
                             this model and
@@ -1036,7 +1041,7 @@
                 </div>
                 <br>
                 <div class="chart-container">
-                    <div id="frmlv20" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlv20" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv20')">Select
                             this model and
@@ -1050,7 +1055,7 @@
                 </div>
                 <br>
                 <div class="chart-container">
-                    <div id="frmlv30" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlv30" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv30')">Select
                             this model and
@@ -1064,7 +1069,7 @@
                 </div>
                 <br>
                 <div class="chart-container">
-                    <div id="frmlv50" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlv50" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv50')">Select
                             this model and
@@ -1078,7 +1083,7 @@
                 </div>
                 <br>
                 <div class="chart-container">
-                    <div id="frmlv80" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlv80" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv80')">Select
                             this model and
@@ -1097,7 +1102,7 @@
                     alt="submersible Wilo TWI 4">
                 <br>
                 <div class="chart-container">
-                    <div id="frmltwi4-05" style="width: 100%; height: 100%;"></div>
+                    <div id="frmltwi4-05" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmltwi4-05')">Select this model and
@@ -1110,7 +1115,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frmltwi4-07" style="width: 100%; height: 100%;"></div>
+                    <div id="frmltwi4-07" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmltwi4-07')">Select this model and
@@ -1123,7 +1128,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frmltwi4-10" style="width: 100%; height: 100%;"></div>
+                    <div id="frmltwi4-10" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmltwi4-10')">Select this model and
@@ -1136,7 +1141,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frmltwi4-18" style="width: 100%; height: 100%;"></div>
+                    <div id="frmltwi4-18" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmltwi4-18')">Select this model and
@@ -1149,7 +1154,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frmltwi4-25" style="width: 100%; height: 100%;"></div>
+                    <div id="frmltwi4-25" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmltwi4-25')">Select this model and
@@ -1162,7 +1167,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frmltwi4-40" style="width: 100%; height: 100%;"></div>
+                    <div id="frmltwi4-40" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmltwi4-40')">Select this model and
@@ -1175,7 +1180,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frmltwi4-70" style="width: 100%; height: 100%;"></div>
+                    <div id="frmltwi4-70" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmltwi4-70')">Select this model and
@@ -1191,7 +1196,7 @@
                     alt="submersible Wilo SPI 4-6-8-10">
                 <br>
                 <div class="chart-container">
-                    <div id="frmlspi650s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlspi650s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmlspi650s1')">Select this model and
@@ -1205,7 +1210,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frmlspi690s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlspi690s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmlspi690s1')">Select this model and
@@ -1219,7 +1224,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frmlspi6150s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlspi6150s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmlspi6150s1')">Select this model and
@@ -1233,7 +1238,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frmlspi6180s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlspi6180s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmlspi6180s1')">Select this model and
@@ -1247,7 +1252,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frmlspi6230s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlspi6230s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmlspi6230s1')">Select this model and
@@ -1261,7 +1266,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frmlspi6300s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlspi6300s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmlspi6300s1')">Select this model and
@@ -1275,7 +1280,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frmlspi7400s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlspi7400s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmlspi7400s1')">Select this model and
@@ -1288,7 +1293,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frmlspi7500s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlspi7500s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmlspi7500s1')">Select this model and
@@ -1302,7 +1307,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frmlspi7550s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlspi7550s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmlspi7550s1')">Select this model and
@@ -1316,7 +1321,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frmlspi8550s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlspi8550s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmlspi8550s1')">Select this model and
@@ -1330,7 +1335,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frmlspi8650s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlspi8650s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmlspi8650s1')">Select this model and
@@ -1344,7 +1349,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frmlspi8800s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlspi8800s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmlspi8800s1')">Select this model and
@@ -1358,7 +1363,7 @@
                     </div>
                 </div><br>
                 <div class="chart-container">
-                    <div id="frmlspi101200s1" style="width: 100%; height: 100%;"></div>
+                    <div id="frmlspi101200s1" ></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('ml','frmlspi101200s1')">Select this model and
@@ -1403,7 +1408,7 @@
                 selectedPump = 'Triplex: ' + pumpResultTriplex + ' GPM';
             }
 
-            let dischargeResult, suctionResult, totalHeadBoosterPumpResult, selectedPumpType, suctionForm, dischargeForm, helpingCanvas;
+            let dischargeResult, suctionResult, totalHeadBoosterPumpResult, selectedPumpType, helpingCanvas;
             let dischargeHeightFromPump, dischargePressureRequirement, dischargeTotalPipeRun, dischargeLossesOnValves, dischargeLossesOnFittings;
             let suctionHead, suctionTotalPipeRun, suctionLossesOnValves, suctionLossesOnFittings;
             if (type == 'dt') {
@@ -1911,7 +1916,7 @@
             document.getElementById('pumpResultSimplex').innerHTML = simplexFlow.toFixed(2);
             document.getElementById('pumpResultDuplex').innerHTML = duplexFlow.toFixed(2);
             document.getElementById('pumpResultTriplex').innerHTML = triplexFlow.toFixed(2);
-            document.getElementById('fl_message'), textContent = '';
+            document.getElementById('fl_message').textContent = '';
         }
 
         function triggerInputEvent(elementId) {
