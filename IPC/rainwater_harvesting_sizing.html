@@ -190,12 +190,18 @@
             margin-bottom: 0px;
         }
 
-        .delete_btn {
+        .reset_irrigation {
             background-color: #FFBA41;
             color: #033C59;
         }
 
-        .delete_btn:hover {
+        #remove_fixture {
+            background-color: #FFBA41;
+            color: #033C59;
+            margin-top: 10px;
+        }
+
+        .reset_irrigation:hover {
             background-color: #033C59;
             color: #FFBA41;
         }
@@ -258,12 +264,12 @@
             height: 100%;
         }
 
-        #sprinklerMessage{
-            color: red; 
+        #sprinklerMessage {
+            color: red;
             display: none;
         }
 
-        .h4_or{
+        .h4_or {
             color: #bd6e20;
         }
     </style>
@@ -271,123 +277,121 @@
 
 
 <body>
-    <div>
-        <div class="rainwater_div" id="flow_rate">
-            <h2 id="flow_rate_h2">Flow Rate Calculator</h2>
-            <div class="rw_container">
-                <div class="rw_container_div">
-                    <form id="addFixturesForm" onsubmit="addFixtures()">
-                        <h3>Fixture Flow Rate Calculation</h3>
-                        <div class="rainwater_div">
-                            <label for="occupancy">Select Occupancy:</label>
-                            <select id="occupancy" onchange="populateFixtures()" required>
-                                <option value="">Select Occupancy</option>
-                                <option value="Private">Private</option>
-                                <option value="Public">Public</option>
-                            </select>
-                            <br><br>
-
-                            <label for="fixtures">Select Fixture:</label>
-                            <select id="fixtures" onchange="populateSupplyControl()" required disabled>
-                                <option value="">Select Fixture</option>
-                            </select>
-                            <br><br>
-
-                            <label for="supplyControl">Type of Supply Control:</label>
-                            <select id="supplyControl" required disabled>
-                                <option value="">Select Supply Control</option>
-                            </select>
-                            <br><br>
-
-                            <label for="pipeSize">Nominal Pipe Size (NPS):</label>
-                            <select id="pipeSize" name="pipeSize" disabled>
-                                <option value="">Select Pipe Size</option>
-                            </select>
-                            <br><br>
-
-                            <label for="numberOfFixtures">Number of Fixtures:</label>
-                            <input type="number" id="numberOfFixtures" class="no-spinner" placeholder="Enter number"
-                                required>
-
-                        </div>
-                        <div class="button_inline">
-                            <button type="submit">Add Fixture</button>
-                            <button type="button" class="delete_btn" onclick="removeLastFixture()">Remove Last
-                                Fixture</button>
-                        </div>
-
-                        <p id="addFixtureError" class="required_message"></p>
-                    </form>
-                    <p id="addedFixtures"></p>
-
-                    <br>
-                    <h4 id="fixtureResult"></h4>
-
-                </div>
-                <div class="rw_container_div">
-                    <form id="irrigationForm" onsubmit="calculateIrrigationFlow()">
-                        <h3>Irrigation Calculation</h3>
-                        <div class="rainwater_div">
-                            <label for="irrigation_sprinklers">Number of Sprinklers:</label>
-                            <input type="number" id="irrigation_sprinklers" class="no-spinner"
-                                placeholder="Enter number" required><br><br>
-
-                            <label for="irrigation_flow_rate">Flow Rate (GPM):</label>
-                            <input type="number" id="irrigation_flow_rate" class="no-spinner" placeholder="Enter number"
-                                required step="any"><br><br>
-
-                            <label for="irrigation_duration">Duration (Minutes):</label>
-                            <input type="number" id="irrigation_duration" class="no-spinner" placeholder="Enter number"
-                                required step="any">
-                            <p id="sprinklerMessage">Sprinklers value is 0, other fields are disabled.</p>
-
-                        </div>
-                        <div class="button_inline">
-                            <button type="submit">Calculate Irrigation Flow Rate</button>
-                            <button type="button" class="delete_btn" onclick="resetIrrigationForm()">Reset Irrigation
-                                Calculation</button>
-                        </div>
-                    </form>
-
-                    <h4 class="h4_or">OR</h4>
-
-                    <h3>Total Irrigation Flow Rate</h3>
+    <div class="rainwater_div" id="flow_rate">
+        <h2 id="flow_rate_h2">Flow Rate Calculator</h2>
+        <div class="rw_container">
+            <div class="rw_container_div">
+                <form id="addFixturesForm" onsubmit="addFixtures()">
+                    <h3>Fixture Flow Rate Calculation</h3>
                     <div class="rainwater_div">
-                        <label for="total_irrigation_flow_rate">Total Flow Rate (GPM):</label>
-                        <input type="number" id="total_irrigation_flow_rate" class="no-spinner"
-                            placeholder="Enter number" required step="any">
-                    </div>
+                        <label for="occupancy">Select Occupancy:</label>
+                        <select id="occupancy" onchange="populateFixtures()" required>
+                            <option value="">Select Occupancy</option>
+                            <option value="Private">Private</option>
+                            <option value="Public">Public</option>
+                        </select>
+                        <br><br>
 
-                    <div><button type="button" onclick="calculateTotalPumpFlow()">Calculate Total Pump Flow
-                            Rate</button>
-                        <p id="fr_message" class='red_message'></p>
-                    </div>
+                        <label for="fixtures">Select Fixture:</label>
+                        <select id="fixtures" onchange="populateSupplyControl()" required disabled>
+                            <option value="">Select Fixture</option>
+                        </select>
+                        <br><br>
 
-                    <h3>
-                        <div class="pumpResult">
-                            <input type="radio" id="flow_rate_simplex" name="flow_rate_sdt" value="flow_rate_simplex"
-                                checked="checked">
-                            <label for="flow_rate_simplex">Simplex: &nbsp;<span id="pumpResultSimplex"></span>&nbsp;
-                                GPM</label>
-                        </div>
-                        <div class="pumpResult">
-                            <input type="radio" id="flow_rate_duplex" name="flow_rate_sdt" value="flow_rate_duplex">
-                            <label for="flow_rate_duplex">Duplex: &nbsp;<span id="pumpResultDuplex"></span>&nbsp;
-                                GPM</label>
-                        </div>
-                        <div class="pumpResult">
-                            <input type="radio" id="flow_rate_triplex" name="flow_rate_sdt" value="flow_rate_triplex">
-                            <label for="flow_rate_triplex">Triplex: &nbsp;<span id="pumpResultTriplex"></span>&nbsp;
-                                GPM</label>
-                        </div>
-                    </h3>
+                        <label for="supplyControl">Type of Supply Control:</label>
+                        <select id="supplyControl" required disabled>
+                            <option value="">Select Supply Control</option>
+                        </select>
+                        <br><br>
+
+                        <label for="pipeSize">Nominal Pipe Size (NPS):</label>
+                        <select id="pipeSize" name="pipeSize" disabled required>
+                            <option value="">Select Pipe Size</option>
+                        </select>
+                        <br><br>
+
+                        <label for="numberOfFixtures">Number of Fixtures:</label>
+                        <input type="number" id="numberOfFixtures" class="no-spinner" placeholder="Enter number"
+                            required>
+
+                    </div>
+                    <div>
+                        <button id="add_fixture" type="submit">Add some Fixtures to see WSFU & FlowRate gpm
+                        </button>
+                    </div>
+                    <div>
+                        <button type="button" id="remove_fixture" onclick="removeLastFixture()">Remove Last
+                            Fixture</button>
+                    </div>
+                    <p id="addFixtureError" class="required_message"></p>
+                </form>
+                <p id="addedFixtures"></p>
+
+                <br>
+                <h4 id="fixtureResult"></h4>
+
+            </div>
+            <div class="rw_container_div">
+                <form id="irrigationForm" onsubmit="calculateIrrigationFlow()">
+                    <h3>Irrigation Calculation</h3>
+                    <div class="rainwater_div">
+                        <label for="irrigation_sprinklers">Number of Sprinklers:</label>
+                        <input type="number" id="irrigation_sprinklers" class="no-spinner" placeholder="Enter number"
+                            required><br><br>
+
+                        <label for="irrigation_flow_rate">Flow Rate (GPM):</label>
+                        <input type="number" id="irrigation_flow_rate" class="no-spinner" placeholder="Enter number"
+                            required step="any"><br><br>
+
+                        <label for="irrigation_duration">Duration (Minutes):</label>
+                        <input type="number" id="irrigation_duration" class="no-spinner" placeholder="Enter number"
+                            required step="any">
+                        <p id="sprinklerMessage">Sprinklers value is 0, other fields are disabled.</p>
+
+                    </div>
+                    <div class="button_inline">
+                        <button type="submit">Calculate Irrigation Flow Rate</button>
+                        <button type="button" class="reset_irrigation" onclick="resetIrrigationForm()">Reset Irrigation
+                            Calculation</button>
+                    </div>
+                </form>
+
+                <h4 class="h4_or">OR</h4>
+
+                <h3>Total Irrigation Flow Rate</h3>
+                <div class="rainwater_div">
+                    <label for="total_irrigation_flow_rate">Total Flow Rate (GPM):</label>
+                    <input type="number" id="total_irrigation_flow_rate" class="no-spinner" placeholder="Enter number"
+                        required step="any">
                 </div>
+                <div>
+                    <p id="fr_message" class='red_message'></p>
+                </div>
+
+                <h3>
+                    <div class="pumpResult">
+                        <input type="radio" id="flow_rate_simplex" name="flow_rate_sdt" value="flow_rate_simplex"
+                            checked="checked">
+                        <label for="flow_rate_simplex">Simplex: &nbsp;<span id="pumpResultSimplex"></span>&nbsp;
+                            GPM</label>
+                    </div>
+                    <div class="pumpResult">
+                        <input type="radio" id="flow_rate_duplex" name="flow_rate_sdt" value="flow_rate_duplex">
+                        <label for="flow_rate_duplex">Duplex: &nbsp;<span id="pumpResultDuplex"></span>&nbsp;
+                            GPM</label>
+                    </div>
+                    <div class="pumpResult">
+                        <input type="radio" id="flow_rate_triplex" name="flow_rate_sdt" value="flow_rate_triplex">
+                        <label for="flow_rate_triplex">Triplex: &nbsp;<span id="pumpResultTriplex"></span>&nbsp;
+                            GPM</label>
+                    </div>
+                </h3>
             </div>
         </div>
     </div>
 
-    <div>
-        <div class="rainwater_div" id="day_tank">
+    <div class="rainwater_div" id="day_tank">
+        <div id="day_tank_calculation">
             <h2 id="day_tank_h2">Day Tank Calculation</h2>
             <div class="helping_canvas">
                 <canvas id="day_tank_helping_canvas" width="500" height="500"></canvas>
@@ -464,25 +468,23 @@
                 </div>
             </div>
         </div>
-        <div class="rw_container">
 
-            <div class="rainwater_div">
-                <h3>Pump Type</h3>
+        <div class="rainwater_div" id="day_tank_pump_types">
+            <h3>Pump Type</h3>
 
-                <p>Please select pump type:</p>
-                <input type="radio" id="dt_vertical_multi-stage" name="day_tank_pump_type" value="vertical_multi-stage"
-                    checked="checked">
-                <label for="dt_vertical_multi-stage">Vertical Multi-Stage Pump</label>
-                <input type="radio" id="dt_submersible" name="day_tank_pump_type" value="submersible">
-                <label for="dt_submersible">Submersible Pump</label>
-                <br><br>
-                <button type="button" onclick="dayTankPumpType()">Click to view available pump models for Day
-                    Tank</button>
-                <span id="dayTankMessage" class='red_message'></span>
+            <p>Please select pump type:</p>
+            <input type="radio" id="dt_vertical_multi-stage" name="day_tank_pump_type" value="vertical_multi-stage"
+                checked="checked">
+            <label for="dt_vertical_multi-stage">Vertical Multi-Stage Pump</label>
+            <input type="radio" id="dt_submersible" name="day_tank_pump_type" value="submersible">
+            <label for="dt_submersible">Submersible Pump</label>
+            <br><br>
+            <button type="button" onclick="dayTankPumpType()">Click to view available pump models for Day
+                Tank</button>
+            <span id="dayTankMessage" class='red_message'></span>
 
-            </div>
         </div>
-        <br>
+
         <div id="day_tank_pump_type_div">
             <div id="dtsvmc">
                 <h3 id="dtvme" class="required_message"></h3>
@@ -499,7 +501,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 110.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-110.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -513,7 +516,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 190.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-190.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -527,7 +531,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 270.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-270.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -543,7 +548,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 10.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-10.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -557,7 +563,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 20.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-20.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -571,7 +578,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 30.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-30.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -585,7 +593,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 50.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-50.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -599,7 +608,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 80.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-80.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -621,7 +631,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',6)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',6)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -634,7 +645,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',8)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',8)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -647,7 +659,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',10)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',10)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -660,7 +673,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',12)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',12)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -673,7 +687,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',14)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',14)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -686,7 +701,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',16)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',16)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -699,7 +715,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',18)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',18)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -716,7 +733,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',6)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',6)">Pump
                             Details</button>
                     </div>
                 </div>
@@ -731,7 +748,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',9)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',9)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -745,7 +762,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',12)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',12)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -759,7 +776,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',14)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',14)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -773,7 +790,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',16)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',16)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -787,7 +804,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',18)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',18)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -801,7 +818,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',32)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',32)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -815,7 +832,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',33)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',33)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -829,7 +846,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',34)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',34)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -843,7 +860,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',39)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',39)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -857,7 +874,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',40)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',40)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -871,7 +888,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',41)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',41)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -885,7 +902,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',46)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',46)">Pump
                             Details</button>
                     </div>
                 </div>
@@ -894,8 +911,8 @@
 
     </div>
 
-    <div>
-        <div class="rainwater_div" id="municipal_line">
+    <div class="rainwater_div" id="municipal_line">
+        <div  id="municipal_line_calculation">
             <h2 id="municipal_line_h2">Municipal Line Calculation</h2>
             <div class="helping_canvas">
                 <canvas id="municipal_line_helping_canvas" width="500" height="500"></canvas>
@@ -981,7 +998,7 @@
             </div>
         </div>
 
-        <div class="rw_container">
+        <div id="municipal_line_pump_types">
 
             <div class="rainwater_div">
                 <h3>Pump Type</h3>
@@ -996,9 +1013,10 @@
                 <button type="button" onclick="municipalLinePumpType()">Click to view available pump models for
                     Municipal
                     Line</button>
+                <span id="municipalLineMessage" class='red_message'></span>
             </div>
         </div>
-        <br>
+        
         <div id="municipal_line_pump_type_div">
             <div id="mlsvmc">
                 <h3 id="mlvme" class="required_message"></h3>
@@ -1015,7 +1033,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 110.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-110.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1029,7 +1048,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 190.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-190.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1043,7 +1063,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 270.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-270.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1059,7 +1080,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 10.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-10.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1073,7 +1095,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 20.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-20.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1087,7 +1110,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 30.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-30.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1101,7 +1125,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 50.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-50.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1115,7 +1140,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 80.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-80.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1134,7 +1160,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',6)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',6)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1147,7 +1174,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',8)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',8)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1160,7 +1188,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',10)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',10)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1173,7 +1202,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',12)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',12)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1186,7 +1216,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',14)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',14)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1199,7 +1230,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',16)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',16)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1212,7 +1244,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',18)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',18)">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1229,7 +1262,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',6)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',6)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1243,7 +1276,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',9)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',9)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1257,7 +1290,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',12)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',12)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1271,7 +1304,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',14)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',14)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1285,7 +1318,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',16)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',16)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1299,7 +1332,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',18)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',18)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1312,7 +1345,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1326,7 +1360,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',32)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',32)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1340,7 +1374,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',33)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',33)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1354,7 +1388,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',34)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',34)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1368,7 +1402,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',39)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',39)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1382,7 +1416,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',41)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',41)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1396,7 +1430,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',46)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',46)">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1522,25 +1556,29 @@
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Urinal",
                 "SUPPLY_CONTROL": "Flush Tank",
-                "PIPE_SIZE": "3/8"
+                "PIPE_SIZE": "3/8",
+                "LOAD_VALUES": 3.0
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Urinal, with self-closing metering valve",
                 "SUPPLY_CONTROL": "Self-Closing Valve",
-                "PIPE_SIZE": "1/2"
+                "PIPE_SIZE": "1/2",
+                "LOAD_VALUES": 4.0
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Water closet, 6 LPF or less",
                 "SUPPLY_CONTROL": "Flush Tank",
-                "PIPE_SIZE": "3/8"
+                "PIPE_SIZE": "3/8",
+                "LOAD_VALUES": 2.2
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Water closet, greater than 6 LPF",
                 "SUPPLY_CONTROL": "Flush Tank",
-                "PIPE_SIZE": "3/8"
+                "PIPE_SIZE": "3/8",
+                "LOAD_VALUES": 5.0
             }
         ];
 
@@ -1649,6 +1687,8 @@
             const fixture = document.getElementById('fixtures').value;
             const supplyControl = document.getElementById('supplyControl').value;
             const numberOfFixtures = parseFloat(document.getElementById('numberOfFixtures').value);
+            const button = document.getElementById('add_fixture');
+            button.textContent = "Add More Fixtures !";
 
             let matchingFixture = findMatchingFixture(occupancy, fixture, supplyControl);
 
@@ -1666,7 +1706,6 @@
                 ...matchingFixture,
                 TOTAL_WSFU: (matchingFixture.LOAD_VALUES * numberOfFixtures).toFixed(2),
                 NoF: numberOfFixtures,
-                NPS: matchingFixture.NPS
             });
             let display = '';
             fixturesTotalWSFU.forEach((fixture, index) => {
@@ -1674,7 +1713,7 @@
                 display += ` O: ${fixture.OCCUPANCY} |`;
                 display += ` F: ${fixture.FIXTURE} |`;
                 display += ` SC: ${fixture.SUPPLY_CONTROL} |`;
-                display += `NPS: ${fixture.NPS} | `;
+                display += `NPS: ${fixture.PIPE_SIZE} | `;
                 display += ` LV: ${fixture.LOAD_VALUES} |`;
                 display += ` NoF: ${fixture.NoF} |`;
                 display += ` T: ${fixture.TOTAL_WSFU}`;
@@ -1697,7 +1736,7 @@
                     display += ` O: ${fixture.OCCUPANCY} |`;
                     display += ` F: ${fixture.FIXTURE} |`;
                     display += ` SC: ${fixture.SUPPLY_CONTROL} |`;
-                    display += `NPS: ${fixture.NPS} | `;
+                    display += `NPS: ${fixture.PIPE_SIZE} | `;
                     display += ` LV: ${fixture.LOAD_VALUES} |`;
                     display += ` NoF: ${fixture.NoF} |`;
                     display += ` T: ${fixture.TOTAL_WSFU}`;
@@ -1709,6 +1748,8 @@
             } else {
                 document.getElementById('addFixtureError').innerHTML = "Please Add Fixtures";
                 document.getElementById('fixtureResult').innerHTML = '';
+                calculateFixtureFlow();
+
             }
 
         }
@@ -1728,10 +1769,14 @@
             }
             if (gpm) {
                 document.getElementById('addFixtureError').innerHTML = "";
-                document.getElementById('fixtureResult').innerHTML = `Total WSFU: ${totalWSFU.toFixed(2)}<br>Flow Rate (GPM): ${gpm.toFixed(2)}`;
+                document.getElementById('fixtureResult').innerHTML = `Total WSFU: ${totalWSFU.toFixed(2)}`;
+                document.getElementById('total_irrigation_flow_rate').value = gpm.toFixed(2);
+                calculateTotalPumpFlow();
                 return gpm
             } else {
-                document.getElementById('fixtureResult').innerHTML = `Total WSFU: ${totalWSFU.toFixed(2)}<br>Flow Rate (GPM): ${gpm.toFixed(2)}`;
+                document.getElementById('fixtureResult').innerHTML = `Total WSFU: ${totalWSFU.toFixed(2)}`;
+                document.getElementById('total_irrigation_flow_rate').value = gpm.toFixed(2);
+                calculateTotalPumpFlow();
                 return gpm
             }
         }
@@ -1763,22 +1808,24 @@
             const sprinklers = parseFloat(document.getElementById('irrigation_sprinklers').value);
             const flowRate = parseFloat(document.getElementById('irrigation_flow_rate').value);
             const duration = parseFloat(document.getElementById('irrigation_duration').value);
-
-            const totalFlow = sprinklers * flowRate * duration;
+            const fixtureFlowRate = parseFloat(document.getElementById('total_irrigation_flow_rate').value) || 0;
+            const totalFlow = (fixtureFlowRate + (sprinklers * flowRate * duration));
 
             document.getElementById('total_irrigation_flow_rate').value = totalFlow.toFixed(2);
 
+            calculateTotalPumpFlow();
             triggerInputEvent('total_irrigation_flow_rate');
 
         }
 
-         // Function to reset the form and re-enable fields
-         function resetIrrigationForm() {
+        // Function to reset the form and re-enable fields
+        function resetIrrigationForm() {
             document.getElementById("irrigationForm").reset();
             document.getElementById("irrigation_flow_rate").disabled = false;
             document.getElementById("irrigation_duration").disabled = false;
-            document.getElementById("total_irrigation_flow_rate").value = '';
+            document.getElementById("total_irrigation_flow_rate").value = calculateFixtureFlow().toFixed(2) || 0;;
             document.getElementById("sprinklerMessage").style.display = 'none';
+            calculateTotalPumpFlow();
         }
 
         // Function to disable fields if sprinklers input is 0
@@ -1800,10 +1847,21 @@
         });
 
         function calculateTotalPumpFlow() {
-            const totalIrrigationFlowRate = parseFloat(document.getElementById('total_irrigation_flow_rate').value);
-            let fixtureGPM = calculateFixtureFlow();
+            const totalIrrigationFlowRate = document.getElementById('total_irrigation_flow_rate').value;
 
-            if (fixtureGPM == 0.00) {
+            let simplexFlow = 0;
+            if (!isNaN(totalIrrigationFlowRate)) {
+                simplexFlow = +totalIrrigationFlowRate;
+
+            }
+            const duplexFlow = simplexFlow * (1.5 / 2);
+            const triplexFlow = simplexFlow / 3;
+
+            document.getElementById('pumpResultSimplex').innerHTML = simplexFlow.toFixed(2);
+            document.getElementById('pumpResultDuplex').innerHTML = duplexFlow.toFixed(2);
+            document.getElementById('pumpResultTriplex').innerHTML = triplexFlow.toFixed(2);
+
+            if (totalIrrigationFlowRate == 0.00) {
                 document.getElementById('addFixtureError').innerHTML = "Please add Fixtures";
                 return;
             }
@@ -1816,20 +1874,6 @@
             pumpResults.forEach(function (element) {
                 element.style.display = 'block';
             });
-
-            let simplexFlow = 0;
-            if (isNaN(totalIrrigationFlowRate)) {
-                simplexFlow = fixtureGPM;
-            }
-            else{
-                simplexFlow = totalIrrigationFlowRate + fixtureGPM;
-            }
-            const duplexFlow = simplexFlow * (1.5 / 2);
-            const triplexFlow = simplexFlow / 3;
-
-            document.getElementById('pumpResultSimplex').innerHTML = simplexFlow.toFixed(2);
-            document.getElementById('pumpResultDuplex').innerHTML = duplexFlow.toFixed(2);
-            document.getElementById('pumpResultTriplex').innerHTML = triplexFlow.toFixed(2);
         }
 
         function triggerInputEvent(elementId) {
@@ -2476,6 +2520,67 @@
 
         }
 
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Get the elements
+            const messageElement = document.getElementById('municipalLineMessage');
+            const municipalLineResultElement = document.getElementById('MunicipalLineTotalHeadBoosterPumpResult');
+            const pumpResultDivs = document.querySelectorAll('.pumpResult');
+
+            // Function to update the message
+            function updateMessage(text) {
+                if (messageElement) {
+                    messageElement.textContent = text;
+                }
+            }
+
+            // Function to hide the message
+            function hideMessage() {
+                if (messageElement) {
+                    messageElement.textContent = ''; // Clear the message
+                }
+            }
+
+            // Add event listeners to radio buttons inside .pumpResult
+            pumpResultDivs.forEach(div => {
+                const radioButtons = div.querySelectorAll('input[type="radio"]');
+                radioButtons.forEach(button => {
+                    button.addEventListener('change', () => {
+                        updateMessage("The pump selection has been updated. Please review.");
+                    });
+                });
+            });
+
+            // Add event listener for changes to the DayTankTotalHeadBoosterPumpResult element
+            const observer = new MutationObserver(() => {
+                updateMessage("The total head booster pump result has been updated. Please review.");
+            });
+
+            if (municipalLineResultElement) {
+                observer.observe(municipalLineResultElement, { childList: true, subtree: true });
+            }
+
+            // Function to handle the button click event
+            function municipalLinePumpType() {
+                // Add any necessary validation or actions here
+                hideMessage(); // Hide the message when the button is clicked
+            }
+
+            // Attach the button click event listener
+            const button = document.querySelector('button[onclick="municipalLinePumpType()"]');
+            if (button) {
+                button.addEventListener('click', municipalLinePumpType);
+            }
+
+            // Optional: Observe changes in the .pumpResult divs
+            pumpResultDivs.forEach(div => {
+                const observerDiv = new MutationObserver(() => {
+                    updateMessage("The pump result details have been updated. Please review.");
+                });
+
+                observerDiv.observe(div, { childList: true, subtree: true });
+            });
+        });
+
         function municipalLinePumpType() {
             isEventButtonClicked = false;
             handlePumpType(
@@ -2838,7 +2943,7 @@
 
     <script>
 
-const wiloHelixChartConfigs = {
+        const wiloHelixChartConfigs = {
             V110: {
                 columns: ['Flow Rate'
                     , 'Wilo-Helix V110-07/1'

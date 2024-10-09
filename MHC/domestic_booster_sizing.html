@@ -1739,121 +1739,141 @@
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Hose bibb, combination Hot & Cold",
                 "SUPPLY_CONTROL": "Valve",
-                "PIPE_SIZE": "1/2"
+                "PIPE_SIZE": "1/2",
+                "LOAD_VALUES": 2.5
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Lavatory, 8.3 LPM or Less",
                 "SUPPLY_CONTROL": "Faucet",
-                "PIPE_SIZE": "3/8"
+                "PIPE_SIZE": "3/8",
+                "LOAD_VALUES": 2.0
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Lavatory, greater than 8.3 LPM",
                 "SUPPLY_CONTROL": "Faucet",
-                "PIPE_SIZE": "3/8"
+                "PIPE_SIZE": "3/8",
+                "LOAD_VALUES": 2.0
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Shower head, 9.5 LPM or less per head",
                 "SUPPLY_CONTROL": "Faucet",
-                "PIPE_SIZE": "1/2"
+                "PIPE_SIZE": "1/2",
+                "LOAD_VALUES": 4.0
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Shower head, greater than 9.5 LPM per head",
                 "SUPPLY_CONTROL": "Faucet",
-                "PIPE_SIZE": "1/2"
+                "PIPE_SIZE": "1/2",
+                "LOAD_VALUES": 4.0
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Shower, spray, multi-head, fixture unit per head",
                 "SUPPLY_CONTROL": "Faucet",
-                "PIPE_SIZE": "5"
+                "PIPE_SIZE": "5",
+                "LOAD_VALUES": 4.0
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Sink, bar",
                 "SUPPLY_CONTROL": "Faucet",
-                "PIPE_SIZE": "3/8"
+                "PIPE_SIZE": "3/8",
+                "LOAD_VALUES": 2.0
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Sink, Clinic service faucet",
                 "SUPPLY_CONTROL": "Direct Flush Valve",
-                "PIPE_SIZE": "1/2"
+                "PIPE_SIZE": "1/2",
+                "LOAD_VALUES": 3.0
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Sink, Clinic service with direct flush valve",
                 "SUPPLY_CONTROL": "Direct Flush Valve",
-                "PIPE_SIZE": "1"
+                "PIPE_SIZE": "1",
+                "LOAD_VALUES": 6.0
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Sink, kitchen, commercial, per faucet",
                 "SUPPLY_CONTROL": "Faucet",
-                "PIPE_SIZE": "1/2"
+                "PIPE_SIZE": "1/2",
+                "LOAD_VALUES": 4.0
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Sink, kitchen, domestic, 8.3 LPM or less",
                 "SUPPLY_CONTROL": "Faucet",
-                "PIPE_SIZE": "3/8"
+                "PIPE_SIZE": "3/8",
+                "LOAD_VALUES": 1.4
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Sink, kitchen, domestic, greater than 8.3 LPM",
                 "SUPPLY_CONTROL": "Faucet",
-                "PIPE_SIZE": "3/8"
+                "PIPE_SIZE": "3/8",
+                "LOAD_VALUES": 2.0
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Sink, laboratory",
                 "SUPPLY_CONTROL": "Faucet",
-                "PIPE_SIZE": "3/8"
+                "PIPE_SIZE": "3/8",
+                "LOAD_VALUES": 2.0
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Sink, Laundry (1 or 2 compartments)",
                 "SUPPLY_CONTROL": "Faucet",
-                "PIPE_SIZE": "3/8"
+                "PIPE_SIZE": "3/8",
+                "LOAD_VALUES": 1.4
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Sink, service or mop basin",
                 "SUPPLY_CONTROL": "Faucet",
-                "PIPE_SIZE": "1/2"
+                "PIPE_SIZE": "1/2",
+                "LOAD_VALUES": 3.0
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Sink, Washup, per faucet",
                 "SUPPLY_CONTROL": "Faucet",
-                "PIPE_SIZE": "1/2"
+                "PIPE_SIZE": "1/2",
+                "LOAD_VALUES": 2.0
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Urinal",
                 "SUPPLY_CONTROL": "Flush Tank",
-                "PIPE_SIZE": "3/8"
+                "PIPE_SIZE": "3/8",
+                "LOAD_VALUES": 3.0
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Urinal, with self-closing metering valve",
                 "SUPPLY_CONTROL": "Self-Closing Valve",
-                "PIPE_SIZE": "1/2"
+                "PIPE_SIZE": "1/2",
+                "LOAD_VALUES": 4.0
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Water closet, 6 LPF or less",
                 "SUPPLY_CONTROL": "Flush Tank",
-                "PIPE_SIZE": "3/8"
+                "PIPE_SIZE": "3/8",
+                "LOAD_VALUES": 2.2
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Water closet, greater than 6 LPF",
                 "SUPPLY_CONTROL": "Flush Tank",
-                "PIPE_SIZE": "3/8"
+                "PIPE_SIZE": "3/8",
+                "LOAD_VALUES": 5.0
             }
         ];
 
@@ -2145,7 +2165,6 @@
                 ...matchingFixture,
                 TOTAL_WSFU: (matchingFixture.LOAD_VALUES * numberOfFixtures).toFixed(2),
                 NoF: numberOfFixtures,
-                NPS: matchingFixture.NPS
             });
 
             let display = '';
@@ -2154,7 +2173,7 @@
                 display += `O: ${fixture.OCCUPANCY} | `;
                 display += `F: ${fixture.FIXTURE} | `;
                 display += `SC: ${fixture.SUPPLY_CONTROL} | `;
-                display += `NPS: ${fixture.NPS} | `;
+                display += `NPS: ${fixture.PIPE_SIZE} | `;
                 display += `LV: ${fixture.LOAD_VALUES} | `;
                 display += `NoF: ${fixture.NoF} | `;
                 display += `T: ${fixture.TOTAL_WSFU}`;
@@ -2177,7 +2196,7 @@
                     display += ` O: ${fixture.OCCUPANCY} |`;
                     display += ` F: ${fixture.FIXTURE} |`;
                     display += ` SC: ${fixture.SUPPLY_CONTROL} |`;
-                    display += `NPS: ${fixture.NPS} | `;
+                    display += `NPS: ${fixture.PIPE_SIZE} | `;
                     display += ` LV: ${fixture.LOAD_VALUES} |`;
                     display += ` NoF: ${fixture.NoF} |`;
                     display += ` T: ${fixture.TOTAL_WSFU}`;

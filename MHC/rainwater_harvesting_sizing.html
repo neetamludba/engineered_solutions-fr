@@ -1522,25 +1522,29 @@
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Urinal",
                 "SUPPLY_CONTROL": "Flush Tank",
-                "PIPE_SIZE": "3/8"
+                "PIPE_SIZE": "3/8",
+                "LOAD_VALUES": 3.0
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Urinal, with self-closing metering valve",
                 "SUPPLY_CONTROL": "Self-Closing Valve",
-                "PIPE_SIZE": "1/2"
+                "PIPE_SIZE": "1/2",
+                "LOAD_VALUES": 4.0
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Water closet, 6 LPF or less",
                 "SUPPLY_CONTROL": "Flush Tank",
-                "PIPE_SIZE": "3/8"
+                "PIPE_SIZE": "3/8",
+                "LOAD_VALUES": 2.2
             },
             {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Water closet, greater than 6 LPF",
                 "SUPPLY_CONTROL": "Flush Tank",
-                "PIPE_SIZE": "3/8"
+                "PIPE_SIZE": "3/8",
+                "LOAD_VALUES": 5.0
             }
         ];
 
@@ -1666,7 +1670,6 @@
                 ...matchingFixture,
                 TOTAL_WSFU: (matchingFixture.LOAD_VALUES * numberOfFixtures).toFixed(2),
                 NoF: numberOfFixtures,
-                NPS: matchingFixture.NPS
             });
             let display = '';
             fixturesTotalWSFU.forEach((fixture, index) => {
@@ -1674,7 +1677,7 @@
                 display += ` O: ${fixture.OCCUPANCY} |`;
                 display += ` F: ${fixture.FIXTURE} |`;
                 display += ` SC: ${fixture.SUPPLY_CONTROL} |`;
-                display += `NPS: ${fixture.NPS} | `;
+                display += `NPS: ${fixture.PIPE_SIZE} | `;
                 display += ` LV: ${fixture.LOAD_VALUES} |`;
                 display += ` NoF: ${fixture.NoF} |`;
                 display += ` T: ${fixture.TOTAL_WSFU}`;
@@ -1697,7 +1700,7 @@
                     display += ` O: ${fixture.OCCUPANCY} |`;
                     display += ` F: ${fixture.FIXTURE} |`;
                     display += ` SC: ${fixture.SUPPLY_CONTROL} |`;
-                    display += `NPS: ${fixture.NPS} | `;
+                    display += `NPS: ${fixture.PIPE_SIZE} | `;
                     display += ` LV: ${fixture.LOAD_VALUES} |`;
                     display += ` NoF: ${fixture.NoF} |`;
                     display += ` T: ${fixture.TOTAL_WSFU}`;

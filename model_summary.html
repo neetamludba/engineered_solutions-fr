@@ -357,29 +357,28 @@
         document.getElementById('summarySelectedModelChart').innerHTML = selectedModelChart;
 
 
-        const combinedData = {
-            addedFixtures,
-            fixtureResult,
-            totalIrrigationFlowRate,
-            selectedPump,
-            dischargePR,
-            dischargeHP,
-            dischargeTPR,
-            dischargeLOV,
-            dischargeLOF,
-            dischargeResult,
-            suctionHead,
-            suctionTPR,
-            suctionLOV,
-            suctionLOF,
-            suctionResult,
-            totalHeadBoosterPumpResult,
-            selectedPumpType,
-            selectedModelChart
-        };
 
-        // Stringify the combined data to store in the hidden input field
-        document.getElementById('form-field-selected_model').value = JSON.stringify(combinedData);
+        const combinedData = 
+            'Added Fixtures: '+ addedFixtures + '<br>' +
+            '   FlowRate: ' + fixtureResult + '<br>' +
+            '   Total Irrigation: ' + totalIrrigationFlowRate + '<br>' +
+            '   Selected Pump Result' + selectedPump + '<br>' +
+            '   Discharge Pressure Requirment: ' + dischargePR + '<br>' +
+            '   Discharge Height from Pump: ' + dischargeHP + '<br>' +
+            '   Discharge Total Pipe Run: ' + dischargeTPR + '<br>' +
+            '   Discharge Loss on Valve: ' + dischargeLOV + '<br>' +
+            '   Discharge Loss on Fittings: ' + dischargeLOF + '<br>' +
+            '   Discharge Result: ' + dischargeResult + '<br>' +
+            '   Suction Head or Munisipal Line Pressure: ' + suctionHead + '<br>' +
+            '   Suction Total Pipe Run: ' + suctionTPR + '<br>' +
+            '   Suction Loss on Valve: ' + suctionLOV + '<br>' +
+            '   Suction Loss on Fittings: ' + suctionLOF + '<br>' +
+            '   Suction Result: ' + suctionResult + '<br>' +
+            '   ' + totalHeadBoosterPumpResult + '<br>' +
+            '   Selected Pump Type: ' + selectedPumpType;
+        
+        // Store the formatted string in the hidden field as plain text for submission
+        document.getElementById('form-field-selected_model').value = combinedData;
 
 
     });
