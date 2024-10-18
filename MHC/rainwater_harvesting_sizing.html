@@ -190,12 +190,18 @@
             margin-bottom: 0px;
         }
 
-        .delete_btn {
+        .reset_irrigation {
             background-color: #FFBA41;
             color: #033C59;
         }
 
-        .delete_btn:hover {
+        #remove_fixture {
+            background-color: #FFBA41;
+            color: #033C59;
+            margin-top: 10px;
+        }
+
+        .reset_irrigation:hover {
             background-color: #033C59;
             color: #FFBA41;
         }
@@ -257,12 +263,13 @@
             width: 100%;
             height: 100%;
         }
-        #sprinklerMessage{
-            color: red; 
+
+        #sprinklerMessage {
+            color: red;
             display: none;
         }
 
-        .h4_or{
+        .h4_or {
             color: #bd6e20;
         }
     </style>
@@ -270,124 +277,134 @@
 
 
 <body>
-    <div>
-        <div class="rainwater_div" id="flow_rate">
-            <h2 id="flow_rate_h2">Flow Rate Calculator</h2>
-            <div class="rw_container">
-                <div class="rw_container_div">
-                    <form id="addFixturesForm" onsubmit="addFixtures()">
-                        <h3>Fixture Flow Rate Calculation</h3>
-                        <div class="rainwater_div">
-                            <label for="occupancy">Select Occupancy:</label>
-                            <select id="occupancy" onchange="populateFixtures()" required>
-                                <option value="">Select Occupancy</option>
-                                <option value="Private">Private</option>
-                                <option value="Public">Public</option>
-                            </select>
-                            <br><br>
-
-                            <label for="fixtures">Select Fixture:</label>
-                            <select id="fixtures" onchange="populateSupplyControl()" required disabled>
-                                <option value="">Select Fixture</option>
-                            </select>
-                            <br><br>
-
-                            <label for="supplyControl">Type of Supply Control:</label>
-                            <select id="supplyControl" required disabled>
-                                <option value="">Select Supply Control</option>
-                            </select>
-                            <br><br>
-
-                            <label for="pipeSize">Nominal Pipe Size (NPS):</label>
-                            <select id="pipeSize" name="pipeSize" disabled>
-                                <option value="">Select Pipe Size</option>
-                            </select>
-                            <br><br>
-
-                            <label for="numberOfFixtures">Number of Fixtures:</label>
-                            <input type="number" id="numberOfFixtures" class="no-spinner" placeholder="Enter number"
-                                required>
-
-                        </div>
-                        <div class="button_inline">
-                            <button type="submit">Add Fixture</button>
-                            <button type="button" class="delete_btn" onclick="removeLastFixture()">Remove Last
-                                Fixture</button>
-                        </div>
-
-                        <p id="addFixtureError" class="required_message"></p>
-                    </form>
-                    <p id="addedFixtures"></p>
-
-                    <br>
-                    <h4 id="fixtureResult"></h4>
-
-                </div>
-                <div class="rw_container_div">
-                    <form id="irrigationForm" onsubmit="calculateIrrigationFlow()">
-                        <h3>Irrigation Calculation</h3>
-                        <div class="rainwater_div">
-                            <label for="irrigation_sprinklers">Number of Sprinklers:</label>
-                            <input type="number" id="irrigation_sprinklers" class="no-spinner"
-                                placeholder="Enter number" required><br><br>
-
-                            <label for="irrigation_flow_rate">Flow Rate (GPM):</label>
-                            <input type="number" id="irrigation_flow_rate" class="no-spinner" placeholder="Enter number"
-                                required step="any"><br><br>
-
-                            <label for="irrigation_duration">Duration (Minutes):</label>
-                            <input type="number" id="irrigation_duration" class="no-spinner" placeholder="Enter number"
-                                required step="any">
-                            <p id="sprinklerMessage">Sprinklers value is 0, other
-                                fields are disabled.</p>
-
-                        </div>
-                        <div class="button_inline">
-                            <button type="submit">Calculate Irrigation Flow Rate</button>
-                            <button type="button" class="delete_btn" onclick="resetIrrigationForm()">Reset Irrigation
-                                Calculation</button>
-                        </div>
-                    </form>
-
-                    <h4 class="h4_or">OR</h4>
-
-                    <h3>Total Irrigation Flow Rate</h3>
+    <div class="rainwater_div" id="flow_rate">
+        <h2 id="flow_rate_h2">Flow Rate Calculator</h2>
+        <div class="rw_container">
+            <div class="rw_container_div">
+                <form id="addFixturesForm" onsubmit="addFixtures()">
+                    <h3>Fixture Flow Rate Calculation</h3>
                     <div class="rainwater_div">
-                        <label for="total_irrigation_flow_rate">Total Flow Rate (GPM):</label>
-                        <input type="number" id="total_irrigation_flow_rate" class="no-spinner"
-                            placeholder="Enter number" required step="any">
-                    </div>
+                        <label for="application">Select Application:</label>
+                        <select id="application" onchange="applicationChange()" required>
+                            <option value="">Select Application</option>
+                            <option value="curve A">Restaurants</option>
+                            <option value="curve B">Hospitals, Nursing Homes,
+                                Nurses' Residences, Dormitories,
+                                Hotels and Motels</option>
+                            <option value="curve C">Apartment Houses</option>
+                            <option value="curve D">Office Buildings,
+                                Elementary and High Schools</option>
+                        </select>
+                        <br><br>
+                        <label for="occupancy">Select Occupancy:</label>
+                        <select id="occupancy" onchange="populateFixtures(); updateAddFixtureButtonText()" required>
+                            <option value="">Select Occupancy</option>
+                            <option value="Private">Private</option>
+                            <option value="Public">Public</option>
+                        </select>
+                        <br><br>
 
-                    <div><button type="button" onclick="calculateTotalPumpFlow()">Calculate Total Pump Flow
-                            Rate</button>
-                        <p id="fr_message" class='red_message'></p>
-                    </div>
+                        <label for="fixtures">Select Fixture:</label>
+                        <select id="fixtures" onchange="populateSupplyControl();updateAddFixtureButtonText()" required
+                            disabled>
+                            <option value="">Select Fixture</option>
+                        </select>
+                        <br><br>
 
-                    <h3>
-                        <div class="pumpResult">
-                            <input type="radio" id="flow_rate_simplex" name="flow_rate_sdt" value="flow_rate_simplex"
-                                checked="checked">
-                            <label for="flow_rate_simplex">Simplex: &nbsp;<span id="pumpResultSimplex"></span>&nbsp;
-                                GPM</label>
-                        </div>
-                        <div class="pumpResult">
-                            <input type="radio" id="flow_rate_duplex" name="flow_rate_sdt" value="flow_rate_duplex">
-                            <label for="flow_rate_duplex">Duplex: &nbsp;<span id="pumpResultDuplex"></span>&nbsp;
-                                GPM</label>
-                        </div>
-                        <div class="pumpResult">
-                            <input type="radio" id="flow_rate_triplex" name="flow_rate_sdt" value="flow_rate_triplex">
-                            <label for="flow_rate_triplex">Triplex: &nbsp;<span id="pumpResultTriplex"></span>&nbsp;
-                                GPM</label>
-                        </div>
-                    </h3>
+                        <label for="supplyControl">Type of Supply Control:</label>
+                        <select id="supplyControl" onchange="updateAddFixtureButtonText();" required disabled>
+                            <option value="">Select Supply Control</option>
+                        </select>
+                        <br><br>
+
+                        <label for="pipeSize">Nominal Pipe Size (NPS):</label>
+                        <select id="pipeSize" name="pipeSize" disabled required>
+                            <option value="">Select Pipe Size</option>
+                        </select>
+                        <br><br>
+
+                        <label for="numberOfFixtures">Number of Fixtures:</label>
+                        <input type="number" id="numberOfFixtures" oninput="updateAddFixtureButtonText();"
+                            class="no-spinner" placeholder="Enter number" required>
+
+                    </div>
+                    <div>
+                        <button id="add_fixture" type="submit">Add some Fixtures to see WSFU & FlowRate gpm
+                        </button>
+                    </div>
+                    <div>
+                        <button type="button" id="remove_fixture" onclick="removeLastFixture()">Remove Last
+                            Fixture</button>
+                    </div>
+                    <p id="addFixtureError" class="required_message"></p>
+                </form>
+                <p id="addedFixtures"></p>
+
+                <br>
+                <h4 id="fixtureResult"></h4>
+
+            </div>
+            <div class="rw_container_div">
+                <form id="irrigationForm" onsubmit="calculateIrrigationFlow()">
+                    <h3>Irrigation Calculation</h3>
+                    <div class="rainwater_div">
+                        <label for="irrigation_sprinklers">Number of Sprinklers:</label>
+                        <input type="number" id="irrigation_sprinklers" class="no-spinner" placeholder="Enter number"
+                            required><br><br>
+
+                        <label for="irrigation_flow_rate">Flow Rate (GPM):</label>
+                        <input type="number" id="irrigation_flow_rate" class="no-spinner" placeholder="Enter number"
+                            required step="any"><br><br>
+
+                        <label for="irrigation_duration">Duration (Minutes):</label>
+                        <input type="number" id="irrigation_duration" class="no-spinner" placeholder="Enter number"
+                            required step="any">
+                        <p id="sprinklerMessage">Sprinklers value is 0, other fields are disabled.</p>
+
+                    </div>
+                    <div class="button_inline">
+                        <button type="submit">Calculate Irrigation Flow Rate</button>
+                        <button type="button" class="reset_irrigation" onclick="resetIrrigationForm()">Reset Irrigation
+                            Calculation</button>
+                    </div>
+                </form>
+
+                <h4 class="h4_or">OR</h4>
+
+                <h3>Total Irrigation Flow Rate</h3>
+                <div class="rainwater_div">
+                    <label for="total_irrigation_flow_rate">Total Flow Rate (GPM):</label>
+                    <input type="number" id="total_irrigation_flow_rate" class="no-spinner" placeholder="Enter number"
+                        required step="any">
                 </div>
+                <div>
+                    <p id="fr_message" class='red_message'></p>
+                </div>
+
+                <h3>
+                    <div class="pumpResult">
+                        <input type="radio" id="flow_rate_simplex" name="flow_rate_sdt" value="flow_rate_simplex"
+                            checked="checked">
+                        <label for="flow_rate_simplex">Simplex: &nbsp;<span id="pumpResultSimplex"></span>&nbsp;
+                            GPM</label>
+                    </div>
+                    <div class="pumpResult">
+                        <input type="radio" id="flow_rate_duplex" name="flow_rate_sdt" value="flow_rate_duplex">
+                        <label for="flow_rate_duplex">Duplex: &nbsp;<span id="pumpResultDuplex"></span>&nbsp;
+                            GPM</label>
+                    </div>
+                    <div class="pumpResult">
+                        <input type="radio" id="flow_rate_triplex" name="flow_rate_sdt" value="flow_rate_triplex">
+                        <label for="flow_rate_triplex">Triplex: &nbsp;<span id="pumpResultTriplex"></span>&nbsp;
+                            GPM</label>
+                    </div>
+                </h3>
             </div>
         </div>
     </div>
 
-    <div>
-        <div class="rainwater_div" id="day_tank">
+    <div class="rainwater_div" id="day_tank">
+        <div id="day_tank_calculation">
             <h2 id="day_tank_h2">Day Tank Calculation</h2>
             <div class="helping_canvas">
                 <canvas id="day_tank_helping_canvas" width="500" height="500"></canvas>
@@ -464,25 +481,23 @@
                 </div>
             </div>
         </div>
-        <div class="rw_container">
 
-            <div class="rainwater_div">
-                <h3>Pump Type</h3>
+        <div class="rainwater_div" id="day_tank_pump_types">
+            <h3>Pump Type</h3>
 
-                <p>Please select pump type:</p>
-                <input type="radio" id="dt_vertical_multi-stage" name="day_tank_pump_type" value="vertical_multi-stage"
-                    checked="checked">
-                <label for="dt_vertical_multi-stage">Vertical Multi-Stage Pump</label>
-                <input type="radio" id="dt_submersible" name="day_tank_pump_type" value="submersible">
-                <label for="dt_submersible">Submersible Pump</label>
-                <br><br>
-                <button type="button" onclick="dayTankPumpType()">Click to view available pump models for Day
-                    Tank</button>
-                <span id="dayTankMessage" class='red_message'></span>
+            <p>Please select pump type:</p>
+            <input type="radio" id="dt_vertical_multi-stage" name="day_tank_pump_type" value="vertical_multi-stage"
+                checked="checked">
+            <label for="dt_vertical_multi-stage">Vertical Multi-Stage Pump</label>
+            <input type="radio" id="dt_submersible" name="day_tank_pump_type" value="submersible">
+            <label for="dt_submersible">Submersible Pump</label>
+            <br><br>
+            <button type="button" onclick="dayTankPumpType()">Click to view available pump models for Day
+                Tank</button>
+            <span id="dayTankMessage" class='red_message'></span>
 
-            </div>
         </div>
-        <br>
+
         <div id="day_tank_pump_type_div">
             <div id="dtsvmc">
                 <h3 id="dtvme" class="required_message"></h3>
@@ -499,7 +514,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 110.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-110.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -513,7 +529,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 190.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-190.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -527,7 +544,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 270.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-270.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -543,7 +561,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 10.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-10.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -557,7 +576,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 20.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-20.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -571,7 +591,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 30.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-30.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -585,7 +606,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 50.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-50.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -599,7 +621,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 80.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-80.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -621,7 +644,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',6)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',6)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -634,7 +658,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',8)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',8)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -647,7 +672,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',10)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',10)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -660,7 +686,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',12)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',12)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -673,7 +700,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',14)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',14)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -686,7 +714,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',16)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',16)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -699,7 +728,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',18)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',18)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -716,7 +746,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',6)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',6)">Pump
                             Details</button>
                     </div>
                 </div>
@@ -731,7 +761,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',9)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',9)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -745,7 +775,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',12)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',12)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -759,7 +789,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',14)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',14)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -773,7 +803,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',16)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',16)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -787,7 +817,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',18)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',18)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -801,7 +831,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',32)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',32)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -815,7 +845,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',33)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',33)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -829,7 +859,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',34)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',34)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -843,7 +873,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',39)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',39)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -857,7 +887,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',40)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',40)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -871,7 +901,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',41)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',41)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -885,7 +915,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',46)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',46)">Pump
                             Details</button>
                     </div>
                 </div>
@@ -894,8 +924,8 @@
 
     </div>
 
-    <div>
-        <div class="rainwater_div" id="municipal_line">
+    <div class="rainwater_div" id="municipal_line">
+        <div id="municipal_line_calculation">
             <h2 id="municipal_line_h2">Municipal Line Calculation</h2>
             <div class="helping_canvas">
                 <canvas id="municipal_line_helping_canvas" width="500" height="500"></canvas>
@@ -981,7 +1011,7 @@
             </div>
         </div>
 
-        <div class="rw_container">
+        <div id="municipal_line_pump_types">
 
             <div class="rainwater_div">
                 <h3>Pump Type</h3>
@@ -996,9 +1026,10 @@
                 <button type="button" onclick="municipalLinePumpType()">Click to view available pump models for
                     Municipal
                     Line</button>
+                <span id="municipalLineMessage" class='red_message'></span>
             </div>
         </div>
-        <br>
+
         <div id="municipal_line_pump_type_div">
             <div id="mlsvmc">
                 <h3 id="mlvme" class="required_message"></h3>
@@ -1015,7 +1046,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 110.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-110.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1029,7 +1061,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 190.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-190.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1043,7 +1076,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 270.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-270.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1059,7 +1093,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 10.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-10.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1073,7 +1108,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 20.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-20.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1087,7 +1123,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 30.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-30.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1101,7 +1138,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 50.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-50.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1115,7 +1153,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF('SVM/Wilo-Helix V 80.pdf')">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-80.pdf')">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1134,7 +1173,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',6)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',6)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1147,7 +1187,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',8)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',8)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1160,7 +1201,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',10)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',10)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1173,7 +1215,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',12)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',12)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1186,7 +1229,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',14)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',14)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1199,7 +1243,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',16)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',16)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1212,7 +1257,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-TWI 4.pdf',18)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',18)">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1229,7 +1275,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',6)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',6)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1243,7 +1289,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',9)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',9)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1257,7 +1303,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',12)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',12)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1271,7 +1317,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',14)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',14)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1285,7 +1331,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',16)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',16)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1299,7 +1345,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',18)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',18)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1312,7 +1358,8 @@
                         </button>
                     </div>
                     <div class="chart-overlay">
-                        <button type="button" class="pdf-button" onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',)">Pump
+                        <button type="button" class="pdf-button"
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1326,7 +1373,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',32)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',32)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1340,7 +1387,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',33)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',33)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1354,7 +1401,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',34)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',34)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1368,7 +1415,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',39)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',39)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1382,7 +1429,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',41)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',41)">Pump
                             Details</button>
                     </div>
                 </div><br>
@@ -1396,7 +1443,7 @@
                     </div>
                     <div class="chart-overlay">
                         <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('S/Wilo-SPI 6_7_8_10.pdf',46)">Pump
+                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',46)">Pump
                             Details</button>
                     </div>
                 </div>
@@ -1587,7 +1634,179 @@
             },
         };
 
+        const MHC_GPM = {
+            'curve A': {
+                0: 21.1, 1: 21.79, 2: 22.48, 3: 23.17, 4: 23.86, 5: 24.55, 6: 25.24, 7: 25.93, 8: 26.62, 9: 27.31,
+                10: 28.0, 11: 28.69, 12: 29.38, 13: 30.07, 14: 30.76, 15: 31.42, 16: 32.05, 17: 32.69, 18: 33.33, 19: 33.96,
+                20: 34.6, 21: 35.23, 22: 35.87, 23: 36.51, 24: 37.14, 25: 37.78, 26: 38.41, 27: 39.05, 28: 39.68, 29: 40.32,
+                30: 40.96, 31: 41.59, 32: 42.23, 33: 42.86, 34: 43.5, 35: 43.97, 36: 44.45, 37: 44.92, 38: 45.39, 39: 45.87,
+                40: 46.34, 41: 46.81, 42: 47.28, 43: 47.76, 44: 48.23, 45: 48.7, 46: 49.18, 47: 49.65, 48: 50.12, 49: 50.6,
+                50: 51.07, 51: 51.54, 52: 52.02, 53: 52.49, 54: 52.96, 55: 53.43, 56: 53.91, 57: 54.38, 58: 54.85, 59: 55.33,
+                60: 55.8, 61: 56.11, 62: 56.42, 63: 56.72, 64: 57.03, 65: 57.34, 66: 57.65, 67: 57.96, 68: 58.26, 69: 58.57,
+                70: 58.88, 71: 59.19, 72: 59.5, 73: 59.8, 74: 60.11, 75: 60.42, 76: 60.73, 77: 61.04, 78: 61.35, 79: 61.65,
+                80: 61.96, 81: 62.27, 82: 62.58, 83: 62.89, 84: 63.19, 85: 63.5, 86: 63.81, 87: 64.12, 88: 64.43, 89: 64.73,
+                90: 65.04, 91: 65.35, 92: 65.66, 93: 65.97, 94: 66.27, 95: 66.58, 96: 66.89, 97: 67.2, 98: 67.51, 99: 67.81,
+                100: 68.12, 101: 68.43, 102: 68.74, 103: 69.05, 104: 69.35, 105: 69.66, 106: 69.97, 107: 70.28, 108: 70.59, 109: 70.9,
+                110: 71.2, 111: 71.51, 112: 71.82, 113: 72.13, 114: 72.44, 115: 72.74, 116: 73.05, 117: 73.36, 118: 73.67, 119: 73.98,
+                120: 74.28, 121: 74.59, 122: 74.9, 123: 75.11, 124: 75.32, 125: 75.53, 126: 75.75, 127: 75.96, 128: 76.17, 129: 76.38,
+                130: 76.59, 131: 76.8, 132: 77.01, 133: 77.23, 134: 77.44, 135: 77.65, 136: 77.86, 137: 78.07, 138: 78.28, 139: 78.49,
+                140: 78.71, 141: 78.92, 142: 79.13, 143: 79.34, 144: 79.55, 145: 79.76, 146: 79.97, 147: 80.19, 148: 80.4, 149: 80.61,
+                150: 80.82, 151: 81.03, 152: 81.24, 153: 81.45, 154: 81.67, 155: 81.88, 156: 82.09, 157: 82.3, 158: 82.49, 159: 82.68,
+                160: 82.87, 161: 83.05, 162: 83.24, 163: 83.43, 164: 83.62, 165: 83.81, 166: 84.0, 167: 84.19, 168: 84.37, 169: 84.56,
+                170: 84.75, 171: 84.94, 172: 85.13, 173: 85.32, 174: 85.51, 175: 85.7, 176: 85.88, 177: 86.07, 178: 86.26, 179: 86.45,
+                180: 86.64, 181: 86.83, 182: 87.02, 183: 87.2, 184: 87.39, 185: 87.58, 186: 87.77, 187: 87.96, 188: 88.15, 189: 88.34,
+                190: 88.52, 191: 88.71, 192: 88.9, 193: 89.09, 194: 89.28, 195: 89.47, 196: 89.66, 197: 89.84, 198: 90.03, 199: 90.22,
+                200: 90.41, 201: 90.6, 202: 90.79, 203: 90.98, 204: 91.17, 205: 91.35, 206: 91.54, 207: 91.73, 208: 91.92, 209: 92.11,
+                210: 92.3, 211: 92.49, 212: 92.67, 213: 92.86, 214: 93.05, 215: 93.24, 216: 93.43, 217: 93.62, 218: 93.81, 219: 93.99,
+                220: 94.18, 221: 94.37, 222: 94.56, 223: 94.75, 224: 94.94, 225: 95.13, 226: 95.31, 227: 95.5, 228: 95.69, 229: 95.88,
+                230: 96.07, 231: 96.26, 232: 96.45, 233: 96.63, 234: 96.82, 235: 97.01, 236: 97.2, 237: 97.39, 238: 97.58, 239: 97.77,
+                240: 97.96, 241: 98.14, 242: 98.33, 243: 98.52, 244: 98.71, 245: 98.9, 246: 99.09, 247: 99.28, 248: 99.46, 249: 99.65
+            },
+            'curve B': {
+                0: 9.7, 1: 10.03, 2: 10.36, 3: 10.69, 4: 11.03, 5: 11.36, 6: 11.69, 7: 12.02, 8: 12.35, 9: 12.68,
+                10: 13.02, 11: 13.35, 12: 13.68, 13: 14.01, 14: 14.34, 15: 14.67, 16: 15.0, 17: 15.34, 18: 15.67, 19: 16.0,
+                20: 16.33, 21: 16.66, 22: 16.99, 23: 17.32, 24: 17.66, 25: 17.99, 26: 18.32, 27: 18.65, 28: 18.98, 29: 19.31,
+                30: 19.65, 31: 19.98, 32: 20.31, 33: 20.64, 34: 20.97, 35: 21.3, 36: 21.63, 37: 21.92, 38: 22.15, 39: 22.39,
+                40: 22.62, 41: 22.86, 42: 23.1, 43: 23.33, 44: 23.57, 45: 23.8, 46: 24.04, 47: 24.27, 48: 24.51, 49: 24.75,
+                50: 24.98, 51: 25.22, 52: 25.45, 53: 25.69, 54: 25.92, 55: 26.16, 56: 26.39, 57: 26.63, 58: 26.87, 59: 27.1,
+                60: 27.34, 61: 27.57, 62: 27.81, 63: 28.04, 64: 28.28, 65: 28.52, 66: 28.75, 67: 28.99, 68: 29.22, 69: 29.46,
+                70: 29.69, 71: 29.93, 72: 30.16, 73: 30.4, 74: 30.57, 75: 30.74, 76: 30.92, 77: 31.09, 78: 31.26, 79: 31.43,
+                80: 31.6, 81: 31.78, 82: 31.95, 83: 32.12, 84: 32.29, 85: 32.47, 86: 32.64, 87: 32.81, 88: 32.98, 89: 33.15,
+                90: 33.33, 91: 33.5, 92: 33.67, 93: 33.84, 94: 34.01, 95: 34.19, 96: 34.36, 97: 34.53, 98: 34.7, 99: 34.87,
+                100: 35.05, 101: 35.22, 102: 35.39, 103: 35.56, 104: 35.73, 105: 35.91, 106: 36.08, 107: 36.25, 108: 36.42, 109: 36.6,
+                110: 36.77, 111: 36.94, 112: 37.11, 113: 37.28, 114: 37.46, 115: 37.63, 116: 37.8, 117: 37.91, 118: 38.03, 119: 38.14,
+                120: 38.25, 121: 38.37, 122: 38.48, 123: 38.59, 124: 38.71, 125: 38.82, 126: 38.93, 127: 39.05, 128: 39.16, 129: 39.28,
+                130: 39.39, 131: 39.5, 132: 39.62, 133: 39.73, 134: 39.84, 135: 39.96, 136: 40.07, 137: 40.18, 138: 40.3, 139: 40.41,
+                140: 40.52, 141: 40.64, 142: 40.75, 143: 40.86, 144: 40.98, 145: 41.09, 146: 41.2, 147: 41.32, 148: 41.43, 149: 41.54,
+                150: 41.66, 151: 41.77, 152: 41.88, 153: 42.0, 154: 42.11, 155: 42.22, 156: 42.34, 157: 42.45, 158: 42.57, 159: 42.68,
+                160: 42.79, 161: 42.91, 162: 43.02, 163: 43.13, 164: 43.25, 165: 43.36, 166: 43.47, 167: 43.59, 168: 43.7, 169: 43.79,
+                170: 43.88, 171: 43.97, 172: 44.06, 173: 44.15, 174: 44.24, 175: 44.33, 176: 44.42, 177: 44.51, 178: 44.6, 179: 44.69,
+                180: 44.77, 181: 44.86, 182: 44.95, 183: 45.04, 184: 45.13, 185: 45.22, 186: 45.31, 187: 45.4, 188: 45.49, 189: 45.58,
+                190: 45.67, 191: 45.76, 192: 45.85, 193: 45.94, 194: 46.03, 195: 46.12, 196: 46.21, 197: 46.3, 198: 46.39, 199: 46.48,
+                200: 46.57, 201: 46.66, 202: 46.74, 203: 46.83, 204: 46.92, 205: 47.01, 206: 47.1, 207: 47.19, 208: 47.28, 209: 47.37,
+                210: 47.46, 211: 47.55, 212: 47.64, 213: 47.73, 214: 47.82, 215: 47.91, 216: 48.0, 217: 48.09, 218: 48.18, 219: 48.27,
+                220: 48.36, 221: 48.45, 222: 48.54, 223: 48.63, 224: 48.71, 225: 48.8, 226: 48.89, 227: 48.98, 228: 49.07, 229: 49.16,
+                230: 49.25, 231: 49.34, 232: 49.43, 233: 49.52, 234: 49.61, 235: 49.7, 236: 49.79, 237: 49.88, 238: 49.97, 239: 50.06,
+                240: 50.15, 241: 50.24, 242: 50.33, 243: 50.42, 244: 50.51, 245: 50.6, 246: 50.69, 247: 50.78, 248: 50.87, 249: 50.96,
+                250: 51.05, 251: 51.14, 252: 51.23, 253: 51.32, 254: 51.41, 255: 51.49, 256: 51.58, 257: 51.67, 258: 51.76, 259: 51.85,
+                260: 51.94, 261: 52.03, 262: 52.12, 263: 52.21, 264: 52.3, 265: 52.39, 266: 52.48, 267: 52.57, 268: 52.66, 269: 52.75,
+                270: 52.84, 271: 52.93, 272: 53.02, 273: 53.11, 274: 53.2, 275: 53.28, 276: 53.36, 277: 53.44, 278: 53.52, 279: 53.59,
+                280: 53.67, 281: 53.75, 282: 53.83, 283: 53.91, 284: 53.99, 285: 54.07, 286: 54.15, 287: 54.23, 288: 54.31, 289: 54.38,
+                290: 54.46, 291: 54.54, 292: 54.62, 293: 54.7, 294: 54.78, 295: 54.86, 296: 54.94, 297: 55.02, 298: 55.09, 299: 55.17,
+                300: 55.25, 301: 55.33, 302: 55.41, 303: 55.49, 304: 55.57, 305: 55.65, 306: 55.73, 307: 55.81, 308: 55.88, 309: 55.96,
+                310: 56.04, 311: 56.12, 312: 56.2, 313: 56.3, 314: 56.4, 315: 56.49, 316: 56.59, 317: 56.69, 318: 56.79, 319: 56.88,
+                320: 56.98, 321: 57.08, 322: 57.18, 323: 57.28, 324: 57.37, 325: 57.47, 326: 57.57, 327: 57.67, 328: 57.76, 329: 57.86,
+                330: 57.96, 331: 58.06, 332: 58.15, 333: 58.25, 334: 58.35, 335: 58.45, 336: 58.55, 337: 58.64, 338: 58.74, 339: 58.84,
+                340: 58.94, 341: 59.03, 342: 59.13, 343: 59.23, 344: 59.33, 345: 59.42, 346: 59.52, 347: 59.62, 348: 59.72, 349: 59.82,
+                350: 59.91, 351: 60.01, 352: 60.11, 353: 60.21, 354: 60.3, 355: 60.4, 356: 60.5, 357: 60.6, 358: 60.7, 359: 60.79,
+                360: 60.89, 361: 60.99, 362: 61.09, 363: 61.18, 364: 61.28, 365: 61.38, 366: 61.48, 367: 61.58, 368: 61.67, 369: 61.77,
+                370: 61.87, 371: 61.97, 372: 62.06, 373: 62.16, 374: 62.26, 375: 62.36, 376: 62.45, 377: 62.55, 378: 62.65, 379: 62.75,
+                380: 62.85, 381: 62.94, 382: 63.04, 383: 63.14, 384: 63.24, 385: 63.33, 386: 63.43, 387: 63.53, 388: 63.63, 389: 63.72,
+                390: 63.82, 391: 63.92, 392: 64.02, 393: 64.12, 394: 64.21, 395: 64.31, 396: 64.41, 397: 64.51, 398: 64.6, 399: 64.7, 400: 64.8
+            },
+            'curve C': {
+                0: 7.4, 1: 7.63, 2: 7.86, 3: 8.08, 4: 8.31, 5: 8.54, 6: 8.77, 7: 8.99, 8: 9.22, 9: 9.45,
+                10: 9.68, 11: 9.91, 12: 10.13, 13: 10.36, 14: 10.59, 15: 10.82, 16: 11.05, 17: 11.27, 18: 11.5, 19: 11.73,
+                20: 11.96, 21: 12.18, 22: 12.41, 23: 12.64, 24: 12.87, 25: 13.1, 26: 13.32, 27: 13.55, 28: 13.78, 29: 14.01,
+                30: 14.24, 31: 14.46, 32: 14.69, 33: 14.92, 34: 15.15, 35: 15.37, 36: 15.6, 37: 15.83, 38: 16.06, 39: 16.29,
+                40: 16.49, 41: 16.68, 42: 16.87, 43: 17.06, 44: 17.25, 45: 17.44, 46: 17.63, 47: 17.82, 48: 18.0, 49: 18.19,
+                50: 18.38, 51: 18.57, 52: 18.76, 53: 18.95, 54: 19.14, 55: 19.33, 56: 19.51, 57: 19.7, 58: 19.89, 59: 20.08,
+                60: 20.27, 61: 20.46, 62: 20.65, 63: 20.84, 64: 21.02, 65: 21.21, 66: 21.4, 67: 21.59, 68: 21.78, 69: 21.97,
+                70: 22.16, 71: 22.35, 72: 22.53, 73: 22.72, 74: 22.91, 75: 23.1, 76: 23.24, 77: 23.38, 78: 23.52, 79: 23.66,
+                80: 23.81, 81: 23.95, 82: 24.09, 83: 24.23, 84: 24.37, 85: 24.51, 86: 24.65, 87: 24.79, 88: 24.93, 89: 25.07,
+                90: 25.22, 91: 25.36, 92: 25.5, 93: 25.64, 94: 25.78, 95: 25.92, 96: 26.06, 97: 26.2, 98: 26.34, 99: 26.48,
+                100: 26.63, 101: 26.77, 102: 26.91, 103: 27.05, 104: 27.19, 105: 27.33, 106: 27.47, 107: 27.61, 108: 27.75, 109: 27.89,
+                110: 28.04, 111: 28.18, 112: 28.32, 113: 28.46, 114: 28.6, 115: 28.69, 116: 28.78, 117: 28.87, 118: 28.96, 119: 29.05,
+                120: 29.14, 121: 29.23, 122: 29.32, 123: 29.41, 124: 29.5, 125: 29.6, 126: 29.69, 127: 29.78, 128: 29.87, 129: 29.96,
+                130: 30.05, 131: 30.14, 132: 30.23, 133: 30.32, 134: 30.41, 135: 30.5, 136: 30.59, 137: 30.68, 138: 30.77, 139: 30.86,
+                140: 30.95, 141: 31.04, 142: 31.13, 143: 31.22, 144: 31.31, 145: 31.4, 146: 31.5, 147: 31.59, 148: 31.68, 149: 31.77,
+                150: 31.86, 151: 31.95, 152: 32.04, 153: 32.13, 154: 32.22, 155: 32.31, 156: 32.4, 157: 32.47, 158: 32.54, 159: 32.61,
+                160: 32.68, 161: 32.74, 162: 32.81, 163: 32.88, 164: 32.95, 165: 33.02, 166: 33.09, 167: 33.16, 168: 33.23, 169: 33.29,
+                170: 33.36, 171: 33.43, 172: 33.5, 173: 33.57, 174: 33.64, 175: 33.71, 176: 33.78, 177: 33.85, 178: 33.91, 179: 33.98,
+                180: 34.05, 181: 34.12, 182: 34.19, 183: 34.26, 184: 34.33, 185: 34.4, 186: 34.46, 187: 34.53, 188: 34.6, 189: 34.67,
+                190: 34.74, 191: 34.81, 192: 34.88, 193: 34.95, 194: 35.02, 195: 35.08, 196: 35.15, 197: 35.22, 198: 35.29, 199: 35.36,
+                200: 35.43, 201: 35.5, 202: 35.57, 203: 35.64, 204: 35.7, 205: 35.77, 206: 35.84, 207: 35.91, 208: 35.98, 209: 36.05,
+                210: 36.12, 211: 36.19, 212: 36.25, 213: 36.32, 214: 36.39, 215: 36.46, 216: 36.53, 217: 36.6, 218: 36.67, 219: 36.74,
+                220: 36.81, 221: 36.87, 222: 36.94, 223: 37.01, 224: 37.08, 225: 37.15, 226: 37.22, 227: 37.29, 228: 37.36, 229: 37.42,
+                230: 37.49, 231: 37.56, 232: 37.63, 233: 37.7, 234: 37.77, 235: 37.84, 236: 37.91, 237: 37.98, 238: 38.04, 239: 38.11,
+                240: 38.18, 241: 38.25, 242: 38.32, 243: 38.39, 244: 38.46, 245: 38.53, 246: 38.59, 247: 38.66, 248: 38.73, 249: 38.8,
+                250: 38.87, 251: 38.94, 252: 39.01, 253: 39.08, 254: 39.15, 255: 39.21, 256: 39.28, 257: 39.35, 258: 39.42, 259: 39.49,
+                260: 39.56, 261: 39.63, 262: 39.7, 263: 39.76, 264: 39.83, 265: 39.9, 266: 39.97, 267: 40.04, 268: 40.11, 269: 40.18,
+                270: 40.25, 271: 40.32, 272: 40.38, 273: 40.45, 274: 40.52, 275: 40.59, 276: 40.66, 277: 40.73, 278: 40.8, 279: 40.87,
+                280: 40.94, 281: 41.0, 282: 41.07, 283: 41.14, 284: 41.21, 285: 41.28, 286: 41.35, 287: 41.42, 288: 41.49, 289: 41.55,
+                290: 41.62, 291: 41.69, 292: 41.76, 293: 41.83, 294: 41.9, 295: 41.97, 296: 42.04, 297: 42.11, 298: 42.17, 299: 42.24,
+                300: 42.31, 301: 42.38, 302: 42.45, 303: 42.52, 304: 42.59, 305: 42.66, 306: 42.72, 307: 42.79, 308: 42.86, 309: 42.93,
+                310: 43.0, 311: 43.04, 312: 43.09, 313: 43.13, 314: 43.18, 315: 43.22, 316: 43.27, 317: 43.31, 318: 43.36, 319: 43.4,
+                320: 43.44, 321: 43.49, 322: 43.53, 323: 43.58, 324: 43.62, 325: 43.67, 326: 43.71, 327: 43.76, 328: 43.8, 329: 43.84,
+                330: 43.89, 331: 43.93, 332: 43.98, 333: 44.02, 334: 44.07, 335: 44.11, 336: 44.16, 337: 44.2, 338: 44.24, 339: 44.29,
+                340: 44.33, 341: 44.38, 342: 44.42, 343: 44.47, 344: 44.51, 345: 44.56, 346: 44.6, 347: 44.64, 348: 44.69, 349: 44.73,
+                350: 44.78, 351: 44.82, 352: 44.87, 353: 44.91, 354: 44.96, 355: 45.0, 356: 45.04, 357: 45.09, 358: 45.13, 359: 45.18,
+                360: 45.22, 361: 45.27, 362: 45.31, 363: 45.36, 364: 45.4, 365: 45.44, 366: 45.49, 367: 45.53, 368: 45.58, 369: 45.62,
+                370: 45.67, 371: 45.71, 372: 45.76, 373: 45.8, 374: 45.84, 375: 45.89, 376: 45.93, 377: 45.98, 378: 46.02, 379: 46.07,
+                380: 46.11, 381: 46.16, 382: 46.2, 383: 46.24, 384: 46.29, 385: 46.33, 386: 46.38, 387: 46.42, 388: 46.47, 389: 46.51,
+                390: 46.56, 391: 46.6, 392: 46.64, 393: 46.69, 394: 46.73, 395: 46.78, 396: 46.82, 397: 46.87, 398: 46.91, 399: 46.96, 400: 47.0
+            },
+            'curve D': {
+                0: 4.8, 1: 4.96, 2: 5.12, 3: 5.28, 4: 5.44, 5: 5.6, 6: 5.76, 7: 5.92, 8: 6.08, 9: 6.24,
+                10: 6.4, 11: 6.56, 12: 6.72, 13: 6.88, 14: 7.04, 15: 7.2, 16: 7.36, 17: 7.52, 18: 7.68, 19: 7.84,
+                20: 8.0, 21: 8.16, 22: 8.32, 23: 8.48, 24: 8.64, 25: 8.8, 26: 8.96, 27: 9.12, 28: 9.28, 29: 9.44,
+                30: 9.6, 31: 9.72, 32: 9.85, 33: 9.97, 34: 10.1, 35: 10.22, 36: 10.34, 37: 10.47, 38: 10.59, 39: 10.72,
+                40: 10.84, 41: 10.96, 42: 11.09, 43: 11.21, 44: 11.34, 45: 11.46, 46: 11.58, 47: 11.71, 48: 11.83, 49: 11.96,
+                50: 12.08, 51: 12.2, 52: 12.33, 53: 12.45, 54: 12.58, 55: 12.7, 56: 12.79, 57: 12.88, 58: 12.97, 59: 13.06,
+                60: 13.15, 61: 13.24, 62: 13.33, 63: 13.42, 64: 13.51, 65: 13.59, 66: 13.68, 67: 13.77, 68: 13.86, 69: 13.95,
+                70: 14.04, 71: 14.13, 72: 14.22, 73: 14.31, 74: 14.4, 75: 14.49, 76: 14.57, 77: 14.66, 78: 14.74, 79: 14.83,
+                80: 14.92, 81: 15.0, 82: 15.09, 83: 15.18, 84: 15.26, 85: 15.35, 86: 15.43, 87: 15.52, 88: 15.61, 89: 15.69,
+                90: 15.78, 91: 15.87, 92: 15.95, 93: 16.04, 94: 16.12, 95: 16.21, 96: 16.3, 97: 16.38, 98: 16.47, 99: 16.56,
+                100: 16.64, 101: 16.73, 102: 16.81, 103: 16.9, 104: 16.99, 105: 17.09, 106: 17.18, 107: 17.27, 108: 17.37, 109: 17.46,
+                110: 17.56, 111: 17.65, 112: 17.74, 113: 17.84, 114: 17.93, 115: 18.02, 116: 18.12, 117: 18.21, 118: 18.31, 119: 18.4,
+                120: 18.49, 121: 18.59, 122: 18.68, 123: 18.77, 124: 18.87, 125: 18.96, 126: 19.06, 127: 19.15, 128: 19.24, 129: 19.34,
+                130: 19.43, 131: 19.52, 132: 19.62, 133: 19.71, 134: 19.81, 135: 19.9, 136: 19.96, 137: 20.02, 138: 20.07, 139: 20.13,
+                140: 20.19, 141: 20.25, 142: 20.31, 143: 20.37, 144: 20.42, 145: 20.48, 146: 20.54, 147: 20.6, 148: 20.66, 149: 20.72,
+                150: 20.77, 151: 20.83, 152: 20.89, 153: 20.95, 154: 21.01, 155: 21.06, 156: 21.12, 157: 21.18, 158: 21.24, 159: 21.3,
+                160: 21.36, 161: 21.41, 162: 21.47, 163: 21.53, 164: 21.59, 165: 21.65, 166: 21.71, 167: 21.76, 168: 21.82, 169: 21.88,
+                170: 21.94, 171: 22.0, 172: 22.05, 173: 22.11, 174: 22.17, 175: 22.23, 176: 22.29, 177: 22.35, 178: 22.4, 179: 22.46,
+                180: 22.52, 181: 22.58, 182: 22.64, 183: 22.7, 184: 22.75, 185: 22.81, 186: 22.87, 187: 22.93, 188: 22.99, 189: 23.05,
+                190: 23.1, 191: 23.16, 192: 23.22, 193: 23.28, 194: 23.34, 195: 23.39, 196: 23.45, 197: 23.51, 198: 23.57, 199: 23.63,
+                200: 23.69, 201: 23.74, 202: 23.8, 203: 23.86, 204: 23.92, 205: 23.98, 206: 24.04, 207: 24.09, 208: 24.15, 209: 24.21,
+                210: 24.27, 211: 24.33, 212: 24.38, 213: 24.44, 214: 24.5, 215: 24.56, 216: 24.62, 217: 24.68, 218: 24.73, 219: 24.79,
+                220: 24.85, 221: 24.91, 222: 24.97, 223: 25.03, 224: 25.08, 225: 25.14, 226: 25.2, 227: 25.25, 228: 25.29, 229: 25.34,
+                230: 25.38, 231: 25.43, 232: 25.47, 233: 25.52, 234: 25.56, 235: 25.61, 236: 25.65, 237: 25.7, 238: 25.75, 239: 25.79,
+                240: 25.84, 241: 25.88, 242: 25.93, 243: 25.97, 244: 26.02, 245: 26.06, 246: 26.11, 247: 26.15, 248: 26.2, 249: 26.25,
+                250: 26.29, 251: 26.34, 252: 26.38, 253: 26.43, 254: 26.47, 255: 26.52, 256: 26.56, 257: 26.61, 258: 26.65, 259: 26.7,
+                260: 26.75, 261: 26.79, 262: 26.84, 263: 26.88, 264: 26.93, 265: 26.97, 266: 27.02, 267: 27.06, 268: 27.11, 269: 27.15,
+                270: 27.2, 271: 27.25, 272: 27.29, 273: 27.34, 274: 27.38, 275: 27.43, 276: 27.47, 277: 27.52, 278: 27.56, 279: 27.61,
+                280: 27.65, 281: 27.7, 282: 27.75, 283: 27.79, 284: 27.84, 285: 27.88, 286: 27.93, 287: 27.97, 288: 28.02, 289: 28.06,
+                290: 28.11, 291: 28.15, 292: 28.2, 293: 28.25, 294: 28.29, 295: 28.34, 296: 28.38, 297: 28.43, 298: 28.47, 299: 28.52,
+                300: 28.56, 301: 28.61, 302: 28.65, 303: 28.7, 304: 28.74, 305: 28.77, 306: 28.81, 307: 28.84, 308: 28.88, 309: 28.91,
+                310: 28.95, 311: 28.98, 312: 29.02, 313: 29.05, 314: 29.09, 315: 29.12, 316: 29.16, 317: 29.19, 318: 29.23, 319: 29.26,
+                320: 29.3, 321: 29.34, 322: 29.37, 323: 29.41, 324: 29.44, 325: 29.48, 326: 29.51, 327: 29.55, 328: 29.58, 329: 29.62,
+                330: 29.65, 331: 29.69, 332: 29.72, 333: 29.76, 334: 29.79, 335: 29.83, 336: 29.86, 337: 29.9, 338: 29.94, 339: 29.97,
+                340: 30.01, 341: 30.04, 342: 30.08, 343: 30.11, 344: 30.15, 345: 30.18, 346: 30.22, 347: 30.25, 348: 30.29, 349: 30.32,
+                350: 30.36, 351: 30.39, 352: 30.43, 353: 30.46, 354: 30.5, 355: 30.52, 356: 30.55, 357: 30.57, 358: 30.6, 359: 30.62,
+                360: 30.64, 361: 30.67, 362: 30.69, 363: 30.72, 364: 30.74, 365: 30.76, 366: 30.79, 367: 30.81, 368: 30.83, 369: 30.86,
+                370: 30.88, 371: 30.91, 372: 30.93, 373: 30.95, 374: 30.98, 375: 31.0, 376: 31.03, 377: 31.05, 378: 31.07, 379: 31.1,
+                380: 31.12, 381: 31.15, 382: 31.17, 383: 31.19, 384: 31.22, 385: 31.24, 386: 31.27, 387: 31.29, 388: 31.31, 389: 31.34,
+                390: 31.36, 391: 31.38, 392: 31.41, 393: 31.43, 394: 31.46, 395: 31.48, 396: 31.5, 397: 31.53, 398: 31.55, 399: 31.58, 400: 31.6
+            },
+        }
+
         let fixturesTotalWSFU = [];
+
+        function updateAddFixtureButtonText() {
+            const fixture = document.getElementById('fixtures').value;
+            const supplyControl = document.getElementById('supplyControl').value;
+            const numberOfFixtures = document.getElementById('numberOfFixtures').value;
+
+            const button = document.getElementById('add_fixture');
+
+            if (fixture && supplyControl && numberOfFixtures) {
+                button.textContent = `Add ${numberOfFixtures} ${fixture}(s) with ${supplyControl}`;
+            } else if (fixture && supplyControl) {
+                button.innerHTML = `Add <span style="color:red;">Some</span> ${fixture}(s) with ${supplyControl}`;
+            } else {
+                button.textContent = 'Add some Fixtures to see WSFU & FlowRate gpm';
+            }
+        }
 
         function populateFixtures() {
             const selectedOccupancy = document.getElementById('occupancy').value;
@@ -1639,6 +1858,7 @@
                 pipeSizeDropdown.disabled = false;
             }
         }
+
         function findMatchingFixture(occupancy, fixture, supplyControl) {
             return fixturesData.find((f) =>
                 f.OCCUPANCY === occupancy &&
@@ -1653,6 +1873,8 @@
             const fixture = document.getElementById('fixtures').value;
             const supplyControl = document.getElementById('supplyControl').value;
             const numberOfFixtures = parseFloat(document.getElementById('numberOfFixtures').value);
+            const button = document.getElementById('add_fixture');
+            button.textContent = "Add More Fixtures !";
 
             let matchingFixture = findMatchingFixture(occupancy, fixture, supplyControl);
 
@@ -1671,16 +1893,17 @@
                 TOTAL_WSFU: (matchingFixture.LOAD_VALUES * numberOfFixtures).toFixed(2),
                 NoF: numberOfFixtures,
             });
+
             let display = '';
             fixturesTotalWSFU.forEach((fixture, index) => {
                 display += `${index + 1}) `;
-                display += ` O: ${fixture.OCCUPANCY} |`;
-                display += ` F: ${fixture.FIXTURE} |`;
-                display += ` SC: ${fixture.SUPPLY_CONTROL} |`;
+                display += `O: ${fixture.OCCUPANCY} | `;
+                display += `F: ${fixture.FIXTURE} | `;
+                display += `SC: ${fixture.SUPPLY_CONTROL} | `;
                 display += `NPS: ${fixture.PIPE_SIZE} | `;
-                display += ` LV: ${fixture.LOAD_VALUES} |`;
-                display += ` NoF: ${fixture.NoF} |`;
-                display += ` T: ${fixture.TOTAL_WSFU}`;
+                display += `LV: ${fixture.LOAD_VALUES} | `;
+                display += `NoF: ${fixture.NoF} | `;
+                display += `T: ${fixture.TOTAL_WSFU}`;
                 display += `<br>`;
             });
 
@@ -1688,7 +1911,7 @@
             document.getElementById('numberOfFixtures').value = '';
             document.getElementById('addFixtureError').innerHTML = "";
 
-            calculateFixtureFlow()
+            calculateFixtureFlow();
         }
 
         function removeLastFixture() {
@@ -1712,50 +1935,76 @@
             } else {
                 document.getElementById('addFixtureError').innerHTML = "Please Add Fixtures";
                 document.getElementById('fixtureResult').innerHTML = '';
+                calculateFixtureFlow();
+
             }
+
+        }
+
+        let previousValue = "";
+
+        function applicationChange() {
+            const applicationElement = document.getElementById('application');
+            const application = applicationElement.value;
+
+            if (application === "") {
+                applicationElement.value = "curve A";
+                calculateFixtureFlow()
+                document.getElementById('addFixtureError').innerHTML = "Automatically selecting Application 'Restaurants'";
+
+                previousValue = "curve A";
+                return;
+            } else if (application !== previousValue && previousValue !== "") {
+                calculateFixtureFlow()
+
+            }
+            previousValue = application;
 
         }
 
         function calculateFixtureFlow() {
 
             let totalWSFU = 0;
+            let totalFixtures = 0;
 
             fixturesTotalWSFU.forEach((fixture) => {
-
                 totalWSFU += +fixture.TOTAL_WSFU;
+                totalFixtures += +fixture.NoF;
             });
 
             let gpm = 0;
-            if (totalWSFU != 0) {
-                gpm = calculateGPM(totalWSFU);
+            if (totalFixtures != 0) {
+                gpm = calculateGPM(totalFixtures);
             }
             if (gpm) {
                 document.getElementById('addFixtureError').innerHTML = "";
-                document.getElementById('fixtureResult').innerHTML = `Total WSFU: ${totalWSFU.toFixed(2)}<br>Flow Rate (GPM): ${gpm.toFixed(2)}`;
+                document.getElementById('fixtureResult').innerHTML = `Total Fixtures: ${totalFixtures.toFixed(2)}<br>Total WSFU: ${totalWSFU.toFixed(2)}`;
+                document.getElementById('total_irrigation_flow_rate').value = gpm.toFixed(2);
+                calculateIrrigationFlow();
                 return gpm
             } else {
-                document.getElementById('fixtureResult').innerHTML = `Total WSFU: ${totalWSFU.toFixed(2)}<br>Flow Rate (GPM): ${gpm.toFixed(2)}`;
+                document.getElementById('fixtureResult').innerHTML = `Total Fixtures: ${totalFixtures.toFixed(2)}<br>Total WSFU: ${totalWSFU.toFixed(2)}`;
+                document.getElementById('total_irrigation_flow_rate').value = gpm.toFixed(2);
+                calculateIrrigationFlow();
                 return gpm
             }
         }
 
-        function calculateGPM(totalWSFU) {
-            const lookupTable = {
-                5: 15, 6: 17.4, 7: 19.8, 8: 22.2, 9: 24.6, 10: 27, 11: 27.8, 12: 28.6, 13: 29.4, 14: 30.2,
-                15: 31, 16: 31.8, 17: 32.6, 18: 33.4, 19: 34.2, 20: 35, 25: 38, 30: 42, 35: 44, 40: 46,
-                45: 48, 50: 50, 60: 54, 70: 58, 80: 61.2, 90: 64.3, 100: 67.5, 120: 73, 140: 77, 160: 81,
-                180: 85.5, 200: 90, 225: 95.5, 250: 101, 275: 104.5, 300: 108, 400: 127, 500: 143,
-                750: 177, 1000: 208, 1250: 239, 1500: 269, 1750: 297, 2000: 325, 2500: 380, 3000: 433,
-                4000: 525, 5000: 593
-            };
+        function calculateGPM(totalFixtures) {
+            const application = document.getElementById('application').value;
+            if (application == "") {
+                document.getElementById('addFixtureError').innerHTML = "Select Application";
+                return 0;
+            }
 
-            const wsfuValues = Object.keys(lookupTable).map(Number);
+            const lookupTable = MHC_GPM[application]
+            const gpmValues = Object.keys(lookupTable).map(Number);
 
-            const nearestWSFU = wsfuValues.reduce((prev, curr) => {
-                return (Math.abs(curr - totalWSFU) < Math.abs(prev - totalWSFU) ? curr : prev);
+            const nearestfixtures = gpmValues.reduce((prev, curr) => {
+                return (Math.abs(curr - totalFixtures) < Math.abs(prev - totalFixtures) ? curr : prev);
             });
 
-            const gpm = lookupTable[nearestWSFU];
+            const gpm = lookupTable[nearestfixtures];
 
             return gpm;
         }
@@ -1763,25 +2012,24 @@
         function calculateIrrigationFlow() {
             event.preventDefault();
 
-            const sprinklers = parseFloat(document.getElementById('irrigation_sprinklers').value);
-            const flowRate = parseFloat(document.getElementById('irrigation_flow_rate').value);
-            const duration = parseFloat(document.getElementById('irrigation_duration').value);
-
-            const totalFlow = sprinklers * flowRate * duration;
+            const sprinklers = parseFloat(document.getElementById('irrigation_sprinklers').value) || 0;
+            const flowRate = parseFloat(document.getElementById('irrigation_flow_rate').value) || 0;
+            const duration = parseFloat(document.getElementById('irrigation_duration').value) || 0;
+            const fixtureFlowRate = parseFloat(document.getElementById('total_irrigation_flow_rate').value) || 0;
+            const totalFlow = (fixtureFlowRate + (sprinklers * flowRate * duration));
 
             document.getElementById('total_irrigation_flow_rate').value = totalFlow.toFixed(2);
-
-            triggerInputEvent('total_irrigation_flow_rate');
-
+            calculateTotalPumpFlow();
         }
 
-         // Function to reset the form and re-enable fields
-         function resetIrrigationForm() {
+        // Function to reset the form and re-enable fields
+        function resetIrrigationForm() {
             document.getElementById("irrigationForm").reset();
             document.getElementById("irrigation_flow_rate").disabled = false;
             document.getElementById("irrigation_duration").disabled = false;
-            document.getElementById("total_irrigation_flow_rate").value = '';
+            document.getElementById("total_irrigation_flow_rate").value = calculateFixtureFlow().toFixed(2) || 0;;
             document.getElementById("sprinklerMessage").style.display = 'none';
+            calculateTotalPumpFlow();
         }
 
         // Function to disable fields if sprinklers input is 0
@@ -1803,10 +2051,21 @@
         });
 
         function calculateTotalPumpFlow() {
-            const totalIrrigationFlowRate = parseFloat(document.getElementById('total_irrigation_flow_rate').value);
-            let fixtureGPM = calculateFixtureFlow();
+            const totalIrrigationFlowRate = document.getElementById('total_irrigation_flow_rate').value;
 
-            if (fixtureGPM == 0.00) {
+            let simplexFlow = 0;
+            if (!isNaN(totalIrrigationFlowRate)) {
+                simplexFlow = +totalIrrigationFlowRate;
+
+            }
+            const duplexFlow = simplexFlow * (1.5 / 2);
+            const triplexFlow = simplexFlow / 3;
+
+            document.getElementById('pumpResultSimplex').innerHTML = simplexFlow.toFixed(2);
+            document.getElementById('pumpResultDuplex').innerHTML = duplexFlow.toFixed(2);
+            document.getElementById('pumpResultTriplex').innerHTML = triplexFlow.toFixed(2);
+
+            if (totalIrrigationFlowRate == 0.00) {
                 document.getElementById('addFixtureError').innerHTML = "Please add Fixtures";
                 return;
             }
@@ -1819,20 +2078,6 @@
             pumpResults.forEach(function (element) {
                 element.style.display = 'block';
             });
-
-            let simplexFlow = 0;
-            if (isNaN(totalIrrigationFlowRate)) {
-                simplexFlow = fixtureGPM;
-            }
-            else{
-                simplexFlow = totalIrrigationFlowRate + fixtureGPM;
-            }
-            const duplexFlow = simplexFlow * (1.5 / 2);
-            const triplexFlow = simplexFlow / 3;
-
-            document.getElementById('pumpResultSimplex').innerHTML = simplexFlow.toFixed(2);
-            document.getElementById('pumpResultDuplex').innerHTML = duplexFlow.toFixed(2);
-            document.getElementById('pumpResultTriplex').innerHTML = triplexFlow.toFixed(2);
         }
 
         function triggerInputEvent(elementId) {
@@ -2479,6 +2724,67 @@
 
         }
 
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Get the elements
+            const messageElement = document.getElementById('municipalLineMessage');
+            const municipalLineResultElement = document.getElementById('MunicipalLineTotalHeadBoosterPumpResult');
+            const pumpResultDivs = document.querySelectorAll('.pumpResult');
+
+            // Function to update the message
+            function updateMessage(text) {
+                if (messageElement) {
+                    messageElement.textContent = text;
+                }
+            }
+
+            // Function to hide the message
+            function hideMessage() {
+                if (messageElement) {
+                    messageElement.textContent = ''; // Clear the message
+                }
+            }
+
+            // Add event listeners to radio buttons inside .pumpResult
+            pumpResultDivs.forEach(div => {
+                const radioButtons = div.querySelectorAll('input[type="radio"]');
+                radioButtons.forEach(button => {
+                    button.addEventListener('change', () => {
+                        updateMessage("The pump selection has been updated. Please review.");
+                    });
+                });
+            });
+
+            // Add event listener for changes to the DayTankTotalHeadBoosterPumpResult element
+            const observer = new MutationObserver(() => {
+                updateMessage("The total head booster pump result has been updated. Please review.");
+            });
+
+            if (municipalLineResultElement) {
+                observer.observe(municipalLineResultElement, { childList: true, subtree: true });
+            }
+
+            // Function to handle the button click event
+            function municipalLinePumpType() {
+                // Add any necessary validation or actions here
+                hideMessage(); // Hide the message when the button is clicked
+            }
+
+            // Attach the button click event listener
+            const button = document.querySelector('button[onclick="municipalLinePumpType()"]');
+            if (button) {
+                button.addEventListener('click', municipalLinePumpType);
+            }
+
+            // Optional: Observe changes in the .pumpResult divs
+            pumpResultDivs.forEach(div => {
+                const observerDiv = new MutationObserver(() => {
+                    updateMessage("The pump result details have been updated. Please review.");
+                });
+
+                observerDiv.observe(div, { childList: true, subtree: true });
+            });
+        });
+
         function municipalLinePumpType() {
             isEventButtonClicked = false;
             handlePumpType(
@@ -2838,9 +3144,10 @@
             window.print();
         }
     </script>
+
     <script>
 
-const wiloHelixChartConfigs = {
+        const wiloHelixChartConfigs = {
             V110: {
                 columns: ['Flow Rate'
                     , 'Wilo-Helix V110-07/1'

@@ -285,7 +285,7 @@
                     <h3>Fixture Flow Rate Calculation</h3>
                     <div class="rainwater_div">
                         <label for="occupancy">Select Occupancy:</label>
-                        <select id="occupancy" onchange="populateFixtures()" required>
+                        <select id="occupancy" onchange="populateFixtures(); updateAddFixtureButtonText()" required>
                             <option value="">Select Occupancy</option>
                             <option value="Private">Private</option>
                             <option value="Public">Public</option>
@@ -293,13 +293,14 @@
                         <br><br>
 
                         <label for="fixtures">Select Fixture:</label>
-                        <select id="fixtures" onchange="populateSupplyControl()" required disabled>
+                        <select id="fixtures" onchange="populateSupplyControl();updateAddFixtureButtonText()" required
+                            disabled>
                             <option value="">Select Fixture</option>
                         </select>
                         <br><br>
 
                         <label for="supplyControl">Type of Supply Control:</label>
-                        <select id="supplyControl" required disabled>
+                        <select id="supplyControl" onchange="updateAddFixtureButtonText();" required disabled>
                             <option value="">Select Supply Control</option>
                         </select>
                         <br><br>
@@ -311,8 +312,8 @@
                         <br><br>
 
                         <label for="numberOfFixtures">Number of Fixtures:</label>
-                        <input type="number" id="numberOfFixtures" class="no-spinner" placeholder="Enter number"
-                            required>
+                        <input type="number" id="numberOfFixtures" oninput="updateAddFixtureButtonText();"
+                            class="no-spinner" placeholder="Enter number" required>
 
                     </div>
                     <div>
@@ -912,7 +913,7 @@
     </div>
 
     <div class="rainwater_div" id="municipal_line">
-        <div  id="municipal_line_calculation">
+        <div id="municipal_line_calculation">
             <h2 id="municipal_line_h2">Municipal Line Calculation</h2>
             <div class="helping_canvas">
                 <canvas id="municipal_line_helping_canvas" width="500" height="500"></canvas>
@@ -1016,7 +1017,7 @@
                 <span id="municipalLineMessage" class='red_message'></span>
             </div>
         </div>
-        
+
         <div id="municipal_line_pump_type_div">
             <div id="mlsvmc">
                 <h3 id="mlvme" class="required_message"></h3>
@@ -1536,7 +1537,6 @@
             window.location.href = 'https://rainwaterharvesting.services/model-summary/';
         }
 
-
         const fixturesData = [
             {
                 "OCCUPANCY": "Private",
@@ -1911,7 +1911,6 @@
             }
         ];
 
-        // Update supplyControlArray and occupancyArray similarly to include the PIPE_SIZE
         const supplyControlArray = {
             "Bathroom group with 6 LPF": {
                 "supplyControls": ["Flush Tank"],
@@ -2117,6 +2116,22 @@
 
         let fixturesTotalWSFU = [];
 
+        function updateAddFixtureButtonText() {
+            const fixture = document.getElementById('fixtures').value;
+            const supplyControl = document.getElementById('supplyControl').value;
+            const numberOfFixtures = document.getElementById('numberOfFixtures').value;
+
+            const button = document.getElementById('add_fixture');
+
+            if (fixture && supplyControl && numberOfFixtures) {
+                button.textContent = `Add ${numberOfFixtures} ${fixture}(s) with ${supplyControl}`;
+            } else if (fixture && supplyControl) {
+                button.innerHTML = `Add <span style="color:red;">Some</span> ${fixture}(s) with ${supplyControl}`;
+            } else {
+                button.textContent = 'Add some Fixtures to see WSFU & FlowRate gpm';
+            }
+        }
+
         function populateFixtures() {
             const selectedOccupancy = document.getElementById('occupancy').value;
             const fixturesDropdown = document.getElementById('fixtures');
@@ -2267,12 +2282,12 @@
                 document.getElementById('addFixtureError').innerHTML = "";
                 document.getElementById('fixtureResult').innerHTML = `Total WSFU: ${totalWSFU.toFixed(2)}`;
                 document.getElementById('total_irrigation_flow_rate').value = gpm.toFixed(2);
-                calculateTotalPumpFlow();
+                calculateIrrigationFlow();
                 return gpm
             } else {
                 document.getElementById('fixtureResult').innerHTML = `Total WSFU: ${totalWSFU.toFixed(2)}`;
                 document.getElementById('total_irrigation_flow_rate').value = gpm.toFixed(2);
-                calculateTotalPumpFlow();
+                calculateIrrigationFlow();
                 return gpm
             }
         }
@@ -2301,17 +2316,15 @@
         function calculateIrrigationFlow() {
             event.preventDefault();
 
-            const sprinklers = parseFloat(document.getElementById('irrigation_sprinklers').value);
-            const flowRate = parseFloat(document.getElementById('irrigation_flow_rate').value);
-            const duration = parseFloat(document.getElementById('irrigation_duration').value);
+            const sprinklers = parseFloat(document.getElementById('irrigation_sprinklers').value) || 0;
+            const flowRate = parseFloat(document.getElementById('irrigation_flow_rate').value) || 0;
+            const duration = parseFloat(document.getElementById('irrigation_duration').value) || 0;
             const fixtureFlowRate = parseFloat(document.getElementById('total_irrigation_flow_rate').value) || 0;
             const totalFlow = (fixtureFlowRate + (sprinklers * flowRate * duration));
 
             document.getElementById('total_irrigation_flow_rate').value = totalFlow.toFixed(2);
 
             calculateTotalPumpFlow();
-            triggerInputEvent('total_irrigation_flow_rate');
-
         }
 
         // Function to reset the form and re-enable fields
@@ -2370,14 +2383,6 @@
             pumpResults.forEach(function (element) {
                 element.style.display = 'block';
             });
-        }
-
-        function triggerInputEvent(elementId) {
-            const element = document.getElementById(elementId);
-            if (element) {
-                const event = new Event('input', { bubbles: true });
-                element.dispatchEvent(event);
-            }
         }
 
         document.addEventListener('DOMContentLoaded', (event) => {
