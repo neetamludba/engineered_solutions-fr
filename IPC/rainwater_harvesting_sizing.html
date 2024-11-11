@@ -19,6 +19,11 @@
             padding: 0px
         }
 
+        #rain_water {
+            padding-bottom: 20px;
+            background-color: #FFBA41;
+        }
+
         #flow_rate {
             padding-bottom: 20px;
             background-color: #033C59;
@@ -50,7 +55,7 @@
             flex-basis: 47%;
             background-color: #c0c0c0;
             border-radius: 8px;
-            padding: 0px 20px;
+            padding: 20px 20px;
             margin: 10px 0px;
         }
 
@@ -65,7 +70,8 @@
             color: #FFBA41;
         }
 
-        #day_tank_h2 {
+        #day_tank_h2,
+        #rain_water_h2 {
             text-align: center;
             color: #033C59;
         }
@@ -272,11 +278,74 @@
         .h4_or {
             color: #bd6e20;
         }
+
+        .toggle-button {
+            width: 100%;
+            height: 50px;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        /* Hide sections initially */
+        .section_hide {
+            display: none;
+            padding: 20px;
+            background-color: #f1f1f1;
+        }
+
+        .rw_button_container_div {
+            flex-basis: 49%;
+            border-radius: 8px;
+        }
     </style>
 </head>
 
 
 <body>
+
+    <div class="rainwater_div" id="rain_water">
+        <h2 id="rain_water_h2">Rain Water Collection</h2>
+        <div class="rw_container">
+            <div class="rw_container_div">
+                <div class="rainwater_div">
+
+                    <label for="collectionArea">Collection Area (Sq. Ft):</label>
+                    <input type="number" id="collectionArea" max="200000" required>
+
+                    <label for="rainfall">Average Rainfall per Year (Inches):</label>
+                    <input type="number" id="rainfall" max="10000" required>
+
+                    <label for="conversion">Conversion (default 0.623):</label>
+                    <input type="number" id="conversion" value="0.623" step="0.001" readonly>
+
+                    <label for="safetyFactor">Safety Factor (default 0.85):</label>
+                    <input type="number" id="safetyFactor" value="0.85" step="0.01" readonly>
+                </div>
+            </div>
+
+            <div class="rw_container_div">
+                <div class="rainwater_div">
+
+                    <label>Collectable Total Gallonage per Year:</label>
+                    <input type="number" id="totalYearly" class="result" disabled>
+
+                    <label>Collectable Total Gallonage per Month:</label>
+                    <input type="number" id="totalMonthly" class="result" disabled>
+
+                    <label>Tank Location:</label>
+                    <br>
+                    <input type="radio" id="aboveGround" name="tankLocation" value="Above Ground" required>
+                    <label for="aboveGround">Above Ground</label>
+
+                    <input type="radio" id="belowGround" name="tankLocation" value="Below Ground" required>
+                    <label for="belowGround">Below Ground</label>
+                    <br>
+                    <button type="button" onclick="calculateGallonage()">Calculate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="rainwater_div" id="flow_rate">
         <h2 id="flow_rate_h2">Flow Rate Calculator</h2>
         <div class="rw_container">
@@ -391,7 +460,17 @@
         </div>
     </div>
 
-    <div class="rainwater_div" id="day_tank">
+    <div class="rw_container">
+        <div class="rw_button_container_div">
+            <button class="toggle-button" onclick="showSection('day_tank')">Day Tank Calculation</button>
+        </div>
+        <div class="rw_button_container_div">
+
+            <button class="toggle-button" onclick="showSection('municipal_line')">Municipal Line Calculation</button>
+        </div>
+    </div>
+
+    <div class="rainwater_div section_hide" id="day_tank">
         <div id="day_tank_calculation">
             <h2 id="day_tank_h2">Day Tank Calculation</h2>
             <div class="helping_canvas">
@@ -912,7 +991,7 @@
 
     </div>
 
-    <div class="rainwater_div" id="municipal_line">
+    <div class="rainwater_div section_hide" id="municipal_line">
         <div id="municipal_line_calculation">
             <h2 id="municipal_line_h2">Municipal Line Calculation</h2>
             <div class="helping_canvas">
@@ -1442,8 +1521,49 @@
     <button type="button" id="print_btn" onclick="printPage()">Print</button>
 
     <script>
+
+        function showSection(sectionId) {
+            // Hide both sections
+            document.getElementById("day_tank").style.display = "none";
+            document.getElementById("municipal_line").style.display = "none";
+
+            // Display the selected section
+            document.getElementById(sectionId).style.display = "block";
+        }
+
+        function calculateGallonage() {
+            // Get input values
+            const collectionArea = parseFloat(document.getElementById("collectionArea").value);
+            const rainfall = parseFloat(document.getElementById("rainfall").value);
+            const conversion = parseFloat(document.getElementById("conversion").value);
+            const safetyFactor = parseFloat(document.getElementById("safetyFactor").value);
+
+            // Calculate total gallonage per year
+            const totalYearlyGallonage = collectionArea * rainfall * conversion * safetyFactor;
+            // Calculate total gallonage per month
+            const totalMonthlyGallonage = totalYearlyGallonage / 12;
+
+            // Display results
+            document.getElementById("totalYearly").value = totalYearlyGallonage.toFixed(2);
+            document.getElementById("totalMonthly").value = totalMonthlyGallonage.toFixed(2);
+        }
+
         function updateSummaryPage(type, modelId) {
             localStorage.clear()
+
+            const collectionArea = parseFloat(document.getElementById("collectionArea").value);
+            const rainfall = parseFloat(document.getElementById("rainfall").value);
+            const conversion = parseFloat(document.getElementById("conversion").value);
+            const safetyFactor = parseFloat(document.getElementById("safetyFactor").value);
+            const totalYearlyGallonage = parseFloat(document.getElementById("totalYearly").value);
+            const totalMonthlyGallonage = parseFloat(document.getElementById("totalMonthly").value);
+
+            let tankLocation;
+            if (document.getElementById('aboveGround').checked) {
+                tankLocation = 'Tank Location: ' + document.getElementById('aboveGround').value;
+            } else if (document.getElementById('belowGround').checked) {
+                tankLocation = 'Tank Location: ' + document.getElementById('belowGround').value;
+            }
 
             // Get fixtures data
             const addedFixtures = document.getElementById('addedFixtures').innerHTML;
@@ -1513,6 +1633,14 @@
             const selectedModelChart = document.getElementById(modelId).innerHTML; // Assuming the selected model has a class 'selected'
 
             // Store data in localStorage
+            localStorage.setItem('collectionArea', collectionArea);
+            localStorage.setItem('rainfall', rainfall);
+            localStorage.setItem('conversion', conversion);
+            localStorage.setItem('safetyFactor', safetyFactor);
+            localStorage.setItem('totalYearlyGallonage', totalYearlyGallonage);
+            localStorage.setItem('totalMonthlyGallonage', totalMonthlyGallonage);
+            localStorage.setItem('tankLocation', tankLocation);
+
             localStorage.setItem('addedFixtures', addedFixtures);
             localStorage.setItem('fixtureResult', fixtureResult);
             localStorage.setItem('totalIrrigationFlowRate', totalIrrigationFlowRate + ' GPM');
