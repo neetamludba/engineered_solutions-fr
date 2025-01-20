@@ -1523,7 +1523,14 @@
 
             // Get the selected model's chart
             const selectedModelChart = document.getElementById(modelId).innerHTML; // Assuming the selected model has a class 'selected'
+            // Get the SVG element within the div with id 'frdtv20'
+            const svgElement = document.querySelector('#' + modelId + ' svg');
 
+            // Access the first <g> tag and extract its text
+            const pump = svgElement.querySelector('g text').textContent;
+
+            // Access the second <g> tag and extract its text
+            const model = svgElement.querySelectorAll('g text')[1].textContent;
             // Store data in localStorage
             localStorage.setItem('addedFixtures', addedFixtures);
             localStorage.setItem('fixtureResult', fixtureResult);
@@ -1544,9 +1551,10 @@
             localStorage.setItem('totalHeadBoosterPumpResult', totalHeadBoosterPumpResult);
             localStorage.setItem('selectedPumpType', selectedPumpType);
             localStorage.setItem('selectedModelChart', selectedModelChart);
-
+            localStorage.setItem('pump', pump);
+            localStorage.setItem('model', model);
             // Redirect to the summary page
-            window.location.href = 'https://rainwaterharvesting.services/model-summary/';
+            window.open('https://rainwaterharvesting.services/model-summary/', '_blank');
         }
 
 
@@ -2467,8 +2475,8 @@
             });
 
             let gpm = 0;
-            if (totalFixtures != 0) {
-                gpm = calculateGPM(totalFixtures);
+            if (totalWSFU != 0) {
+                gpm = calculateGPM(totalWSFU);
             }
             if (gpm) {
                 document.getElementById('addFixtureError').innerHTML = "";
@@ -2484,7 +2492,7 @@
             }
         }
 
-        function calculateGPM(totalFixtures) {
+        function calculateGPM(totalWSFU) {
             const application = document.getElementById('application').value;
             if (application == "") {
                 document.getElementById('addFixtureError').innerHTML = "Select Application";
@@ -2495,7 +2503,7 @@
             const gpmValues = Object.keys(lookupTable).map(Number);
 
             const nearestfixtures = gpmValues.reduce((prev, curr) => {
-                return (Math.abs(curr - totalFixtures) < Math.abs(prev - totalFixtures) ? curr : prev);
+                return (Math.abs(curr - totalWSFU) < Math.abs(prev - totalWSFU) ? curr : prev);
             });
 
             const gpm = lookupTable[nearestfixtures];

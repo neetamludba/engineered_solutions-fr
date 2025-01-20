@@ -1511,6 +1511,14 @@
 
             // Get the selected model's chart
             const selectedModelChart = document.getElementById(modelId).innerHTML; // Assuming the selected model has a class 'selected'
+            // Get the SVG element within the div with id 'frdtv20'
+            const svgElement = document.querySelector('#'+modelId+' svg');
+
+            // Access the first <g> tag and extract its text
+            const pump = svgElement.querySelector('g text').textContent;
+
+            // Access the second <g> tag and extract its text
+            const model = svgElement.querySelectorAll('g text')[1].textContent;
 
             // Store data in localStorage
             localStorage.setItem('addedFixtures', addedFixtures);
@@ -1532,9 +1540,11 @@
             localStorage.setItem('totalHeadBoosterPumpResult', totalHeadBoosterPumpResult);
             localStorage.setItem('selectedPumpType', selectedPumpType);
             localStorage.setItem('selectedModelChart', selectedModelChart);
+            localStorage.setItem('pump', pump);
+            localStorage.setItem('model', model);
 
             // Redirect to the summary page
-            window.location.href = 'https://rainwaterharvesting.services/model-summary/';
+            window.open('https://rainwaterharvesting.services/model-summary/', '_blank');
         }
 
         const fixturesData = [

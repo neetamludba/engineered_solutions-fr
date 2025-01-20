@@ -308,11 +308,11 @@
             <div class="rw_container_div">
                 <div class="rainwater_div">
 
-                    <label>Collectable Total Gallonage per Year:</label>
-                    <input type="number" id="totalYearly" class="result" disabled>
+                    <label title="tottal_gallons_year">Collectable Total Gallonage per Year:</label>
+                    <input title="tottal_gallons_year" placeholder="" type="number" id="totalYearly" class="result" disabled>
 
-                    <label>Collectable Total Gallonage per Month:</label>
-                    <input type="number" id="totalMonthly" class="result" disabled>
+                    <label title="tottal_gallons_month">Collectable Total Gallonage per Month:</label>
+                    <input title="tottal_gallons_year" placeholder="" type="number" id="totalMonthly" class="result" disabled>
 
                     <label>Tank Location:</label>
                     <br>
@@ -1506,7 +1506,7 @@
 
     <script>
 
-function calculateGallonage() {
+        function calculateGallonage() {
             // Get input values
             const collectionArea = parseFloat(document.getElementById("collectionArea").value);
             const rainfall = parseFloat(document.getElementById("rainfall").value);
@@ -1535,9 +1535,9 @@ function calculateGallonage() {
 
             let tankLocation;
             if (document.getElementById('aboveGround').checked) {
-                tankLocation = 'Tank Location: ' + document.getElementById('aboveGround').value ;
+                tankLocation = 'Tank Location: ' + document.getElementById('aboveGround').value;
             } else if (document.getElementById('belowGround').checked) {
-                tankLocation = 'Tank Location: ' +  document.getElementById('belowGround').value ;
+                tankLocation = 'Tank Location: ' + document.getElementById('belowGround').value;
             }
 
             // Get fixtures data
@@ -1606,7 +1606,7 @@ function calculateGallonage() {
 
             // Get the selected model's chart
             const selectedModelChart = document.getElementById(modelId).innerHTML; // Assuming the selected model has a class 'selected'
-            
+
             // Store data in localStorage
             localStorage.setItem('collectionArea', collectionArea);
             localStorage.setItem('rainfall', rainfall);
@@ -1635,9 +1635,10 @@ function calculateGallonage() {
             localStorage.setItem('totalHeadBoosterPumpResult', totalHeadBoosterPumpResult);
             localStorage.setItem('selectedPumpType', selectedPumpType);
             localStorage.setItem('selectedModelChart', selectedModelChart);
-
+            localStorage.setItem('pump', pump);
+            localStorage.setItem('model', model);
             // Redirect to the summary page
-            window.location.href = 'https://rainwaterharvesting.services/model-summary/';
+            window.open('https://rainwaterharvesting.services/model-summary/', '_blank');
         }
 
 
@@ -2064,8 +2065,8 @@ function calculateGallonage() {
             });
 
             let gpm = 0;
-            if (totalFixtures != 0) {
-                gpm = calculateGPM(totalFixtures);
+            if (totalWSFU != 0) {
+                gpm = calculateGPM(totalWSFU);
             }
             if (gpm) {
                 document.getElementById('addFixtureError').innerHTML = "";
@@ -2081,7 +2082,7 @@ function calculateGallonage() {
             }
         }
 
-        function calculateGPM(totalFixtures) {
+        function calculateGPM(totalWSFU) {
             const application = document.getElementById('application').value;
             if (application == "") {
                 document.getElementById('addFixtureError').innerHTML = "Select Application";
@@ -2092,7 +2093,7 @@ function calculateGallonage() {
             const gpmValues = Object.keys(lookupTable).map(Number);
 
             const nearestfixtures = gpmValues.reduce((prev, curr) => {
-                return (Math.abs(curr - totalFixtures) < Math.abs(prev - totalFixtures) ? curr : prev);
+                return (Math.abs(curr - totalWSFU) < Math.abs(prev - totalWSFU) ? curr : prev);
             });
 
             const gpm = lookupTable[nearestfixtures];
