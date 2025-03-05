@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Responsive Hanging 3D Navbar</title>
+    <style>
+        body {
+            margin: 0;
+            background: #f0f0f0;
+            perspective: 1000px;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Navbar container */
+        header.navbar {
+            position: fixed;
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1000px;
+            background: #333;
+            color: #fff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            transform-origin: top center;
+            animation: dropIn 1s ease-out forwards, pullUp 2.4s ease-in-out forwards 1s, swing 4s infinite ease-in-out 3s;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Rope simulation */
+        header.navbar::before,
+        header.navbar::after {
+            content: '';
+            position: absolute;
+            top: -150px;
+            width: 5px;
+            height: 150px;
+            background: #555;
+            z-index: -100;
+        }
+
+        header.navbar::before {
+            left: 12%;
+        }
+
+        header.navbar::after {
+            right: 12%;
+        }
+
+        /* Navbar content */
+        .navbar-content {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        /* Logo styling */
+        .logo img {
+            height: 50px;
+        }
+
+        /* Navigation links */
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .nav-links li a:hover {
+            color: #ffd700;
+        }
+
+        /* Register/Dashboard button */
+        .action-button a {
+            background: #ffd700;
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .action-button a:hover {
+            background: #ffc107;
+        }
+
+        /* Drop-in effect */
+        @keyframes dropIn {
+            0% {
+                top: -200px;
+            }
+
+            100% {
+                top: 120px;
+            }
+        }
+
+        /* Smooth pull-up */
+        @keyframes pullUp {
+            0% {
+                top: 120px;
+                transform: translateX(-50%) rotate(3deg);
+            }
+
+            20% {
+                top: 90px;
+                transform: translateX(-50%) rotate(-2deg);
+            }
+
+            40% {
+                top: 60px;
+                transform: translateX(-50%) rotate(2deg);
+            }
+
+            60% {
+                top: 40px;
+                transform: translateX(-50%) rotate(-1deg);
+            }
+
+            80% {
+                top: 20px;
+                transform: translateX(-50%) rotate(.5deg);
+            }
+
+            100% {
+                top: 10px;
+                transform: translateX(-50%) rotate(0deg);
+            }
+
+            /* Final slow settle */
+        }
+
+        @keyframes swing {
+            0% {
+                transform: translateX(-50%) rotate(0deg);
+            }
+
+            25% {
+                transform: translateX(-50%) rotate(1deg);
+            }
+
+            50% {
+                transform: translateX(-50%) rotate(0deg);
+            }
+
+            75% {
+                transform: translateX(-50%) rotate(-1deg);
+            }
+
+            100% {
+                transform: translateX(-50%) rotate(0deg);
+            }
+        }
+
+        /* Hamburger menu */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .logo {
+            margin: 0;
+            position: relative;
+            left: 0;
+            transform: none;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: #333;
+                padding: 10px 0;
+                text-align: center;
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+            }
+
+            .nav-links li {
+                padding: 10px 0;
+            }
+
+            .menu-toggle {
+                display: block;
+                order: -1;
+                /* Move menu button to the left */
+
+            }
+
+            .logo {
+                margin: 0 auto;
+                /* Keep logo in center */
+            }
+
+            .action-button {
+                display: block;
+                text-align: center;
+                margin-top: 10px;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .navbar-content {
+                justify-content: space-between;
+            }
+        }
+
+    
+    </style>
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="navbar-content">
+            <button class="menu-toggle">&#9776;</button> <!-- Hamburger Menu Button -->
+
+            <div class="logo">
+                <img src="logo.png" alt="Institute Logo">
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#courses">Courses</a></li>
+                <li><a href="#specializations">Specializations</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li class="action-button"><a href="#dashboard">Register / Dashboard</a></li>
+
+            </ul>
+        </div>
+    </header>
+
+    <script>
+        // Toggle menu for mobile
+        document.querySelector(".menu-toggle").addEventListener("click", function () {
+            document.querySelector(".nav-links").classList.toggle("active");
+        });
+    </script>
+
+</body>
+
+</html>

@@ -21,23 +21,20 @@
 
         #rain_water {
             padding-bottom: 20px;
-            background-color: #FFBA41;
+            background-color: #033C59;
         }
 
-        #flow_rate {
+        #flow_rate,
+        #option_selection {
             padding-bottom: 20px;
-            background-color: #033C59;
+            background-color: #FFBA41;
         }
 
         #day_tank {
             padding-bottom: 20px;
-            background-color: #FFBA41;
-        }
-
-        #municipal_line {
-            padding-bottom: 20px;
             background-color: #033C59;
         }
+
 
         #addedFixtures,
         p {
@@ -64,14 +61,13 @@
             color: #FFBA41;
         }
 
-        #flow_rate_h2,
-        #municipal_line_h2 {
+        #rain_water_h2 {
             text-align: center;
             color: #FFBA41;
         }
 
-        #day_tank_h2,
-        #rain_water_h2 {
+        #day_tank_h2,#option_select_h2,
+        #flow_rate_h2 {
 
             text-align: center;
             color: #033C59;
@@ -160,13 +156,11 @@
             display: none;
         }
 
-        #day_tank_pump_type_div,
-        #municipal_line_pump_type_div {
+        #day_tank_pump_type_div {
             text-align: center;
         }
 
-        #day_tank_pump_type_div img,
-        #municipal_line_pump_type_div img {
+        #day_tank_pump_type_div img {
             display: inline-block;
         }
 
@@ -279,54 +273,64 @@
         .h4_or {
             color: #bd6e20;
         }
+
+        .toggle-button-dt {
+            width: 100%;
+            height: 50px;
+            font-size: 22px;
+            cursor: pointer;
+            background-color: #FFBA41;
+            color: #033C59;
+            margin-bottom: 0;
+        }
+
+
+        /* Hide sections initially */
+        .section_hide {
+            display: none;
+            padding: 20px;
+            background-color: #f1f1f1;
+        }
+
+        .rw_button_container_div {
+            flex-basis: 49%;
+            border-radius: 8px;
+        }
+
+        .options-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .option {
+            border: 2px solid #ddd;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .option img {
+            max-width: 500px;
+            max-height: 400px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .option:hover {
+            border-color: #007bff;
+        }
+
+        #step2 {
+            display: none;
+        }
     </style>
 </head>
 
 
 <body>
-
-    <div class="rainwater_div" id="rain_water">
-        <h2 id="rain_water_h2">Rain Water Collection</h2>
-        <div class="rw_container">
-            <div class="rw_container_div">
-                <div class="rainwater_div">
-
-                    <label for="collectionArea">Collection Area (Sq. Ft):</label>
-                    <input type="number" id="collectionArea" max="200000" required>
-
-                    <label for="rainfall">Average Rainfall per Year (Inches):</label>
-                    <input type="number" id="rainfall" max="10000" required>
-
-                    <label for="conversion">Conversion (default 0.623):</label>
-                    <input type="number" id="conversion" value="0.623" step="0.001" readonly>
-
-                    <label for="safetyFactor">Safety Factor (default 0.85):</label>
-                    <input type="number" id="safetyFactor" value="0.85" step="0.01" readonly>
-                </div>
-            </div>
-
-            <div class="rw_container_div">
-                <div class="rainwater_div">
-
-                    <label title="tottal_gallons_year">Collectable Total Gallonage per Year:</label>
-                    <input title="tottal_gallons_year" placeholder="" type="number" id="totalYearly" class="result" disabled>
-
-                    <label title="tottal_gallons_month">Collectable Total Gallonage per Month:</label>
-                    <input title="tottal_gallons_year" placeholder="" type="number" id="totalMonthly" class="result" disabled>
-
-                    <label>Tank Location:</label>
-                    <br>
-                    <input type="radio" id="aboveGround" name="tankLocation" value="Above Ground" required>
-                    <label for="aboveGround">Above Ground</label>
-
-                    <input type="radio" id="belowGround" name="tankLocation" value="Below Ground" required>
-                    <label for="belowGround">Below Ground</label>
-                    <br>
-                    <button type="button" onclick="calculateGallonage()">Calculate</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="rainwater_div" id="flow_rate">
         <h2 id="flow_rate_h2">Flow Rate Calculator</h2>
@@ -365,12 +369,6 @@
                         <label for="supplyControl">Type of Supply Control:</label>
                         <select id="supplyControl" onchange="updateAddFixtureButtonText();" required disabled>
                             <option value="">Select Supply Control</option>
-                        </select>
-                        <br><br>
-
-                        <label for="pipeSize">Nominal Pipe Size (NPS):</label>
-                        <select id="pipeSize" name="pipeSize" disabled required>
-                            <option value="">Select Pipe Size</option>
                         </select>
                         <br><br>
 
@@ -454,9 +452,76 @@
         </div>
     </div>
 
-    <div class="rainwater_div" id="day_tank">
+    <div class="rainwater_div" id="rain_water">
+        <h2 id="rain_water_h2">Rain Water Collection</h2>
+        <div class="rw_container">
+            <div class="rw_container_div">
+                <div class="rainwater_div">
+
+                    <label for="collectionArea">Collection Area (Sq. Ft):</label>
+                    <input type="number" id="collectionArea" max="200000" required>
+
+                    <label for="rainfall">Average Rainfall per Year (Inches):</label>
+                    <input type="number" id="rainfall" max="10000" required>
+
+                    <label for="conversion">Conversion (default 0.623):</label>
+                    <input type="number" id="conversion" value="0.623" step="0.001" readonly>
+
+                    <label for="safetyFactor">Safety Factor (default 0.85):</label>
+                    <input type="number" id="safetyFactor" value="0.85" step="0.01" readonly>
+                </div>
+            </div>
+
+            <div class="rw_container_div">
+                <div class="rainwater_div">
+
+                    <label>Collectable Total Gallonage per Year:</label>
+                    <input type="number" id="totalYearly" class="result" disabled>
+
+                    <label>Collectable Total Gallonage per Month:</label>
+                    <input type="number" id="totalMonthly" class="result" disabled>
+
+                    <br />
+                    <br />
+                    <button type="button" onclick="calculateGallonage()">Calculate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="rainwater_div" id="option_selection">
+        <h2 id="option_select_h2">Select Options</h2>
+        <div id="step1" class="options-container">
+            <div class="option" id="system_01" onclick="selectOption(1, 'system 1')">
+                <img src="https://rainwaterharvesting.services/wp-content/uploads/2025/03/system_1.jpeg" alt="system 1">
+                <h3>System 1</h3>
+            </div>
+            <div class="option" id="system_02" onclick="selectOption(2, 'system 2')">
+                <img src="https://rainwaterharvesting.services/wp-content/uploads/2025/03/system_2.jpeg" alt="system 2">
+                <h3>System 2</h3>
+            </div>
+        </div>
+
+        <div id="step2">
+            <h2>Select Next Option</h2>
+            <div class="options-container">
+                <div class="option" id="cistern_tank" onclick="finalSelection('Cistern Tank')">
+                    <img src="https://rainwaterharvesting.services/wp-content/uploads/2025/03/sistern_tank.jpg" alt="Cistern Tank">
+                    <h3>Cistern Tank</h3>
+                </div>
+                <div class="option" id="pump_config" onclick="finalSelection('Pump Configuration')">
+                    <img src="https://rainwaterharvesting.services/wp-content/uploads/2025/03/pump_config.jpg" alt="Pump Configuration">
+                    <h3>Pump Configuration</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="rw_container">
+        <button class="toggle-button" onclick="showSection('day_tank')"><b>Day Tank Calculation</b></button>
+    </div>
+
+    <div class="rainwater_div section_hide" id="day_tank">
         <div id="day_tank_calculation">
-            <h2 id="day_tank_h2">Day Tank Calculation</h2>
             <div class="helping_canvas">
                 <canvas id="day_tank_helping_canvas" width="500" height="500"></canvas>
             </div>
@@ -974,537 +1039,47 @@
         </div>
 
     </div>
-
-    <div class="rainwater_div" id="municipal_line">
-        <div id="municipal_line_calculation">
-            <h2 id="municipal_line_h2">Municipal Line Calculation</h2>
-            <div class="helping_canvas">
-                <canvas id="municipal_line_helping_canvas" width="500" height="500"></canvas>
-            </div>
-            <div class="rw_container">
-                <div class="rw_container_div">
-                    <form id="municipalLineDischargeForm" onsubmit="calculateMunicipalLineDischargeSide()">
-                        <h3>Discharge Side</h3>
-                        <div class="rainwater_div">
-                            <label for="municipal_line_discharge_lf_pr">Pressure Requirement (psi):</label>
-                            <input type="number" id="municipal_line_discharge_lf_pr" class="no-spinner"
-                                placeholder="Enter number" required step="any"
-                                oninput="municipalLineHelpingCanvas()"><br><br>
-
-                            <label for="municipal_line_discharge_lf_hp">Height from Pump (ft):</label>
-                            <input type="number" id="municipal_line_discharge_lf_hp" class="no-spinner"
-                                placeholder="Enter number" required step="any"
-                                oninput="municipalLineHelpingCanvas()"><br><br>
-
-                            <label for="municipal_line_discharge_tpr">Total Pipe Run (ft):</label>
-                            <input type="number" id="municipal_line_discharge_tpr" class="no-spinner"
-                                placeholder="Enter number" required step="any"
-                                onchange="MunicipalLineDischargeLossesFittings()"
-                                oninput="municipalLineHelpingCanvas()"><br><br>
-
-                            <label for="municipal_line_discharge_lov">Losses on Valves (psi):</label>
-                            <input type="number" id="municipal_line_discharge_lov" class="no-spinner"
-                                placeholder="Enter number" value="5" required step="any"><br><br>
-
-
-                            <label for="municipal_line_discharge_lof">Losses on Fittings (ft):</label>
-                            <input type="number" id="municipal_line_discharge_lof" class="no-spinner"
-                                placeholder="Enter number" required step="any">
-                            <p class="small_text">Assuming 10% of Total Pipe Run</p>
-
-
-                        </div>
-                        <button type="submit">Calculate Discharge Side</button>
-                    </form>
-                    <p class="required_message" id="MunicipalLineDischargeResultError"></p>
-
-                    <h4 id="MunicipalLineDischargeResult"></h4>
-
-                </div>
-                <div class="rw_container_div">
-                    <form id="municipalLineSuctionForm" onsubmit="calculateMunicipalLineSuctionSide()">
-                        <h3>Suction Side</h3>
-                        <div class="rainwater_div">
-                            <label for="municipal_line_suction_p">Municipal Line Pressure (psi):</label>
-                            <input type="number" id="municipal_line_suction_p" class="no-spinner"
-                                placeholder="Enter number" required step="any"
-                                oninput="municipalLineHelpingCanvas()"><br><br>
-
-                            <label for="municipal_line_suction_tpr">Total Pipe Run (ft):</label>
-                            <input type="number" id="municipal_line_suction_tpr" class="no-spinner"
-                                placeholder="Enter number" required step="any"
-                                onchange="MunicipalLineSuctionLossesFittings()"><br><br>
-
-                            <label for="municipal_line_suction_lov">Losses on Valves (psi):</label>
-                            <input type="number" id="municipal_line_suction_lov" class="no-spinner"
-                                placeholder="Enter number" value="5" required step="any"><br><br>
-
-                            <label for="municipal_line_suction_lof">Losses on Fittings (ft):</label>
-                            <input type="number" id="municipal_line_suction_lof" class="no-spinner"
-                                placeholder="Enter number" required step="any">
-                            <p class="small_text">Assuming 10% of Total Pipe Run</p>
-
-                        </div>
-                        <button type="submit">Calculate Suction Side</button>
-                    </form>
-                    <p class="required_message" id="MunicipalLineSuctionResultError"></p>
-
-                    <h4 id="MunicipalLineSuctionResult"></h4>
-
-                    <div>
-                        <button type="button" onclick="MunicipalLineTotalHeadBoosterPumpResult()">
-                            Calculate Day Tank Total Head of Booster Pump</button>
-                        <p id="ml_message" class='red_message'></p>
-
-                        <h3 id="MunicipalLineTotalHeadBoosterPumpResult"></h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="municipal_line_pump_types">
-
-            <div class="rainwater_div">
-                <h3>Pump Type</h3>
-
-                <p>Please select pump type:</p>
-                <input type="radio" id="ml_vertical_multi-stage" name="municipal_line_pump_type"
-                    value="vertical_multi-stage" checked="checked">
-                <label for="ml_vertical_multi-stage">Vertical Multi-Stage Pump</label>
-                <input type="radio" id="ml_submersible" name="municipal_line_pump_type" value="submersible">
-                <label for="ml_submersible">Submersible Pump</label>
-                <br><br>
-                <button type="button" onclick="municipalLinePumpType()">Click to view available pump models for
-                    Municipal
-                    Line</button>
-                <span id="municipalLineMessage" class='red_message'></span>
-            </div>
-        </div>
-
-        <div id="municipal_line_pump_type_div">
-            <div id="mlsvmc">
-                <h3 id="mlvme" class="required_message"></h3>
-
-                <img src="https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo-Helix_V_110-270.jpg"
-                    alt="simple vertical multistage V110 to V270">
-                <br>
-                <div class="chart-container">
-                    <div id="frmlv110" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv110')">Select
-                            this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-110.pdf')">Pump
-                            Details</button>
-                    </div>
-                </div>
-                <br>
-                <div class="chart-container">
-                    <div id="frmlv190" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv190')">Select
-                            this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-190.pdf')">Pump
-                            Details</button>
-                    </div>
-                </div>
-                <br>
-                <div class="chart-container">
-                    <div id="frmlv270" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv270')">Select
-                            this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-270.pdf')">Pump
-                            Details</button>
-                    </div>
-                </div>
-                <br><img src="https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo-Helix_V_10-80.jpg"
-                    alt="simple vertical multistage V10 to V80">
-                <br>
-                <div class="chart-container">
-                    <div id="frmlv10" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv10')">Select
-                            this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-10.pdf')">Pump
-                            Details</button>
-                    </div>
-                </div>
-                <br>
-                <div class="chart-container">
-                    <div id="frmlv20" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv20')">Select
-                            this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-20.pdf')">Pump
-                            Details</button>
-                    </div>
-                </div>
-                <br>
-                <div class="chart-container">
-                    <div id="frmlv30" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv30')">Select
-                            this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-30.pdf')">Pump
-                            Details</button>
-                    </div>
-                </div>
-                <br>
-                <div class="chart-container">
-                    <div id="frmlv50" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv50')">Select
-                            this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-50.pdf')">Pump
-                            Details</button>
-                    </div>
-                </div>
-                <br>
-                <div class="chart-container">
-                    <div id="frmlv80" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button" onclick="updateSummaryPage('ml','frmlv80')">Select
-                            this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-80.pdf')">Pump
-                            Details</button>
-                    </div>
-                </div>
-            </div>
-            <div id="mlsc">
-                <h3 id="mlse" class="required_message"></h3>
-                <img src="https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_TWI_4.jpg"
-                    alt="submersible Wilo TWI 4">
-                <br>
-                <div class="chart-container">
-                    <div id="frmltwi4-05" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmltwi4-05')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',6)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frmltwi4-07" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmltwi4-07')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',8)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frmltwi4-10" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmltwi4-10')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',10)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frmltwi4-18" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmltwi4-18')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',12)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frmltwi4-25" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmltwi4-25')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',14)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frmltwi4-40" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmltwi4-40')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',16)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frmltwi4-70" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmltwi4-70')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',18)">Pump
-                            Details</button>
-                    </div>
-                </div>
-                <br><img src="https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_6_7_8_10.jpg"
-                    alt="submersible Wilo SPI 4-6-8-10">
-                <br>
-                <div class="chart-container">
-                    <div id="frmlspi650s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmlspi650s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',6)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frmlspi690s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmlspi690s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',9)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frmlspi6150s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmlspi6150s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',12)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frmlspi6180s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmlspi6180s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',14)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frmlspi6230s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmlspi6230s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',16)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frmlspi6300s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmlspi6300s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',18)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frmlspi7400s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmlspi7400s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frmlspi7500s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmlspi7500s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',32)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frmlspi7550s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmlspi7550s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',33)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frmlspi8550s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmlspi8550s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',34)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frmlspi8650s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmlspi8650s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',39)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frmlspi8800s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmlspi8800s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',41)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frmlspi101200s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('ml','frmlspi101200s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',46)">Pump
-                            Details</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
+    <br />
     <button type="button" id="print_btn" onclick="printPage()">Print</button>
 
     <script>
+        function selectOption(choice, name) {
+            localStorage.setItem('selectedSystem', name);
+            document.getElementById('step2').style.display = 'block';
+
+            if (name === 'system 1') {
+                document.getElementById('system_01').style.border = '5px solid red';
+                document.getElementById('system_02').style.border = '2px solid white';
+
+            } else if (name === 'system 2') {
+                document.getElementById('system_02').style.border = '5px solid red';
+                document.getElementById('system_01').style.border = '2px solid white';
+
+            }
+        }
+
+        function finalSelection(name) {
+            localStorage.setItem('selectedOption', name);
+            if (name == 'Cistern Tank'){
+                document.getElementById('cistern_tank').style.border = '5px solid red';
+                document.getElementById('pump_config').style.border = '2px solid white';
+
+
+            }
+            if (name == 'Pump Configuration'){
+                document.getElementById('pump_config').style.border = '5px solid red';
+                document.getElementById('cistern_tank').style.border = '2px solid white';
+
+            }
+
+        }
+        function showSection(sectionId) {
+            // Hide both sections
+            // document.getElementById("day_tank").style.display = "none";
+
+            // Display the selected section
+            document.getElementById(sectionId).style.display = "block";
+        }
 
         function calculateGallonage() {
             // Get input values
@@ -1524,7 +1099,6 @@
         }
 
         function updateSummaryPage(type, modelId) {
-            localStorage.clear()
 
             const collectionArea = parseFloat(document.getElementById("collectionArea").value);
             const rainfall = parseFloat(document.getElementById("rainfall").value);
@@ -1533,12 +1107,7 @@
             const totalYearlyGallonage = parseFloat(document.getElementById("totalYearly").value);
             const totalMonthlyGallonage = parseFloat(document.getElementById("totalMonthly").value);
 
-            let tankLocation;
-            if (document.getElementById('aboveGround').checked) {
-                tankLocation = 'Tank Location: ' + document.getElementById('aboveGround').value;
-            } else if (document.getElementById('belowGround').checked) {
-                tankLocation = 'Tank Location: ' + document.getElementById('belowGround').value;
-            }
+          
 
             // Get fixtures data
             const addedFixtures = document.getElementById('addedFixtures').innerHTML;
@@ -1584,37 +1153,18 @@
                 selectedPumpType = document.querySelector('input[name="day_tank_pump_type"]:checked').value; // Assuming radio buttons or similar input for pump type
 
             }
-            else if (type == 'ml') {
-                helpingCanvas = document.getElementById('municipal_line_helping_canvas').toDataURL();
-                dischargePressureRequirement = document.getElementById('municipal_line_discharge_lf_pr').value;
-                dischargeHeightFromPump = document.getElementById('municipal_line_discharge_lf_hp').value;
-                dischargeTotalPipeRun = document.getElementById('municipal_line_discharge_tpr').value;
-                dischargeLossesOnValves = document.getElementById('municipal_line_discharge_lov').value;
-                dischargeLossesOnFittings = document.getElementById('municipal_line_discharge_lof').value;
-                dischargeResult = document.getElementById('MunicipalLineDischargeResult').innerHTML;
-                suctionHead = document.getElementById('municipal_line_suction_p').value;
-                suctionTotalPipeRun = document.getElementById('municipal_line_suction_tpr').value;
-                suctionLossesOnValves = document.getElementById('municipal_line_suction_lov').value;
-                suctionLossesOnFittings = document.getElementById('municipal_line_suction_lof').value;
-                suctionResult = document.getElementById('MunicipalLineSuctionResult').innerHTML;
-                totalHeadBoosterPumpResult = document.getElementById('MunicipalLineTotalHeadBoosterPumpResult').innerHTML;
-
-                // Get selected pump type (Vertical Multistage or Submersible)
-                selectedPumpType = document.querySelector('input[name="municipal_line_pump_type"]:checked').value; // Assuming radio buttons or similar input for pump type
-
-            }
 
             // Get the selected model's chart
             const selectedModelChart = document.getElementById(modelId).innerHTML; // Assuming the selected model has a class 'selected'
 
             // Store data in localStorage
+            localStorage.setItem('sizing!', 'MHC_RHS');
             localStorage.setItem('collectionArea', collectionArea);
             localStorage.setItem('rainfall', rainfall);
             localStorage.setItem('conversion', conversion);
             localStorage.setItem('safetyFactor', safetyFactor);
             localStorage.setItem('totalYearlyGallonage', totalYearlyGallonage);
             localStorage.setItem('totalMonthlyGallonage', totalMonthlyGallonage);
-            localStorage.setItem('tankLocation', tankLocation);
 
             localStorage.setItem('addedFixtures', addedFixtures);
             localStorage.setItem('fixtureResult', fixtureResult);
@@ -1635,26 +1185,39 @@
             localStorage.setItem('totalHeadBoosterPumpResult', totalHeadBoosterPumpResult);
             localStorage.setItem('selectedPumpType', selectedPumpType);
             localStorage.setItem('selectedModelChart', selectedModelChart);
-            localStorage.setItem('pump', pump);
-            localStorage.setItem('model', model);
+
             // Redirect to the summary page
             window.open('https://rainwaterharvesting.services/model-summary/', '_blank');
-        }
 
+        }
 
         const fixturesData = [
             {
                 "OCCUPANCY": "Private",
-                "FIXTURE": "Water closet, 6 LPF or less",
-                "SUPPLY_CONTROL": "Flush Tank",
+                "FIXTURE": "Water Closet",
+                "SUPPLY_CONTROL": "Flush Tank, 6 LPF or less",
                 "PIPE_SIZE": "3/8",
                 "LOAD_VALUES": 2.2
             },
             {
                 "OCCUPANCY": "Private",
-                "FIXTURE": "Water closet, greater than 6 LPF",
-                "SUPPLY_CONTROL": "Flush Tank",
+                "FIXTURE": "Water Closet",
+                "SUPPLY_CONTROL": "Flush Tank, Greater than 6 LPF",
                 "PIPE_SIZE": "3/8",
+                "LOAD_VALUES": 3.0
+            },
+            {
+                "OCCUPANCY": "Private",
+                "FIXTURE": "Water Closet",
+                "SUPPLY_CONTROL": "Flush Valve",
+                "PIPE_SIZE": "1",
+                "LOAD_VALUES": 10.0
+            },
+            {
+                "OCCUPANCY": "Public",
+                "FIXTURE": "Urinal",
+                "SUPPLY_CONTROL": "Flush Valve",
+                "PIPE_SIZE": "3/4",
                 "LOAD_VALUES": 3.0
             },
             {
@@ -1666,24 +1229,31 @@
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Urinal, with self-closing metering valve",
+                "FIXTURE": "Urinal",
                 "SUPPLY_CONTROL": "Self-Closing Valve",
                 "PIPE_SIZE": "1/2",
                 "LOAD_VALUES": 4.0
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Water closet, 6 LPF or less",
-                "SUPPLY_CONTROL": "Flush Tank",
+                "FIXTURE": "Water Closet",
+                "SUPPLY_CONTROL": "Flush Tank, 6 LPF or less",
                 "PIPE_SIZE": "3/8",
                 "LOAD_VALUES": 2.2
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Water closet, greater than 6 LPF",
-                "SUPPLY_CONTROL": "Flush Tank",
+                "FIXTURE": "Water Closet",
+                "SUPPLY_CONTROL": "Flush Tank, Greater than 6 LPF",
                 "PIPE_SIZE": "3/8",
                 "LOAD_VALUES": 5.0
+            },
+            {
+                "OCCUPANCY": "Public",
+                "FIXTURE": "Water Closet",
+                "SUPPLY_CONTROL": "Flush Valve",
+                "PIPE_SIZE": "1",
+                "LOAD_VALUES": 10.0
             }
         ];
 
@@ -1691,17 +1261,14 @@
 
             "Private": {
                 "fixtures": [
-                    "Water closet, 6 LPF or less",
-                    "Water closet, greater than 6 LPF"
+                    "Water Closet"
                 ]
             },
 
             "Public": {
                 "fixtures": [
                     "Urinal",
-                    "Urinal, with self-closing metering valve",
-                    "Water closet, 6 LPF or less",
-                    "Water closet, greater than 6 LPF"
+                    "Water Closet"
                 ]
             },
 
@@ -1709,20 +1276,10 @@
 
         const supplyControlArray = {
             "Urinal": {
-                "supplyControls": ["Flush Tank"],
-                "pipeSize": "3/8"
+                "supplyControls": ["Flush Valve", "Flush Tank", "Self-Closing Valve"],
             },
-            "Urinal, with self-closing metering valve": {
-                "supplyControls": ["Self-Closing Valve"],
-                "pipeSize": "1/2"
-            },
-            "Water closet, 6 LPF or less": {
-                "supplyControls": ["Flush Tank"],
-                "pipeSize": "3/8"
-            },
-            "Water closet, greater than 6 LPF": {
-                "supplyControls": ["Flush Tank"],
-                "pipeSize": "3/8"
+            "Water Closet": {
+                "supplyControls": ["Flush Tank, 6 LPF or less", "Flush Tank, Greater than 6 LPF", "Flush Valve"],
             },
         };
 
@@ -1892,7 +1449,7 @@
             const button = document.getElementById('add_fixture');
 
             if (fixture && supplyControl && numberOfFixtures) {
-                button.textContent = `Add ${numberOfFixtures} ${fixture}(s) with ${supplyControl}`;
+                button.textContent = `Add ${numberOfFixtures} ${fixture} with ${supplyControl}`;
             } else if (fixture && supplyControl) {
                 button.innerHTML = `Add <span style="color:red;">Some</span> ${fixture}(s) with ${supplyControl}`;
             } else {
@@ -1925,12 +1482,10 @@
         function populateSupplyControl() {
             const selectedFixtures = document.getElementById('fixtures').value;
             const supplyControlDropdown = document.getElementById('supplyControl');
-            const pipeSizeDropdown = document.getElementById('pipeSize');
 
             supplyControlDropdown.innerHTML = '';
-            pipeSizeDropdown.innerHTML = '';
 
-            if (selectedFixtures) {
+            if (supplyControlArray[selectedFixtures]) {
                 const selectedFixtureData = supplyControlArray[selectedFixtures];
 
                 selectedFixtureData.supplyControls.forEach(sc => {
@@ -1940,14 +1495,8 @@
                     supplyControlDropdown.appendChild(supplyControlOption);
                 });
 
-                const pipeSizeOption = document.createElement('option');
-                pipeSizeOption.value = selectedFixtureData.pipeSize;
-                pipeSizeOption.textContent = selectedFixtureData.pipeSize;
-                pipeSizeDropdown.appendChild(pipeSizeOption);
-
                 document.getElementById('fixtures').disabled = false;
                 supplyControlDropdown.disabled = false;
-                pipeSizeDropdown.disabled = false;
             }
         }
 
@@ -2053,6 +1602,7 @@
             previousValue = application;
 
         }
+
 
         function calculateFixtureFlow() {
 
@@ -2480,249 +2030,6 @@
         }
         dayTankHelpingCanvas();
 
-        function MunicipalLineDischargeLossesFittings() {
-            const municipalLineDischargeTPR = parseFloat(document.getElementById('municipal_line_discharge_tpr').value);
-            let municipalLineDischargeLoF = (municipalLineDischargeTPR / 100) * 10;
-
-            document.getElementById('municipal_line_discharge_lof').value = municipalLineDischargeLoF.toFixed(2);
-        }
-
-        function calculateMunicipalLineDischargeSide() {
-            event.preventDefault()
-            const municipalLineDischargeLFPR = parseFloat(document.getElementById('municipal_line_discharge_lf_pr').value);
-            const municipalLineDischargeLFHP = parseFloat(document.getElementById('municipal_line_discharge_lf_hp').value);
-            const municipalLineDischargeTPR = parseFloat(document.getElementById('municipal_line_discharge_tpr').value);
-            const municipalLineDischargeLoV = parseFloat(document.getElementById('municipal_line_discharge_lov').value);
-            const municipalLineDischargeLoF = parseFloat(document.getElementById('municipal_line_discharge_lof').value);
-
-            let municipalLineDischargeLF_feet = municipalLineDischargeLFPR * 2.31;
-            let municipalLineDischargeLoOPR_feet = (municipalLineDischargeTPR / 100) * 1.5;
-            let municipalLineDischargeLoV_feet = municipalLineDischargeLoV * 2.31;
-
-            let municipalLineDischargeResult = municipalLineDischargeLF_feet + municipalLineDischargeLFHP + municipalLineDischargeLoOPR_feet + municipalLineDischargeLoV_feet + municipalLineDischargeLoF;
-
-            if (!isNaN(municipalLineDischargeResult)) {
-                document.getElementById('MunicipalLineDischargeResultError').innerHTML = "";
-                document.getElementById('MunicipalLineDischargeResult').innerHTML = `Municipal Line Discharge Side: ${municipalLineDischargeResult.toFixed(2)} feet`;
-            }
-            return municipalLineDischargeResult;
-        }
-
-        function MunicipalLineSuctionLossesFittings() {
-            const municipalLineSuctionTPR = parseFloat(document.getElementById('municipal_line_suction_tpr').value);
-            let municipalLineSuctionLoF = (municipalLineSuctionTPR / 100) * 10;
-
-            document.getElementById('municipal_line_suction_lof').value = municipalLineSuctionLoF.toFixed(2);
-        }
-
-        function calculateMunicipalLineSuctionSide() {
-            event.preventDefault()
-            const municipalLineSuctionP = parseFloat(document.getElementById('municipal_line_suction_p').value);
-            const municipalLineSuctionTPR = parseFloat(document.getElementById('municipal_line_suction_tpr').value);
-            const municipalLineSuctionLoV = parseFloat(document.getElementById('municipal_line_suction_lov').value);
-            const municipalLineSuctionLoF = parseFloat(document.getElementById('municipal_line_suction_lof').value);
-
-
-            let municipalLineSuction_neg_feet = municipalLineSuctionP * 2.31 * -1;
-
-            if (municipalLineSuctionP < 0) {
-                municipalLineSuction_neg_feet = municipalLineSuctionP * 2.31;
-            }
-            let municipalLineSuctionLoOPR_feet = (municipalLineSuctionTPR / 100) * 1.5;
-            let municipalLineSuctionLoV_feet = municipalLineSuctionLoV * 2.31;
-
-            let municipalLineSuctionResult = municipalLineSuction_neg_feet + municipalLineSuctionLoOPR_feet + municipalLineSuctionLoV_feet + municipalLineSuctionLoF;
-
-            if (!isNaN(municipalLineSuctionResult)) {
-                document.getElementById('MunicipalLineSuctionResultError').innerHTML = "";
-                document.getElementById('MunicipalLineSuctionResult').innerHTML = `Municipal Line Suction Side: ${municipalLineSuctionResult.toFixed(2)} feet`;
-            }
-            return municipalLineSuctionResult;
-        }
-
-        function MunicipalLineTotalHeadBoosterPumpResult() {
-
-            let municipalLineDischargeResultValidity = calculateMunicipalLineDischargeSide();
-            let municipalLineSuctionResultValidity = calculateMunicipalLineSuctionSide();
-
-            if (isNaN(municipalLineDischargeResultValidity)) {
-                document.getElementById('MunicipalLineDischargeResultError').innerHTML = "Please Calculate Discharge Side";
-            }
-            else {
-                document.getElementById('MunicipalLineDischargeResultError').innerHTML = "";
-
-            }
-
-            if (isNaN(municipalLineSuctionResultValidity)) {
-                document.getElementById('MunicipalLineSuctionResultError').innerHTML = "Please Calculate Suction Side";
-            }
-            else {
-                document.getElementById('MunicipalLineSuctionResultError').innerHTML = "";
-
-            }
-
-            if (isNaN(municipalLineDischargeResultValidity) || isNaN(municipalLineSuctionResultValidity)) {
-                return
-            }
-
-
-            let municipalLineTotalHeadOfBoosterPump = calculateMunicipalLineDischargeSide() + calculateMunicipalLineSuctionSide();
-
-            document.getElementById('MunicipalLineTotalHeadBoosterPumpResult').innerHTML = `Total Head of Booster Pump: ${municipalLineTotalHeadOfBoosterPump.toFixed(2)} feet`;
-            document.getElementById('ml_message').textContent = '';
-
-            return +municipalLineTotalHeadOfBoosterPump.toFixed(0);
-        }
-
-        document.addEventListener('DOMContentLoaded', (event) => {
-            // Get the elements to observe
-            const dischargeResultElement = document.getElementById('MunicipalLineDischargeResult');
-            const suctionResultElement = document.getElementById('MunicipalLineSuctionResult');
-            const button = document.querySelector('button[onclick="MunicipalLineTotalHeadBoosterPumpResult()"]'); // Select button by its onclick handler
-
-            // Get the message element for displaying updates
-            const messageElement = document.getElementById('ml_message');
-
-            // Create a MutationObserver to watch for changes to the <h4> elements
-            const observer = new MutationObserver(() => {
-                updateButtonState();
-                updateMessage("The Day Tank results have changed. Please review the new values.");
-            });
-
-            // Configure the observer to watch for changes in the child list of the <h4> elements
-            observer.observe(dischargeResultElement, { childList: true, subtree: true });
-            observer.observe(suctionResultElement, { childList: true, subtree: true });
-
-            // Function to update the message element
-            function updateMessage(text) {
-                if (messageElement && isEventButtonClicked) {
-                    messageElement.textContent = text;
-                }
-            }
-
-            // Function to update button state based on the content of the <h4> elements
-            function updateButtonState() {
-                const hasDischargeResult = dischargeResultElement.textContent.trim() !== '';
-                const hasSuctionResult = suctionResultElement.textContent.trim() !== '';
-                button.disabled = !(hasDischargeResult && hasSuctionResult); // Enable button only if both <h4> elements have content
-            }
-
-            // Function to hide the message
-            function hideMessage() {
-                if (messageElement) {
-                    messageElement.textContent = ''; // Clear the message
-                }
-            }
-
-            // Attach click event listener to the button
-            button.addEventListener('click', (event) => {
-                // Optionally: Add validation or condition checks here
-                if (dischargeResultElement.textContent.trim() !== '' && suctionResultElement.textContent.trim() !== '') {
-                    hideMessage(); // Hide the message if everything is good
-                }
-            });
-        });
-
-        function municipalLineHelpingCanvas() {
-            var canvas = document.getElementById("municipal_line_helping_canvas");
-            var ctx = canvas.getContext("2d");
-            ctx.fillStyle = "#8CAC9C";
-            ctx.fillRect(0, 0, 500, 500);
-            ctx.fillStyle = "#000000";
-            ctx.font = canvas.width * 0.03 + "px Arial";
-
-            var hydrant = new Image();
-            hydrant.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/hydrant_img.png';
-
-            hydrant.onload = function () {
-                ctx.drawImage(hydrant, 0, canvas.height - hydrant.height);
-            };
-
-            var pump = new Image();
-            pump.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/pump_img.png';
-
-            pump.onload = function () {
-                ctx.drawImage(pump, 160, canvas.height - pump.height - 33);
-            };
-
-            var toilet = new Image();
-            toilet.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/toilet_img.png';
-
-            toilet.onload = function () {
-                ctx.drawImage(toilet, canvas.width - 70 - toilet.width, 120);
-            };
-
-            var pressure = new Image();
-            pressure.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/pressure_img.png';
-
-            pressure.onload = function () {
-                ctx.drawImage(pressure, canvas.width - 180 - pressure.width, 100);
-            };
-
-            var irrigation = new Image();
-            irrigation.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/irrigation_img.png';
-
-            irrigation.onload = function () {
-                ctx.drawImage(irrigation, canvas.width - 75 - irrigation.width, 180);
-            };
-
-            let pressureVal = parseFloat(document.getElementById('municipal_line_discharge_lf_pr').value) || 0;
-            let totalPipeRun = parseFloat(document.getElementById('municipal_line_discharge_tpr').value) || 0;
-            let elevationFromPump = parseFloat(document.getElementById('municipal_line_discharge_lf_hp').value) || 0;
-            let linePressure = parseFloat(document.getElementById('municipal_line_suction_p').value) || 0;
-
-            if (linePressure < 0) {
-                linePressure *= -1;
-            }
-            ctx.fillText("Pressure", canvas.width * 0.5, canvas.height * 0.1);
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(canvas.width * 0.5, canvas.height * 0.12, canvas.width * 0.2, canvas.height * 0.05);
-            ctx.fillStyle = "#000000";
-            ctx.fillText(pressureVal + " psi", canvas.width * 0.51, canvas.height * 0.155);
-
-            ctx.fillText("Total Pipe Run", canvas.width * 0.24, canvas.height * 0.44);
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(canvas.width * 0.24, canvas.height * 0.46, canvas.width * 0.2, canvas.height * 0.05);
-            ctx.fillStyle = "#000000";
-            ctx.fillText(totalPipeRun + " ft", canvas.width * 0.25, canvas.height * 0.495);
-
-            ctx.fillText("Elevation From Booster Pump", canvas.width * 0.58, canvas.height * 0.7);
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(canvas.width * 0.58, canvas.height * 0.72, canvas.width * 0.2, canvas.height * 0.05);
-            ctx.fillStyle = "#000000";
-            ctx.fillText(elevationFromPump + " ft", canvas.width * 0.59, canvas.height * 0.755);
-
-            ctx.fillText("Line Pressure", canvas.width * 0.26, canvas.height * 0.77);
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(canvas.width * 0.26, canvas.height * 0.79, canvas.width * 0.2, canvas.height * 0.05);
-            ctx.fillStyle = "#000000";
-            ctx.fillText(linePressure + " psi", canvas.width * 0.27, canvas.height * 0.825);
-
-            ctx.fillText("Toilet", canvas.width * 0.84, canvas.height * 0.33);
-            ctx.fillText("Irrigation", canvas.width * 0.84, canvas.height * 0.43);
-
-            ctx.strokeStyle = "#0000ff"
-
-            ctx.beginPath();
-            ctx.moveTo(canvas.width * 0.33, canvas.height * 0.89);
-            ctx.lineTo(canvas.width * 0.25, canvas.height * 0.89);
-
-            ctx.moveTo(canvas.width * 0.48, canvas.height * 0.875);
-            ctx.lineTo(canvas.width * 0.38, canvas.height * 0.875);
-
-            ctx.moveTo(canvas.width * 0.48, canvas.height * 0.875);
-            ctx.lineTo(canvas.width * 0.48, canvas.height * 0.36);
-
-            ctx.moveTo(canvas.width * 0.56, canvas.height * 0.875);
-            ctx.lineTo(canvas.width * 0.56, canvas.height * 0.36);
-
-            ctx.moveTo(canvas.width * 0.72, canvas.height * 0.36);
-            ctx.lineTo(canvas.width * 0.48, canvas.height * 0.36);
-
-            ctx.stroke();
-        }
-        municipalLineHelpingCanvas();
-
         function flowRateSelector() {
             calculateTotalPumpFlow();
             var selectedFlowRate = document.querySelector('input[name="flow_rate_sdt"]:checked').value;
@@ -2816,81 +2123,7 @@
 
         }
 
-        document.addEventListener('DOMContentLoaded', (event) => {
-            // Get the elements
-            const messageElement = document.getElementById('municipalLineMessage');
-            const municipalLineResultElement = document.getElementById('MunicipalLineTotalHeadBoosterPumpResult');
-            const pumpResultDivs = document.querySelectorAll('.pumpResult');
 
-            // Function to update the message
-            function updateMessage(text) {
-                if (messageElement) {
-                    messageElement.textContent = text;
-                }
-            }
-
-            // Function to hide the message
-            function hideMessage() {
-                if (messageElement) {
-                    messageElement.textContent = ''; // Clear the message
-                }
-            }
-
-            // Add event listeners to radio buttons inside .pumpResult
-            pumpResultDivs.forEach(div => {
-                const radioButtons = div.querySelectorAll('input[type="radio"]');
-                radioButtons.forEach(button => {
-                    button.addEventListener('change', () => {
-                        updateMessage("The pump selection has been updated. Please review.");
-                    });
-                });
-            });
-
-            // Add event listener for changes to the DayTankTotalHeadBoosterPumpResult element
-            const observer = new MutationObserver(() => {
-                updateMessage("The total head booster pump result has been updated. Please review.");
-            });
-
-            if (municipalLineResultElement) {
-                observer.observe(municipalLineResultElement, { childList: true, subtree: true });
-            }
-
-            // Function to handle the button click event
-            function municipalLinePumpType() {
-                // Add any necessary validation or actions here
-                hideMessage(); // Hide the message when the button is clicked
-            }
-
-            // Attach the button click event listener
-            const button = document.querySelector('button[onclick="municipalLinePumpType()"]');
-            if (button) {
-                button.addEventListener('click', municipalLinePumpType);
-            }
-
-            // Optional: Observe changes in the .pumpResult divs
-            pumpResultDivs.forEach(div => {
-                const observerDiv = new MutationObserver(() => {
-                    updateMessage("The pump result details have been updated. Please review.");
-                });
-
-                observerDiv.observe(div, { childList: true, subtree: true });
-            });
-        });
-
-        function municipalLinePumpType() {
-            isEventButtonClicked = false;
-            handlePumpType(
-                'municipal_line_pump_type',
-                MunicipalLineTotalHeadBoosterPumpResult(),
-                'mlvme',
-                'mlse',
-                'mlsc',
-                'mlsvmc',
-                getMunicipalLineVerticalPumps(),
-                getMunicipalLineSubmersiblePumps()
-            );
-
-        }
 
         function handlePumpType(pumpTypeInputName, totalHead, errorMsgVM, errorMsgS, hiddenDivId, visibleDivId, verticalPumps, submersiblePumps) {
             google.charts.load('current', { 'packages': ['corechart'] });
@@ -2993,45 +2226,6 @@
                 { condition: (flowRate, head) => (flowRate > 0 && flowRate < 1600) && (head > 0 && head < 1125), fn: Wilo_SPI_10_1200, id: 'frdtspi101200s1' }
             ];
         }
-
-        function getMunicipalLineVerticalPumps() {
-            return [
-                { condition: (flowRate, head) => (flowRate > 15 && flowRate < 200) && (head > 0 && head < 600), fn: Wilo_Helix_V110, id: 'frmlv110' },
-                { condition: (flowRate, head) => (flowRate > 25 && flowRate < 300) && (head > 0 && head < 400), fn: Wilo_Helix_V190, id: 'frmlv190' },
-                { condition: (flowRate, head) => (flowRate > 35 && flowRate < 400) && (head > 0 && head < 300), fn: Wilo_Helix_V270, id: 'frmlv270' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 25) && (head > 0 && head < 800), fn: Wilo_Helix_V10, id: 'frmlv10' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 40) && (head > 0 && head < 700), fn: Wilo_Helix_V20, id: 'frmlv20' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 60) && (head > 0 && head < 800), fn: Wilo_Helix_V30, id: 'frmlv30' },
-                { condition: (flowRate, head) => (flowRate > 5 && flowRate < 100) && (head > 0 && head < 550), fn: Wilo_Helix_V50, id: 'frmlv50' },
-                { condition: (flowRate, head) => (flowRate > 10 && flowRate < 140) && (head > 0 && head < 400), fn: Wilo_Helix_V80, id: 'frmlv80' }
-            ];
-        }
-
-        function getMunicipalLineSubmersiblePumps() {
-            return [
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate <= 8) && (head > 100 && head < 851), fn: Wilo_TWI_4_05, id: 'frmltwi4-05' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate <= 10) && (head > 80 && head < 870), fn: Wilo_TWI_4_07, id: 'frmltwi4-07' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate <= 16) && (head > 150 && head < 1700), fn: Wilo_TWI_4_10, id: 'frmltwi4-10' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate <= 26) && (head > 0 && head <= 2200), fn: Wilo_TWI_4_18, id: 'frmltwi4-18' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate <= 40) && (head > 0 && head < 1450), fn: Wilo_TWI_4_25, id: 'frmltwi4-25' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 70) && (head > 0 && head < 1800), fn: Wilo_TWI_4_40, id: 'frmltwi4-40' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 120) && (head > 0 && head < 501), fn: Wilo_TWI_4_70, id: 'frmltwi4-70' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 100) && (head > 0 && head < 800), fn: Wilo_SPI_6_50, id: 'frmlspi650s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 126) && (head > 0 && head < 851), fn: Wilo_SPI_6_90, id: 'frmlspi690s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 225) && (head > 0 && head < 1000), fn: Wilo_SPI_6_150, id: 'frmlspi6150s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 301) && (head > 0 && head < 1050), fn: Wilo_SPI_6_180, id: 'frmlspi6180s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 351) && (head > 0 && head < 800), fn: Wilo_SPI_6_230, id: 'frmlspi6230s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 450) && (head > 0 && head < 776), fn: Wilo_SPI_6_300, id: 'frmlspi6300s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 580) && (head > 0 && head < 1351), fn: Wilo_SPI_7_400, id: 'frmlspi7400s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 625) && (head > 0 && head < 1300), fn: Wilo_SPI_7_500, id: 'frmlspi7500s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 690) && (head > 0 && head < 1150), fn: Wilo_SPI_7_550, id: 'frmlspi7550s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 751) && (head > 0 && head < 1900), fn: Wilo_SPI_8_550, id: 'frmlspi8550s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 1000) && (head > 0 && head < 1701), fn: Wilo_SPI_8_650, id: 'frmlspi8650s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 1101) && (head > 0 && head < 1301), fn: Wilo_SPI_8_800, id: 'frmlspi8800s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 1600) && (head > 0 && head < 1125), fn: Wilo_SPI_10_1200, id: 'frmlspi101200s1' }
-            ];
-        }
-
 
 
         function Wilo_TWI_4_05(totalHead, flowRate, divID) {

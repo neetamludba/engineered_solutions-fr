@@ -24,15 +24,11 @@
             background-color: #033C59;
         }
 
-        #day_tank {
+        #municipal_line {
             padding-bottom: 20px;
             background-color: #FFBA41;
         }
 
-        #municipal_line {
-            padding-bottom: 20px;
-            background-color: #033C59;
-        }
 
         #addedFixtures,
         p {
@@ -59,13 +55,12 @@
             color: #FFBA41;
         }
 
-        #flow_rate_h2,
-        #municipal_line_h2 {
+        #flow_rate_h2 {
             text-align: center;
             color: #FFBA41;
         }
 
-        #day_tank_h2 {
+        #municipal_line_h2 {
             text-align: center;
             color: #033C59;
         }
@@ -153,12 +148,10 @@
             display: none;
         }
 
-        #day_tank_pump_type_div,
         #municipal_line_pump_type_div {
             text-align: center;
         }
 
-        #day_tank_pump_type_div img,
         #municipal_line_pump_type_div img {
             display: inline-block;
         }
@@ -272,6 +265,27 @@
         .h4_or {
             color: #bd6e20;
         }
+
+        .toggle-button {
+            width: 100%;
+            height: 50px;
+            font-size: 22px;
+            cursor: pointer;
+            color: #033C59;
+            background-color: #FFBA41;
+        }
+
+        /* Hide sections initially */
+        .section_hide {
+            display: none;
+            padding: 20px;
+            background-color: #f1f1f1;
+        }
+
+        .rw_button_container_div {
+            flex-basis: 49%;
+            border-radius: 8px;
+        }
     </style>
 </head>
 
@@ -314,12 +328,6 @@
                         <label for="supplyControl">Type of Supply Control:</label>
                         <select id="supplyControl" onchange="updateAddFixtureButtonText();" required disabled>
                             <option value="">Select Supply Control</option>
-                        </select>
-                        <br><br>
-
-                        <label for="pipeSize">Nominal Pipe Size (NPS):</label>
-                        <select id="pipeSize" name="pipeSize" disabled required>
-                            <option value="">Select Pipe Size</option>
                         </select>
                         <br><br>
 
@@ -403,530 +411,12 @@
         </div>
     </div>
 
-    <div class="rainwater_div" id="day_tank">
-        <div id="day_tank_calculation">
-            <h2 id="day_tank_h2">Day Tank Calculation</h2>
-            <div class="helping_canvas">
-                <canvas id="day_tank_helping_canvas" width="500" height="500"></canvas>
-            </div>
-            <div class="rw_container">
-                <div class="rw_container_div">
-                    <form id="dayTankDischargeForm" onsubmit="calculateDayTankDischargeSide()">
-                        <h3>Discharge Side</h3>
-                        <div class="rainwater_div">
-                            <label for="day_tank_discharge_lf_pr">Pressure Requirement (psi):</label>
-                            <input type="number" id="day_tank_discharge_lf_pr" class="no-spinner"
-                                placeholder="Enter number" required step="any" oninput="dayTankHelpingCanvas()"><br><br>
-
-                            <label for="day_tank_discharge_lf_hp">Height from Pump (ft):</label>
-                            <input type="number" id="day_tank_discharge_lf_hp" class="no-spinner"
-                                placeholder="Enter number" required step="any" oninput="dayTankHelpingCanvas()"><br><br>
-
-                            <label for="day_tank_discharge_tpr">Total Pipe Run (ft):</label>
-                            <input type="number" id="day_tank_discharge_tpr" class="no-spinner"
-                                placeholder="Enter number" required step="any"
-                                onchange="DayTankDischargeLossesFittings()" oninput="dayTankHelpingCanvas()"><br><br>
-
-                            <label for="day_tank_discharge_lov">Losses on Valves (psi):</label>
-                            <input type="number" id="day_tank_discharge_lov" class="no-spinner"
-                                placeholder="Enter number" value="5" required step="any"><br><br>
-
-                            <label for="day_tank_discharge_lof">Losses on Fittings (ft):</label>
-                            <input type="number" id="day_tank_discharge_lof" class="no-spinner"
-                                placeholder="Enter number" required step="any">
-                            <p class="small_text">Assuming 10% of Total Pipe Run</p>
-
-                        </div>
-                        <button type="submit">Calculate Discharge Side</button>
-                    </form>
-                    <p class="required_message" id="DayTankDischargeResultError"></p>
-                    <h4 id="DayTankDischargeResult"></h4>
-
-                </div>
-                <div class="rw_container_div">
-                    <form id="dayTankSuctionForm" onsubmit="calculateDayTankSuctionSide()">
-                        <h3>Suction Side</h3>
-                        <div class="rainwater_div">
-                            <label for="day_tank_suction_h">Head at Suction Side (ft):</label>
-                            <input type="number" id="day_tank_suction_h" class="no-spinner" placeholder="Enter number"
-                                required step="any" oninput="dayTankHelpingCanvas()"><br><br>
-
-                            <label for="day_tank_suction_tpr">Total Pipe Run (ft):</label>
-                            <input type="number" id="day_tank_suction_tpr" class="no-spinner" placeholder="Enter number"
-                                required step="any" onchange="DayTankSuctionLossesFittings()"><br><br>
-
-                            <label for="day_tank_suction_lov">Losses on Valves (psi):</label>
-                            <input type="number" id="day_tank_suction_lov" class="no-spinner" placeholder="Enter number"
-                                value="5" required step="any"><br><br>
-
-                            <label for="day_tank_suction_lof">Losses on Fittings (ft):</label>
-                            <input type="number" id="day_tank_suction_lof" class="no-spinner" placeholder="Enter number"
-                                required step="any">
-                            <p class="small_text">Assuming 10% of Total Pipe Run</p>
-                        </div>
-                        <button type="submit">Calculate Suction Side</button>
-                    </form>
-                    <p class="required_message" id="DayTankSuctionResultError"></p>
-                    <h4 id="DayTankSuctionResult"></h4>
-
-                    <div>
-                        <button type="button" onclick="DayTankTotalHeadBoosterPumpResult()"> Calculate Day Tank Total
-                            Head
-                            of Booster
-                            Pump</button>
-                        <p id="dt_message" class='red_message'></p>
-
-                        <h3 id="DayTankTotalHeadBoosterPumpResult"></h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="rainwater_div" id="day_tank_pump_types">
-            <h3>Pump Type</h3>
-
-            <p>Please select pump type:</p>
-            <input type="radio" id="dt_vertical_multi-stage" name="day_tank_pump_type" value="vertical_multi-stage"
-                checked="checked">
-            <label for="dt_vertical_multi-stage">Vertical Multi-Stage Pump</label>
-            <input type="radio" id="dt_submersible" name="day_tank_pump_type" value="submersible">
-            <label for="dt_submersible">Submersible Pump</label>
-            <br><br>
-            <button type="button" onclick="dayTankPumpType()">Click to view available pump models for Day
-                Tank</button>
-            <span id="dayTankMessage" class='red_message'></span>
-
-        </div>
-
-        <div id="day_tank_pump_type_div">
-            <div id="dtsvmc">
-                <h3 id="dtvme" class="required_message"></h3>
-
-                <img src="https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo-Helix_V_110-270.jpg"
-                    alt="simple vertical multistage V110 to V270">
-                <br>
-                <div class="chart-container">
-                    <div id="frdtv110" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv110')">Select
-                            this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-110.pdf')">Pump
-                            Details</button>
-                    </div>
-                </div>
-                <br>
-                <div class="chart-container">
-                    <div id="frdtv190" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv190')">Select
-                            this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-190.pdf')">Pump
-                            Details</button>
-                    </div>
-                </div>
-                <br>
-                <div class="chart-container">
-                    <div id="frdtv270" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv270')">Select
-                            this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-270.pdf')">Pump
-                            Details</button>
-                    </div>
-                </div>
-                <br><img src="https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo-Helix_V_10-80.jpg"
-                    alt="simple vertical multistage V10 to V80">
-                <br>
-                <div class="chart-container">
-                    <div id="frdtv10" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv10')">Select
-                            this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-10.pdf')">Pump
-                            Details</button>
-                    </div>
-                </div>
-                <br>
-                <div class="chart-container">
-                    <div id="frdtv20" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv20')">Select
-                            this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-20.pdf')">Pump
-                            Details</button>
-                    </div>
-                </div>
-                <br>
-                <div class="chart-container">
-                    <div id="frdtv30" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv30')">Select
-                            this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-30.pdf')">Pump
-                            Details</button>
-                    </div>
-                </div>
-                <br>
-                <div class="chart-container">
-                    <div id="frdtv50" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv50')">Select
-                            this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-50.pdf')">Pump
-                            Details</button>
-                    </div>
-                </div>
-                <br>
-                <div class="chart-container">
-                    <div id="frdtv80" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button" onclick="updateSummaryPage('dt','frdtv80')">Select
-                            this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-Helix-V-80.pdf')">Pump
-                            Details</button>
-                    </div>
-                </div>
-
-            </div>
-
-            <div id="dtsc">
-                <h3 id="dtse" class="required_message"></h3>
-
-                <img src="https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_TWI_4.jpg"
-                    alt="submersible Wilo TWI 4">
-                <br>
-                <div class="chart-container">
-                    <div id="frdttwi4-05" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdttwi4-05')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',6)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frdttwi4-07" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdttwi4-07')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',8)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frdttwi4-10" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdttwi4-10')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',10)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frdttwi4-18" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdttwi4-18')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',12)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frdttwi4-25" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdttwi4-25')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',14)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frdttwi4-40" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdttwi4-40')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',16)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frdttwi4-70" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdttwi4-70')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-TWI-4.pdf',18)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <img src="https://rainwaterharvesting.services/wp-content/uploads/2024/03/Wilo_SPI_6_7_8_10.jpg"
-                    alt="submersible Wilo SPI 4-6-8-10">
-                <br>
-                <div class="chart-container">
-                    <div id="frdtspi650s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdtspi650s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',6)">Pump
-                            Details</button>
-                    </div>
-                </div>
-                <br>
-                <div class="chart-container">
-                    <div id="frdtspi650s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdtspi650s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',9)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frdtspi6150s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdtspi6150s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',12)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frdtspi6180s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdtspi6180s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',14)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frdtspi6230s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdtspi6230s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',16)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frdtspi6300s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdtspi6300s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',18)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frdtspi7400s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdtspi7400s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',32)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frdtspi7500s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdtspi7500s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',33)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frdtspi7550s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdtspi7550s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',34)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frdtspi8550s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdtspi8550s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',39)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frdtspi8650s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdtspi8650s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',40)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frdtspi8800s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdtspi8800s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',41)">Pump
-                            Details</button>
-                    </div>
-                </div><br>
-                <div class="chart-container">
-                    <div id="frdtspi101200s1" class="shown_graph"></div>
-                    <div class="summary-overlay">
-                        <button type="button" class="summary-button"
-                            onclick="updateSummaryPage('dt','frdtspi101200s1')">Select this model and
-                            continue
-                        </button>
-                    </div>
-                    <div class="chart-overlay">
-                        <button type="button" class="pdf-button"
-                            onclick="openPDF_Page('https://rainwaterharvesting.services/wp-content/uploads/2024/08/Wilo-SPI-6_7_8_10.pdf',46)">Pump
-                            Details</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+    <div class="rw_container">
+        <button class="toggle-button" onclick="showSection('municipal_line')"><b>Municipal Line Calculation</b></button>
     </div>
 
-    <div class="rainwater_div" id="municipal_line">
+    <div class="rainwater_div section_hide" id="municipal_line">
         <div id="municipal_line_calculation">
-            <h2 id="municipal_line_h2">Municipal Line Calculation</h2>
             <div class="helping_canvas">
                 <canvas id="municipal_line_helping_canvas" width="500" height="500"></canvas>
             </div>
@@ -1449,11 +939,18 @@
                 </div>
             </div>
         </div>
-
     </div>
+    <br />
     <button type="button" id="print_btn" onclick="printPage()">Print</button>
 
     <script>
+        function showSection(sectionId) {
+            // Hide both sections
+            // document.getElementById("municipal_line").style.display = "none";
+
+            // Display the selected section
+            document.getElementById(sectionId).style.display = "block";
+        }
         function updateSummaryPage(type, modelId) {
             localStorage.clear()
 
@@ -1482,26 +979,7 @@
             let dischargeResult, suctionResult, totalHeadBoosterPumpResult, selectedPumpType, helpingCanvas;
             let dischargeHeightFromPump, dischargePressureRequirement, dischargeTotalPipeRun, dischargeLossesOnValves, dischargeLossesOnFittings;
             let suctionHead, suctionTotalPipeRun, suctionLossesOnValves, suctionLossesOnFittings;
-            if (type == 'dt') {
-                helpingCanvas = document.getElementById('day_tank_helping_canvas').toDataURL();
-                dischargePressureRequirement = document.getElementById('day_tank_discharge_lf_pr').value;
-                dischargeHeightFromPump = document.getElementById('day_tank_discharge_lf_hp').value;
-                dischargeTotalPipeRun = document.getElementById('day_tank_discharge_tpr').value;
-                dischargeLossesOnValves = document.getElementById('day_tank_discharge_lov').value;
-                dischargeLossesOnFittings = document.getElementById('day_tank_discharge_lof').value;
-                dischargeResult = document.getElementById('DayTankDischargeResult').innerHTML;
-                suctionHead = document.getElementById('day_tank_suction_h').value;
-                suctionTotalPipeRun = document.getElementById('day_tank_suction_tpr').value;
-                suctionLossesOnValves = document.getElementById('day_tank_suction_lov').value;
-                suctionLossesOnFittings = document.getElementById('day_tank_suction_lof').value;
-                suctionResult = document.getElementById('DayTankSuctionResult').innerHTML;
-                totalHeadBoosterPumpResult = document.getElementById('DayTankTotalHeadBoosterPumpResult').innerHTML;
-
-                // Get selected pump type (Vertical Multistage or Submersible)
-                selectedPumpType = document.querySelector('input[name="day_tank_pump_type"]:checked').value; // Assuming radio buttons or similar input for pump type
-
-            }
-            else if (type == 'ml') {
+            if (type == 'ml') {
                 helpingCanvas = document.getElementById('municipal_line_helping_canvas').toDataURL();
                 dischargePressureRequirement = document.getElementById('municipal_line_discharge_lf_pr').value;
                 dischargeHeightFromPump = document.getElementById('municipal_line_discharge_lf_hp').value;
@@ -1532,6 +1010,7 @@
             // Access the second <g> tag and extract its text
             const model = svgElement.querySelectorAll('g text')[1].textContent;
             // Store data in localStorage
+            localStorage.setItem('sizing!', 'MHC_DBS');
             localStorage.setItem('addedFixtures', addedFixtures);
             localStorage.setItem('fixtureResult', fixtureResult);
             localStorage.setItem('totalIrrigationFlowRate', totalIrrigationFlowRate + ' GPM');
@@ -1555,35 +1034,35 @@
             localStorage.setItem('model', model);
             // Redirect to the summary page
             window.open('https://rainwaterharvesting.services/model-summary/', '_blank');
-        }
 
+        }
 
         const fixturesData = [
             {
                 "OCCUPANCY": "Private",
-                "FIXTURE": "Bathroom group with 6 LPF",
-                "SUPPLY_CONTROL": "Flush Tank",
+                "FIXTURE": "Bathroom group",
+                "SUPPLY_CONTROL": "Flush Tank, with 6 LPF",
                 "PIPE_SIZE": "N/A",
                 "LOAD_VALUES": 3.6
             },
             {
                 "OCCUPANCY": "Private",
-                "FIXTURE": "Bathroom group with greater than 6 LPF",
-                "SUPPLY_CONTROL": "Flush Tank",
+                "FIXTURE": "Bathroom group",
+                "SUPPLY_CONTROL": "Flush Tank, with greater than 6 LPF",
                 "PIPE_SIZE": "N/A",
                 "LOAD_VALUES": 6.0
             },
             {
                 "OCCUPANCY": "Private",
-                "FIXTURE": "Bathtub with or without Shower head",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Bathtub",
+                "SUPPLY_CONTROL": "Faucet, with or without Shower head",
                 "PIPE_SIZE": "1/2",
                 "LOAD_VALUES": 1.4
             },
             {
                 "OCCUPANCY": "Private",
-                "FIXTURE": "Bathtub with NPS 3/4 spout",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Bathtub",
+                "SUPPLY_CONTROL": "Faucet, with NPS 3/4 spout",
                 "PIPE_SIZE": "3/4",
                 "LOAD_VALUES": 10.0
             },
@@ -1596,10 +1075,17 @@
             },
             {
                 "OCCUPANCY": "Private",
-                "FIXTURE": "Clothes Washer, 3.5 kg",
-                "SUPPLY_CONTROL": "Automatic",
+                "FIXTURE": "Clothes Washer",
+                "SUPPLY_CONTROL": "Automatic, 3.5 kg",
                 "PIPE_SIZE": "1/2",
                 "LOAD_VALUES": 1.4
+            },
+            {
+                "OCCUPANCY": "Private",
+                "FIXTURE": "Clothes Washer",
+                "SUPPLY_CONTROL": "Automatic, 6.8 kg",
+                "PIPE_SIZE": "1/2",
+                "LOAD_VALUES": 3.0
             },
             {
                 "OCCUPANCY": "Private",
@@ -1610,50 +1096,50 @@
             },
             {
                 "OCCUPANCY": "Private",
-                "FIXTURE": "Hose bibb (1/2)",
-                "SUPPLY_CONTROL": "Valve",
+                "FIXTURE": "Hose bibb",
+                "SUPPLY_CONTROL": "Valve (1/2)",
                 "PIPE_SIZE": "1/2",
                 "LOAD_VALUES": 2.5
             },
             {
                 "OCCUPANCY": "Private",
-                "FIXTURE": "Hose bibb (3/4)",
-                "SUPPLY_CONTROL": "Valve",
+                "FIXTURE": "Hose bibb",
+                "SUPPLY_CONTROL": "Valve (3/4)",
                 "PIPE_SIZE": "3/4",
                 "LOAD_VALUES": 3.0
             },
             {
                 "OCCUPANCY": "Private",
-                "FIXTURE": "Hose bibb, combination Hot & Cold",
-                "SUPPLY_CONTROL": "Valve",
+                "FIXTURE": "Hose bibb",
+                "SUPPLY_CONTROL": "Valve, combination Hot & Cold",
                 "PIPE_SIZE": "1/2",
                 "LOAD_VALUES": 2.5
             },
             {
                 "OCCUPANCY": "Private",
-                "FIXTURE": "Lavatory, 8.3 LPM or Less",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Lavatory",
+                "SUPPLY_CONTROL": "Faucet, 8.3 LPM or Less",
                 "PIPE_SIZE": "3/8",
                 "LOAD_VALUES": 0.7
             },
             {
                 "OCCUPANCY": "Private",
-                "FIXTURE": "Lavatory, greater than 8.3 LPM",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Lavatory",
+                "SUPPLY_CONTROL": "Faucet, greater than 8.3 LPM",
                 "PIPE_SIZE": "3/8",
                 "LOAD_VALUES": 1.0
             },
             {
                 "OCCUPANCY": "Private",
-                "FIXTURE": "Shower head, 9.5 LPM or less per head",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Shower head",
+                "SUPPLY_CONTROL": "Faucet, 9.5 LPM or less per head",
                 "PIPE_SIZE": "1/2",
                 "LOAD_VALUES": 1.4
             },
             {
                 "OCCUPANCY": "Private",
-                "FIXTURE": "Shower head, greater than 9.5 LPM per head",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Shower head",
+                "SUPPLY_CONTROL": "Faucet, greater than 9.5 LPM per head",
                 "PIPE_SIZE": "1/2",
                 "LOAD_VALUES": 2.0
             },
@@ -1673,24 +1159,38 @@
             },
             {
                 "OCCUPANCY": "Private",
-                "FIXTURE": "Sink, kitchen, domestic, 8.3 LPM or less",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Sink, kitchen, domestic",
+                "SUPPLY_CONTROL": "Faucet, 8.3 LPM or less",
                 "PIPE_SIZE": "3/8",
                 "LOAD_VALUES": 1.4
             },
             {
                 "OCCUPANCY": "Private",
-                "FIXTURE": "Sink, kitchen, domestic, greater than 8.3 LPM",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Sink, kitchen, domestic",
+                "SUPPLY_CONTROL": "Faucet, greater than 8.3 LPM",
                 "PIPE_SIZE": "3/8",
                 "LOAD_VALUES": 2.0
             },
             {
                 "OCCUPANCY": "Private",
-                "FIXTURE": "Sink, Laundry (1 or 2 compartments)",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Sink, Laundry",
+                "SUPPLY_CONTROL": "Faucet, (1 or 2 compartments)",
                 "PIPE_SIZE": "3/8",
                 "LOAD_VALUES": 1.4
+            },
+            {
+                "OCCUPANCY": "Private",
+                "FIXTURE": "Urinal",
+                "SUPPLY_CONTROL": "Flush Valve",
+                "PIPE_SIZE": "3/4",
+                "LOAD_VALUES": 3.0
+            },
+            {
+                "OCCUPANCY": "Private",
+                "FIXTURE": "Urinal",
+                "SUPPLY_CONTROL": "Self-Closing Valve",
+                "PIPE_SIZE": "1/2",
+                "LOAD_VALUES": 2.0
             },
             {
                 "OCCUPANCY": "Private",
@@ -1701,36 +1201,36 @@
             },
             {
                 "OCCUPANCY": "Private",
-                "FIXTURE": "Urinal, with self-closing metering valve",
-                "SUPPLY_CONTROL": "Self-Closing Valve",
-                "PIPE_SIZE": "1/2",
-                "LOAD_VALUES": 2.0
-            },
-            {
-                "OCCUPANCY": "Private",
-                "FIXTURE": "Water closet, 6 LPF or less",
-                "SUPPLY_CONTROL": "Flush Tank",
+                "FIXTURE": "Water Closet",
+                "SUPPLY_CONTROL": "Flush Tank, 6 LPF or less",
                 "PIPE_SIZE": "3/8",
                 "LOAD_VALUES": 2.2
             },
             {
                 "OCCUPANCY": "Private",
-                "FIXTURE": "Water closet, greater than 6 LPF",
-                "SUPPLY_CONTROL": "Flush Tank",
+                "FIXTURE": "Water Closet",
+                "SUPPLY_CONTROL": "Flush Tank, Greater than 6 LPF",
                 "PIPE_SIZE": "3/8",
                 "LOAD_VALUES": 3.0
             },
             {
+                "OCCUPANCY": "Private",
+                "FIXTURE": "Water Closet",
+                "SUPPLY_CONTROL": "Flush Valve",
+                "PIPE_SIZE": "1",
+                "LOAD_VALUES": 10.0
+            },
+            {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Bathtub with or without Shower head",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Bathtub",
+                "SUPPLY_CONTROL": "Faucet, with or without Shower head",
                 "PIPE_SIZE": "1/2",
                 "LOAD_VALUES": 4.0
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Bathtub with NPS 3/4 spout",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Bathtub",
+                "SUPPLY_CONTROL": "Faucet, with NPS 3/4 spout",
                 "PIPE_SIZE": "3/4",
                 "LOAD_VALUES": 10.0
             },
@@ -1743,15 +1243,15 @@
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Clothes Washer, 3.5 kg",
-                "SUPPLY_CONTROL": "Automatic",
+                "FIXTURE": "Clothes Washer",
+                "SUPPLY_CONTROL": "Automatic, 3.5 kg",
                 "PIPE_SIZE": "1/2",
                 "LOAD_VALUES": 3.0
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Clothes Washer, 6.8 kg",
-                "SUPPLY_CONTROL": "Automatic",
+                "FIXTURE": "Clothes Washer",
+                "SUPPLY_CONTROL": "Automatic, 6.8 kg",
                 "PIPE_SIZE": "1/2",
                 "LOAD_VALUES": 4.0
             },
@@ -1778,50 +1278,50 @@
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Hose bibb (1/2)",
-                "SUPPLY_CONTROL": "Valve",
+                "FIXTURE": "Hose bibb",
+                "SUPPLY_CONTROL": "Valve (1/2)",
                 "PIPE_SIZE": "1/2",
                 "LOAD_VALUES": 2.5
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Hose bibb (3/4)",
-                "SUPPLY_CONTROL": "Valve",
+                "FIXTURE": "Hose bibb",
+                "SUPPLY_CONTROL": "Valve (3/4)",
                 "PIPE_SIZE": "3/4",
                 "LOAD_VALUES": 6.0
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Hose bibb, combination Hot & Cold",
-                "SUPPLY_CONTROL": "Valve",
+                "FIXTURE": "Hose bibb",
+                "SUPPLY_CONTROL": "Valve, combination Hot & Cold",
                 "PIPE_SIZE": "1/2",
                 "LOAD_VALUES": 2.5
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Lavatory, 8.3 LPM or Less",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Lavatory",
+                "SUPPLY_CONTROL": "Faucet, 8.3 LPM or Less",
                 "PIPE_SIZE": "3/8",
                 "LOAD_VALUES": 2.0
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Lavatory, greater than 8.3 LPM",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Lavatory",
+                "SUPPLY_CONTROL": "Faucet, greater than 8.3 LPM",
                 "PIPE_SIZE": "3/8",
                 "LOAD_VALUES": 2.0
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Shower head, 9.5 LPM or less per head",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Shower head",
+                "SUPPLY_CONTROL": "Faucet, 9.5 LPM or less per head",
                 "PIPE_SIZE": "1/2",
                 "LOAD_VALUES": 4.0
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Shower head, greater than 9.5 LPM per head",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Shower head",
+                "SUPPLY_CONTROL": "Faucet, greater than 9.5 LPM per head",
                 "PIPE_SIZE": "1/2",
                 "LOAD_VALUES": 4.0
             },
@@ -1841,66 +1341,73 @@
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Sink, Clinic service faucet",
-                "SUPPLY_CONTROL": "Direct Flush Valve",
+                "FIXTURE": "Sink, Clinic service",
+                "SUPPLY_CONTROL": "Direct Flush Valve faucet 1/2",
                 "PIPE_SIZE": "1/2",
                 "LOAD_VALUES": 3.0
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Sink, Clinic service with direct flush valve",
-                "SUPPLY_CONTROL": "Direct Flush Valve",
+                "FIXTURE": "Sink, Clinic service",
+                "SUPPLY_CONTROL": "Direct Flush Valve 1",
                 "PIPE_SIZE": "1",
                 "LOAD_VALUES": 6.0
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Sink, kitchen, commercial, per faucet",
+                "FIXTURE": "Sink, kitchen, commercial",
                 "SUPPLY_CONTROL": "Faucet",
                 "PIPE_SIZE": "1/2",
                 "LOAD_VALUES": 4.0
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Sink, kitchen, domestic, 8.3 LPM or less",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Sink, kitchen, domestic",
+                "SUPPLY_CONTROL": "Faucet, 8.3 LPM or less",
                 "PIPE_SIZE": "3/8",
                 "LOAD_VALUES": 1.4
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Sink, kitchen, domestic, greater than 8.3 LPM",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Sink, kitchen, domestic",
+                "SUPPLY_CONTROL": "Faucet, greater than 8.3 LPM",
                 "PIPE_SIZE": "3/8",
                 "LOAD_VALUES": 2.0
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Sink, laboratory",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Sink",
+                "SUPPLY_CONTROL": "Faucet, laboratory",
                 "PIPE_SIZE": "3/8",
                 "LOAD_VALUES": 2.0
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Sink, Laundry (1 or 2 compartments)",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Sink, Laundry",
+                "SUPPLY_CONTROL": "Faucet, (1 or 2 compartments)",
                 "PIPE_SIZE": "3/8",
                 "LOAD_VALUES": 1.4
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Sink, service or mop basin",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Sink",
+                "SUPPLY_CONTROL": "Faucet, service or mop basin",
                 "PIPE_SIZE": "1/2",
                 "LOAD_VALUES": 3.0
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Sink, Washup, per faucet",
-                "SUPPLY_CONTROL": "Faucet",
+                "FIXTURE": "Sink",
+                "SUPPLY_CONTROL": "Faucet, Washup, per faucet",
                 "PIPE_SIZE": "1/2",
                 "LOAD_VALUES": 2.0
+            },
+            {
+                "OCCUPANCY": "Public",
+                "FIXTURE": "Urinal",
+                "SUPPLY_CONTROL": "Flush Valve",
+                "PIPE_SIZE": "3/4",
+                "LOAD_VALUES": 3.0
             },
             {
                 "OCCUPANCY": "Public",
@@ -1911,230 +1418,200 @@
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Urinal, with self-closing metering valve",
+                "FIXTURE": "Urinal",
                 "SUPPLY_CONTROL": "Self-Closing Valve",
                 "PIPE_SIZE": "1/2",
                 "LOAD_VALUES": 4.0
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Water closet, 6 LPF or less",
-                "SUPPLY_CONTROL": "Flush Tank",
+                "FIXTURE": "Water Closet",
+                "SUPPLY_CONTROL": "Flush Tank, 6 LPF or less",
                 "PIPE_SIZE": "3/8",
                 "LOAD_VALUES": 2.2
             },
             {
                 "OCCUPANCY": "Public",
-                "FIXTURE": "Water closet, greater than 6 LPF",
-                "SUPPLY_CONTROL": "Flush Tank",
+                "FIXTURE": "Water Closet",
+                "SUPPLY_CONTROL": "Flush Tank, Greater than 6 LPF",
                 "PIPE_SIZE": "3/8",
                 "LOAD_VALUES": 5.0
+            },
+            {
+                "OCCUPANCY": "Public",
+                "FIXTURE": "Water Closet",
+                "SUPPLY_CONTROL": "Flush Valve",
+                "PIPE_SIZE": "1",
+                "LOAD_VALUES": 10.0
             }
         ];
-
-        // Update supplyControlArray and occupancyArray similarly to include the PIPE_SIZE
-        const supplyControlArray = {
-            "Bathroom group with 6 LPF": {
-                "supplyControls": ["Flush Tank"],
-                "pipeSize": "N/A"
-            },
-            "Bathroom group with greater than 6 LPF": {
-                "supplyControls": ["Flush Tank"],
-                "pipeSize": "N/A"
-            },
-            "Bathtub with or without Shower head": {
-                "supplyControls": ["Faucet"],
-                "pipeSize": "1/2"
-            },
-            "Bathtub with NPS 3/4 spout": {
-                "supplyControls": ["Faucet"],
-                "pipeSize": "3/4"
-            },
-            "Bidet": {
-                "supplyControls": ["Faucet"],
-                "pipeSize": "3/8"
-            },
-            "Bedpan washer": {
-                "supplyControls": ["Automatic"],
-                "pipeSize": "1"
-            },
-            "Dental lavatory": {
-                "supplyControls": ["Faucet"],
-                "pipeSize": "3/8"
-            },
-            "Dental Unit, cuspidor": {
-                "supplyControls": ["Automatic"],
-                "pipeSize": "3/8"
-            },
-            "Drinking fountain or water cooler": {
-                "supplyControls": ["Valve"],
-                "pipeSize": "3/8"
-            },
-            "Clothes Washer, 3.5 kg": {
-                "supplyControls": ["Automatic"],
-                "pipeSize": "1/2"
-            },
-            "Clothes Washer, 6.8 kg": {
-                "supplyControls": ["Automatic"],
-                "pipeSize": "1/2"
-            },
-            "Dishwasher Domestic": {
-                "supplyControls": ["Automatic"],
-                "pipeSize": "3/8"
-            },
-            "Hose bibb (1/2)": {
-                "supplyControls": ["Valve"],
-                "pipeSize": "1/2"
-            },
-            "Hose bibb (3/4)": {
-                "supplyControls": ["Valve"],
-                "pipeSize": "3/4"
-            },
-            "Hose bibb, combination Hot & Cold": {
-                "supplyControls": ["Valve"],
-                "pipeSize": "1/2"
-            },
-            "Lavatory, 8.3 LPM or Less": {
-                "supplyControls": ["Faucet"],
-                "pipeSize": "3/8"
-            },
-            "Lavatory, greater than 8.3 LPM": {
-                "supplyControls": ["Faucet"],
-                "pipeSize": "3/8"
-            },
-            "Shower head, 9.5 LPM or less per head": {
-                "supplyControls": ["Faucet"],
-                "pipeSize": "1/2"
-            },
-            "Shower head, greater than 9.5 LPM per head": {
-                "supplyControls": ["Faucet"],
-                "pipeSize": "1/2"
-            },
-            "Shower, spray, multi-head, fixture unit per head": {
-                "supplyControls": ["Faucet"],
-                "pipeSize": "5"
-            },
-            "Sink, bar": {
-                "supplyControls": ["Faucet"],
-                "pipeSize": "3/8"
-            },
-            "Sink, Clinic service faucet": {
-                "supplyControls": ["Direct Flush Valve"],
-                "pipeSize": "1/2"
-            },
-            "Sink, Clinic service with direct flush valve": {
-                "supplyControls": ["Direct Flush Valve"],
-                "pipeSize": "1"
-            },
-            "Sink, kitchen, commercial, per faucet": {
-                "supplyControls": ["Faucet"],
-                "pipeSize": "1/2"
-            },
-            "Sink, kitchen, domestic, 8.3 LPM or less": {
-                "supplyControls": ["Faucet"],
-                "pipeSize": "3/8"
-            },
-            "Sink, kitchen, domestic, greater than 8.3 LPM": {
-                "supplyControls": ["Faucet"],
-                "pipeSize": "3/8"
-            },
-            "Sink, laboratory": {
-                "supplyControls": ["Faucet"],
-                "pipeSize": "3/8"
-            },
-            "Sink, Laundry (1 or 2 compartments)": {
-                "supplyControls": ["Faucet"],
-                "pipeSize": "3/8"
-            },
-            "Sink, service or mop basin": {
-                "supplyControls": ["Faucet"],
-                "pipeSize": "1/2"
-            },
-            "Sink, Washup, per faucet": {
-                "supplyControls": ["Faucet"],
-                "pipeSize": "1/2"
-            },
-            "Urinal": {
-                "supplyControls": ["Flush Tank"],
-                "pipeSize": "3/8"
-            },
-            "Urinal, with self-closing metering valve": {
-                "supplyControls": ["Self-Closing Valve"],
-                "pipeSize": "1/2"
-            },
-            "Water closet, 6 LPF or less": {
-                "supplyControls": ["Flush Tank"],
-                "pipeSize": "3/8"
-            },
-            "Water closet, greater than 6 LPF": {
-                "supplyControls": ["Flush Tank"],
-                "pipeSize": "3/8"
-            },
-        };
 
         const occupancyArray = {
             "Private": {
                 "fixtures": [
-                    "Bathroom group with 6 LPF",
-                    "Bathroom group with greater than 6 LPF",
-                    "Bathtub with or without Shower head",
-                    "Bathtub with NPS 3/4 spout",
+                    "Bathroom group",
+                    "Bathtub",
                     "Bidet",
-                    "Clothes Washer, 3.5 kg",
+                    "Clothes Washer",
                     "Dishwasher Domestic",
-                    "Hose bibb (1/2)",
-                    "Hose bibb (3/4)",
-                    "Hose bibb, combination Hot & Cold",
-                    "Lavatory, 8.3 LPM or Less",
-                    "Lavatory, greater than 8.3 LPM",
-                    "Shower head, 9.5 LPM or less per head",
-                    "Shower head, greater than 9.5 LPM per head",
+                    "Hose bibb",
+                    "Lavatory",
+                    "Shower head",
                     "Shower, spray, multi-head, fixture unit per head",
                     "Sink, bar",
-                    "Sink, kitchen, domestic, 8.3 LPM or less",
-                    "Sink, kitchen, domestic, greater than 8.3 LPM",
-                    "Sink, Laundry (1 or 2 compartments)",
+                    "Sink, kitchen, domestic",
+                    "Sink, Laundry",
                     "Urinal",
-                    "Urinal, with self-closing metering valve",
-                    "Water closet, 6 LPF or less",
-                    "Water closet, greater than 6 LPF"
+                    "Water Closet"
                 ]
             },
             "Public": {
                 "fixtures": [
-                    "Bathtub with or without Shower head",
-                    "Bathtub with NPS 3/4 spout",
+                    "Bathtub",
                     "Bedpan washer",
-                    "Clothes Washer, 3.5 kg",
-                    "Clothes Washer, 6.8 kg",
+                    "Clothes Washer",
                     "Dental lavatory",
                     "Dental Unit, cuspidor",
                     "Drinking fountain or water cooler",
-                    "Hose bibb (1/2)",
-                    "Hose bibb (3/4)",
-                    "Hose bibb, combination Hot & Cold",
-                    "Lavatory, 8.3 LPM or Less",
-                    "Lavatory, greater than 8.3 LPM",
-                    "Shower head, 9.5 LPM or less per head",
-                    "Shower head, greater than 9.5 LPM per head",
+                    "Hose bibb",
+                    "Lavatory",
+                    "Shower head",
                     "Shower, spray, multi-head, fixture unit per head",
                     "Sink, bar",
-                    "Sink, Clinic service faucet",
-                    "Sink, Clinic service with direct flush valve",
-                    "Sink, kitchen, commercial, per faucet",
-                    "Sink, kitchen, domestic, 8.3 LPM or less",
-                    "Sink, kitchen, domestic, greater than 8.3 LPM",
-                    "Sink, laboratory",
-                    "Sink, Laundry (1 or 2 compartments)",
-                    "Sink, service or mop basin",
-                    "Sink, Washup, per faucet",
+                    "Sink, Clinic service",
+                    "Sink, kitchen, commercial",
+                    "Sink, kitchen, domestic",
+                    "Sink, Laundry",
+                    "Sink",
                     "Urinal",
-                    "Urinal, with self-closing metering valve",
-                    "Water closet, 6 LPF or less",
-                    "Water closet, greater than 6 LPF"
+                    "Water Closet"
                 ]
             }
         };
+
+        const supplyControlArray = {
+            "Bathroom group": {
+                "supplyControls": [
+                    "Flush Tank, with 6 LPF",
+                    "Flush Tank, with greater than 6 LPF"
+                ],
+            },
+
+            "Bathtub": {
+                "supplyControls": [
+                    "Faucet, with or without Shower head",
+                    "Faucet, with NPS 3/4 spout"
+                ],
+            },
+            "Bidet": {
+                "supplyControls": [
+                    "Faucet"
+                ],
+            },
+            "Bedpan washer": {
+                "supplyControls": [
+                    "Automatic"
+                ],
+            },
+            "Clothes Washer": {
+                "supplyControls": [
+                    "Automatic, 3.5 kg",
+                    "Automatic, 6.8 kg"
+                ],
+            },
+            "Dental lavatory": {
+                "supplyControls": [
+                    "Faucet"
+                ],
+            },
+            "Dental Unit, cuspidor": {
+                "supplyControls": [
+                    "Automatic"
+                ],
+            },
+            "Dishwasher Domestic": {
+                "supplyControls": [
+                    "Automatic"
+                ],
+            },
+            "Drinking fountain or water cooler": {
+                "supplyControls": [
+                    "Valve"
+                ],
+            },
+
+            "Hose bibb": {
+                "supplyControls": [
+                    "Valve (1/2)",
+                    "Valve (3/4)",
+                    "Valve, combination Hot & Cold"
+                ],
+            },
+            "Lavatory": {
+                "supplyControls": [
+                    "Faucet, 8.3 LPM or Less",
+                    "Faucet, greater than 8.3 LPM"
+                ],
+            },
+            "Shower head": {
+                "supplyControls": [
+                    "Faucet, 9.5 LPM or less per head",
+                    "Faucet, greater than 9.5 LPM per head"
+                ],
+            },
+            "Shower, spray, multi-head, fixture unit per head": {
+                "supplyControls": [
+                    "Faucet"
+                ],
+            },
+            "Sink, bar": {
+                "supplyControls": [
+                    "Faucet",
+                ],
+            },
+            "Sink, kitchen, domestic": {
+                "supplyControls": [
+                    "Faucet, 8.3 LPM or less",
+                    "Faucet, greater than 8.3 LPM"
+                ],
+            },
+            "Sink, kitchen, commercial": {
+                "supplyControls": [
+                    "Faucet",
+                ],
+            },
+            "Sink, Laundry": {
+                "supplyControls": [
+                    "Faucet, (1 or 2 compartments)"
+                ],
+            },
+            "Sink, Clinic service": {
+                "supplyControls": [
+                    "Direct Flush Valve faucet 1/2",
+                    "Direct Flush Valve 1",
+                ],
+            },
+            "Sink": {
+                "supplyControls": [
+                    "Faucet, laboratory",
+                    "Faucet, service or mop basin",
+                    "Faucet, Washup, per faucet"
+                ],
+            },
+            "Urinal": {
+                "supplyControls": [
+                    "Flush Valve",
+                    "Flush Tank",
+                    "Self-Closing Valve"],
+            },
+            "Water Closet": {
+                "supplyControls": [
+                    "Flush Tank, 6 LPF or less",
+                    "Flush Tank, Greater than 6 LPF",
+                    "Flush Valve"],
+            },
+        };
+
 
         const MHC_GPM = {
             'curve A': {
@@ -2335,10 +1812,8 @@
         function populateSupplyControl() {
             const selectedFixtures = document.getElementById('fixtures').value;
             const supplyControlDropdown = document.getElementById('supplyControl');
-            const pipeSizeDropdown = document.getElementById('pipeSize');
 
             supplyControlDropdown.innerHTML = '';
-            pipeSizeDropdown.innerHTML = '';
 
             if (selectedFixtures) {
                 const selectedFixtureData = supplyControlArray[selectedFixtures];
@@ -2350,14 +1825,8 @@
                     supplyControlDropdown.appendChild(supplyControlOption);
                 });
 
-                const pipeSizeOption = document.createElement('option');
-                pipeSizeOption.value = selectedFixtureData.pipeSize;
-                pipeSizeOption.textContent = selectedFixtureData.pipeSize;
-                pipeSizeDropdown.appendChild(pipeSizeOption);
-
                 document.getElementById('fixtures').disabled = false;
                 supplyControlDropdown.disabled = false;
-                pipeSizeDropdown.disabled = false;
             }
         }
 
@@ -2463,6 +1932,7 @@
             previousValue = application;
 
         }
+
 
         function calculateFixtureFlow() {
 
@@ -2638,249 +2108,6 @@
                 button.addEventListener('click', handleButtonClick);
             }
         });
-
-        function DayTankDischargeLossesFittings() {
-            const dayTankDischargeTPR = parseFloat(document.getElementById('day_tank_discharge_tpr').value);
-            let dayTankDischargeLoF = (dayTankDischargeTPR / 100) * 10;
-
-            document.getElementById('day_tank_discharge_lof').value = dayTankDischargeLoF.toFixed(2);
-        }
-
-        function calculateDayTankDischargeSide() {
-            event.preventDefault();
-            const dayTankDischargeLFPR = parseFloat(document.getElementById('day_tank_discharge_lf_pr').value);
-            const dayTankDischargeLFHP = parseFloat(document.getElementById('day_tank_discharge_lf_hp').value);
-            const dayTankDischargeTPR = parseFloat(document.getElementById('day_tank_discharge_tpr').value);
-            const dayTankDischargeLoV = parseFloat(document.getElementById('day_tank_discharge_lov').value);
-            const dayTankDischargeLoF = parseFloat(document.getElementById('day_tank_discharge_lof').value);
-
-            let dayTankDischargeLF_feet = dayTankDischargeLFPR * 2.31;
-            let dayTankDischargeLoOPR_feet = (dayTankDischargeTPR / 100) * 1.5;
-            let dayTankDischargeLoV_feet = dayTankDischargeLoV * 2.31;
-
-            let dayTankDischargeResult = dayTankDischargeLF_feet + dayTankDischargeLFHP + dayTankDischargeLoOPR_feet + dayTankDischargeLoV_feet + dayTankDischargeLoF;
-            if (!isNaN(dayTankDischargeResult)) {
-                document.getElementById('DayTankDischargeResultError').innerHTML = "";
-                document.getElementById('DayTankDischargeResult').innerHTML = `Day Tank Discharge Side: ${dayTankDischargeResult.toFixed(2)} feet`;
-            }
-
-            return dayTankDischargeResult;
-        }
-
-        function DayTankSuctionLossesFittings() {
-            const dayTankSuctionTPR = parseFloat(document.getElementById('day_tank_suction_tpr').value);
-            let dayTankSuctionLoF = (dayTankSuctionTPR / 100) * 10;
-
-            document.getElementById('day_tank_suction_lof').value = dayTankSuctionLoF.toFixed(2);
-        }
-
-        function calculateDayTankSuctionSide() {
-            event.preventDefault();
-
-            const dayTankSuctionH = parseFloat(document.getElementById('day_tank_suction_h').value);
-            const dayTankSuctionTPR = parseFloat(document.getElementById('day_tank_suction_tpr').value);
-            const dayTankSuctionLoV = parseFloat(document.getElementById('day_tank_suction_lov').value);
-            const dayTankSuctionLoF = parseFloat(document.getElementById('day_tank_suction_lof').value);
-
-            let dayTankSuctionH_neg = dayTankSuctionH * -1;
-
-            if (dayTankSuctionH < 0) {
-                dayTankSuctionH_neg = dayTankSuctionH;
-            }
-            let dayTankSuctionLoOPR_feet = (dayTankSuctionTPR / 100) * 1.5;
-            let dayTankSuctionLoV_feet = dayTankSuctionLoV * 2.31;
-
-            let dayTankSuctionResult = dayTankSuctionH_neg + dayTankSuctionLoOPR_feet + dayTankSuctionLoV_feet + dayTankSuctionLoF;
-            if (!isNaN(dayTankSuctionResult)) {
-                document.getElementById('DayTankSuctionResultError').innerHTML = "";
-                document.getElementById('DayTankSuctionResult').innerHTML = `Day Tank Suction Side: ${dayTankSuctionResult.toFixed(2)} feet`;
-            }
-
-            return dayTankSuctionResult;
-        }
-
-        function DayTankTotalHeadBoosterPumpResult() {
-            let dayTankDischargeResultValidity = calculateDayTankDischargeSide();
-            let dayTankSuctionResultValidity = calculateDayTankSuctionSide();
-
-            if (isNaN(dayTankDischargeResultValidity)) {
-                document.getElementById('DayTankDischargeResultError').innerHTML = "Please Calculate Discharge Side";
-            }
-            else {
-                document.getElementById('DayTankDischargeResultError').innerHTML = "";
-
-            }
-
-            if (isNaN(dayTankSuctionResultValidity)) {
-                document.getElementById('DayTankSuctionResultError').innerHTML = "Please Calculate Suction Side";
-            }
-            else {
-                document.getElementById('DayTankSuctionResultError').innerHTML = "";
-
-            }
-
-            if (isNaN(dayTankDischargeResultValidity) || isNaN(dayTankSuctionResultValidity)) {
-                return
-            }
-
-            let dayTankTotalHeadOfBoosterPump = calculateDayTankDischargeSide() + calculateDayTankSuctionSide();
-
-            document.getElementById('DayTankTotalHeadBoosterPumpResult').innerHTML = `Total Head of Booster Pump: ${dayTankTotalHeadOfBoosterPump.toFixed(2)} feet`;
-
-            document.getElementById('dt_message').textContent = '';
-            return +dayTankTotalHeadOfBoosterPump.toFixed(0);
-        }
-
-        document.addEventListener('DOMContentLoaded', (event) => {
-            // Get the elements to observe
-            const dischargeResultElement = document.getElementById('DayTankDischargeResult');
-            const suctionResultElement = document.getElementById('DayTankSuctionResult');
-            const button = document.querySelector('button[onclick="DayTankTotalHeadBoosterPumpResult()"]'); // Select button by its onclick handler
-
-            // Get the message element for displaying updates
-            const messageElement = document.getElementById('dt_message');
-
-            // Create a MutationObserver to watch for changes to the <h4> elements
-            const observer = new MutationObserver(() => {
-                updateButtonState();
-                updateMessage("The Day Tank results have changed. Please review the new values.");
-            });
-
-            // Configure the observer to watch for changes in the child list of the <h4> elements
-            observer.observe(dischargeResultElement, { childList: true, subtree: true });
-            observer.observe(suctionResultElement, { childList: true, subtree: true });
-
-            // Function to update the message element
-            function updateMessage(text) {
-                if (messageElement && isEventButtonClicked) {
-                    messageElement.textContent = text;
-                }
-            }
-
-            // Function to update button state based on the content of the <h4> elements
-            function updateButtonState() {
-                const hasDischargeResult = dischargeResultElement.textContent.trim() !== '';
-                const hasSuctionResult = suctionResultElement.textContent.trim() !== '';
-                button.disabled = !(hasDischargeResult && hasSuctionResult); // Enable button only if both <h4> elements have content
-            }
-
-            // Function to hide the message
-            function hideMessage() {
-                if (messageElement) {
-                    messageElement.textContent = ''; // Clear the message
-                }
-            }
-
-            // Attach click event listener to the button
-            button.addEventListener('click', (event) => {
-                // Optionally: Add validation or condition checks here
-                if (dischargeResultElement.textContent.trim() !== '' && suctionResultElement.textContent.trim() !== '') {
-                    hideMessage(); // Hide the message if everything is good
-                }
-            });
-        });
-
-        function dayTankHelpingCanvas() {
-            var canvas = document.getElementById("day_tank_helping_canvas");
-            var ctx = canvas.getContext("2d");
-            ctx.fillStyle = "#8CAC9C";
-            ctx.fillRect(0, 0, 500, 500);
-            ctx.fillStyle = "#000000";
-            ctx.font = canvas.width * 0.03 + "px Arial";
-
-            var dayTank = new Image();
-            dayTank.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/day_tank_img.png';
-
-            dayTank.onload = function () {
-                ctx.drawImage(dayTank, 0, canvas.height - dayTank.height);
-            };
-
-            var pump = new Image();
-            pump.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/pump_img.png';
-
-            pump.onload = function () {
-                ctx.drawImage(pump, 160, canvas.height - pump.height - 33);
-            };
-
-            var toilet = new Image();
-            toilet.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/toilet_img.png';
-
-            toilet.onload = function () {
-                ctx.drawImage(toilet, canvas.width - 70 - toilet.width, 120);
-            };
-
-            var pressure = new Image();
-            pressure.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/pressure_img.png';
-
-            pressure.onload = function () {
-                ctx.drawImage(pressure, canvas.width - 180 - pressure.width, 100);
-            };
-
-            var irrigation = new Image();
-            irrigation.src = 'https://rainwaterharvesting.services/wp-content/uploads/2023/12/irrigation_img.png';
-
-            irrigation.onload = function () {
-                ctx.drawImage(irrigation, canvas.width - 75 - irrigation.width, 180);
-            };
-
-            let pressureVal = parseFloat(document.getElementById('day_tank_discharge_lf_pr').value) || 0;
-            let totalPipeRun = parseFloat(document.getElementById('day_tank_discharge_tpr').value) || 0;
-            let elevationFromPump = parseFloat(document.getElementById('day_tank_discharge_lf_hp').value) || 0;
-            let suctionHead = parseFloat(document.getElementById('day_tank_suction_h').value) || 0;
-            if (suctionHead < 0) {
-                suctionHead *= -1;
-            }
-            ctx.fillText("Pressure", canvas.width * 0.5, canvas.height * 0.1);
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(canvas.width * 0.5, canvas.height * 0.12, canvas.width * 0.2, canvas.height * 0.05);
-            ctx.fillStyle = "#000000";
-            ctx.fillText(pressureVal + " psi", canvas.width * 0.51, canvas.height * 0.155);
-
-            ctx.fillText("Total Pipe Run", canvas.width * 0.24, canvas.height * 0.44);
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(canvas.width * 0.24, canvas.height * 0.46, canvas.width * 0.2, canvas.height * 0.05);
-            ctx.fillStyle = "#000000";
-            ctx.fillText(totalPipeRun + " ft", canvas.width * 0.25, canvas.height * 0.495);
-
-            ctx.fillText("Elevation From Booster Pump", canvas.width * 0.58, canvas.height * 0.7);
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(canvas.width * 0.58, canvas.height * 0.72, canvas.width * 0.2, canvas.height * 0.05);
-            ctx.fillStyle = "#000000";
-            ctx.fillText(elevationFromPump + " ft", canvas.width * 0.59, canvas.height * 0.755);
-
-            ctx.fillText("Suction Head", canvas.width * 0.26, canvas.height * 0.77);
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(canvas.width * 0.26, canvas.height * 0.79, canvas.width * 0.2, canvas.height * 0.05);
-            ctx.fillStyle = "#000000";
-            ctx.fillText(suctionHead + " ft", canvas.width * 0.27, canvas.height * 0.825);
-
-            ctx.fillText("Toilet", canvas.width * 0.84, canvas.height * 0.33);
-            ctx.fillText("Irrigation", canvas.width * 0.84, canvas.height * 0.43);
-
-            ctx.strokeStyle = "#0000ff"
-
-            ctx.beginPath();
-            ctx.moveTo(canvas.width * 0.33, canvas.height * 0.89);
-            ctx.lineTo(canvas.width * 0.25, canvas.height * 0.89);
-
-            ctx.moveTo(canvas.width * 0.48, canvas.height * 0.875);
-            ctx.lineTo(canvas.width * 0.38, canvas.height * 0.875);
-
-            ctx.moveTo(canvas.width * 0.48, canvas.height * 0.875);
-            ctx.lineTo(canvas.width * 0.48, canvas.height * 0.36);
-
-            ctx.moveTo(canvas.width * 0.56, canvas.height * 0.875);
-            ctx.lineTo(canvas.width * 0.56, canvas.height * 0.36);
-
-            ctx.moveTo(canvas.width * 0.72, canvas.height * 0.36);
-            ctx.lineTo(canvas.width * 0.48, canvas.height * 0.36);
-
-            ctx.moveTo(canvas.width * 0.25, canvas.height * 0.69);
-            ctx.lineTo(canvas.width * 0.25, canvas.height * 0.89);
-
-            ctx.stroke();
-        }
-        dayTankHelpingCanvas();
 
         function MunicipalLineDischargeLossesFittings() {
             const municipalLineDischargeTPR = parseFloat(document.getElementById('municipal_line_discharge_tpr').value);
@@ -3142,81 +2369,6 @@
         }
         let isEventButtonClicked = true;
 
-        document.addEventListener('DOMContentLoaded', (event) => {
-            // Get the elements
-            const messageElement = document.getElementById('dayTankMessage');
-            const dayTankResultElement = document.getElementById('DayTankTotalHeadBoosterPumpResult');
-            const pumpResultDivs = document.querySelectorAll('.pumpResult');
-
-            // Function to update the message
-            function updateMessage(text) {
-                if (messageElement) {
-                    messageElement.textContent = text;
-                }
-            }
-
-            // Function to hide the message
-            function hideMessage() {
-                if (messageElement) {
-                    messageElement.textContent = ''; // Clear the message
-                }
-            }
-
-            // Add event listeners to radio buttons inside .pumpResult
-            pumpResultDivs.forEach(div => {
-                const radioButtons = div.querySelectorAll('input[type="radio"]');
-                radioButtons.forEach(button => {
-                    button.addEventListener('change', () => {
-                        updateMessage("The pump selection has been updated. Please review.");
-                    });
-                });
-            });
-
-            // Add event listener for changes to the DayTankTotalHeadBoosterPumpResult element
-            const observer = new MutationObserver(() => {
-                updateMessage("The total head booster pump result has been updated. Please review.");
-            });
-
-            if (dayTankResultElement) {
-                observer.observe(dayTankResultElement, { childList: true, subtree: true });
-            }
-
-            // Function to handle the button click event
-            function dayTankPumpType() {
-                // Add any necessary validation or actions here
-                hideMessage(); // Hide the message when the button is clicked
-            }
-
-            // Attach the button click event listener
-            const button = document.querySelector('button[onclick="dayTankPumpType()"]');
-            if (button) {
-                button.addEventListener('click', dayTankPumpType);
-            }
-
-            // Optional: Observe changes in the .pumpResult divs
-            pumpResultDivs.forEach(div => {
-                const observerDiv = new MutationObserver(() => {
-                    updateMessage("The pump result details have been updated. Please review.");
-                });
-
-                observerDiv.observe(div, { childList: true, subtree: true });
-            });
-        });
-
-        function dayTankPumpType() {
-            isEventButtonClicked = false;
-            handlePumpType(
-                'day_tank_pump_type',
-                DayTankTotalHeadBoosterPumpResult(),
-                'dtvme',
-                'dtse',
-                'dtsc',
-                'dtsvmc',
-                getDayTankVerticalPumps(),
-                getDayTankSubmersiblePumps()
-            );
-
-        }
 
         document.addEventListener('DOMContentLoaded', (event) => {
             // Get the elements
@@ -3356,44 +2508,6 @@
 
             const results = await Promise.all(pumpChecks);
             noPlot = !results.some(result => result);
-        }
-
-        function getDayTankVerticalPumps() {
-            return [
-                { condition: (flowRate, head) => (flowRate > 15 && flowRate < 200) && (head > 0 && head < 600), fn: Wilo_Helix_V110, id: 'frdtv110' },
-                { condition: (flowRate, head) => (flowRate > 25 && flowRate < 300) && (head > 0 && head < 400), fn: Wilo_Helix_V190, id: 'frdtv190' },
-                { condition: (flowRate, head) => (flowRate > 35 && flowRate < 400) && (head > 0 && head < 300), fn: Wilo_Helix_V270, id: 'frdtv270' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 25) && (head > 0 && head < 800), fn: Wilo_Helix_V10, id: 'frdtv10' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 40) && (head > 0 && head < 700), fn: Wilo_Helix_V20, id: 'frdtv20' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 60) && (head > 0 && head < 800), fn: Wilo_Helix_V30, id: 'frdtv30' },
-                { condition: (flowRate, head) => (flowRate > 5 && flowRate < 100) && (head > 0 && head < 550), fn: Wilo_Helix_V50, id: 'frdtv50' },
-                { condition: (flowRate, head) => (flowRate > 10 && flowRate < 140) && (head > 0 && head < 400), fn: Wilo_Helix_V80, id: 'frdtv80' }
-            ];
-        }
-
-        function getDayTankSubmersiblePumps() {
-            return [
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate <= 8) && (head > 100 && head < 851), fn: Wilo_TWI_4_05, id: 'frdttwi4-05' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate <= 10) && (head > 80 && head < 870), fn: Wilo_TWI_4_07, id: 'frdttwi4-07' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate <= 16) && (head > 150 && head < 1700), fn: Wilo_TWI_4_10, id: 'frdttwi4-10' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate <= 26) && (head > 0 && head <= 2200), fn: Wilo_TWI_4_18, id: 'frdttwi4-18' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate <= 40) && (head > 0 && head < 1450), fn: Wilo_TWI_4_25, id: 'frdttwi4-25' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 70) && (head > 0 && head < 1800), fn: Wilo_TWI_4_40, id: 'frdttwi4-40' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 120) && (head > 0 && head < 501), fn: Wilo_TWI_4_70, id: 'frdttwi4-70' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 100) && (head > 0 && head < 800), fn: Wilo_SPI_6_50, id: 'frdtspi650s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 126) && (head > 0 && head < 851), fn: Wilo_SPI_6_90, id: 'frdtspi690s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 225) && (head > 0 && head < 1000), fn: Wilo_SPI_6_150, id: 'frdtspi6150s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 301) && (head > 0 && head < 1050), fn: Wilo_SPI_6_180, id: 'frdtspi6180s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 351) && (head > 0 && head < 800), fn: Wilo_SPI_6_230, id: 'frdtspi6230s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 450) && (head > 0 && head < 776), fn: Wilo_SPI_6_300, id: 'frdtspi6300s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 580) && (head > 0 && head < 1351), fn: Wilo_SPI_7_400, id: 'frdtspi7400s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 625) && (head > 0 && head < 1300), fn: Wilo_SPI_7_500, id: 'frdtspi7500s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 690) && (head > 0 && head < 1150), fn: Wilo_SPI_7_550, id: 'frdtspi7550s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 751) && (head > 0 && head < 1900), fn: Wilo_SPI_8_550, id: 'frdtspi8550s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 1000) && (head > 0 && head < 1701), fn: Wilo_SPI_8_650, id: 'frdtspi8650s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 1101) && (head > 0 && head < 1301), fn: Wilo_SPI_8_800, id: 'frdtspi8800s1' },
-                { condition: (flowRate, head) => (flowRate > 0 && flowRate < 1600) && (head > 0 && head < 1125), fn: Wilo_SPI_10_1200, id: 'frdtspi101200s1' }
-            ];
         }
 
         function getMunicipalLineVerticalPumps() {
