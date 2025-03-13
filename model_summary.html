@@ -8,7 +8,16 @@
     <title>Model Summary</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+
     <style>
+        .page__banner-content {
+            text-align: center
+        }
+
+        .section-padding {
+            padding: 0
+        }
+
         button {
             font-size: medium;
             padding: 10px 20px;
@@ -101,10 +110,28 @@
             padding: 20px;
             background-color: #f1f1f2
         }
+
+        #rain_water,#system_option {
+            display: none;
+            border-radius: 20px;
+            padding: 20px;
+            background-color: #f1f1f2
+        }
+
+        #summarySection,
+        #summarySection * {
+            page-break-inside: avoid;
+        }
     </style>
 </head>
 
 <body>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js">
+
+    </script>
+
+
     <div id="summarySection">
         <br>
         <div id="flow_rate">
@@ -123,10 +150,48 @@
                 <span id="summarySelectedPump"></span>
             </h4>
             <br>
-            <img id="summaryHelpingCanvasImage" alt="Helping Canvas">
+            <img id="summaryHelpingCanvasImage" src="" alt="Helping Canvas">
+        </div>
+        <br />
+
+        <div id="rain_water">
+            <h4>Collection Area (Sq. Ft):
+                <span id="collectionArea"></span>
+            </h4>
+
+            <h4>Average Rainfall per Year (Inches):
+                <span id="rainfall"></span>
+            </h4>
+
+            <h4>Conversion (default 0.623):
+                <span id="conversion"></span>
+            </h4>
+
+            <h4>Safety Factor (default 0.85):
+                <span id="safetyFactor"></span>
+            </h4>
+            <br>
+            <h4>Collectable Total Gallonage per Year:
+                <span id="totalYearlyGallonage"></span>
+            </h4>
+
+            <h4>Collectable Total Gallonage per Month:
+                <span id="totalMonthlyGallonage"></span>
+            </h4>
         </div>
 
-        <br>
+        <br />
+
+        <div id="system_option">
+            <h2>Selected System</h2>
+            <p id="selectedSystem"></p>
+            <img id="summarySystemImage" src="" alt="Selected System">
+        
+            <h2>Selected Option</h2>
+            <p id="selectedOption"></p>
+            <img id="summaryOptionImage" src="" alt="Selected Option">
+        </div>
+        <br/>
 
         <table border="1">
             <tr>
@@ -168,225 +233,204 @@
             <div id="summarySelectedModelChart"></div>
         </div>
     </div>
+    <br />
+    <form id="customPdfForm" onsubmit="event.preventDefault(); sendPdfEmail();">
+        <!-- Sender Details -->
+        <label for="sender_name">Name:</label>
+        <input type="text" id="sender_name" name="sender_name" required>
+
+        <label for="sender_email">Email:</label>
+        <input type="email" id="sender_email" name="sender_email">
+
+        <label for="sender_phone">Phone:</label>
+        <input type="tel" id="sender_phone" name="sender_phone">
+
+        <label for="sender_message">Message:</label>
+        <textarea id="sender_message" name="sender_message"></textarea>
+
+        <button type="submit" id="send-pdf-btn">Send PDF via Email</button>
+    </form>
+
+    <script>
+        function sendPdfEmail() {
+
+            const sendBtn = document.getElementById('send-pdf-btn');
+            sendBtn.disabled = true;
+            sendBtn.textContent = 'Sending...';
+            const senderName = document.getElementById('sender_name').value;
+            const senderEmail = document.getElementById('sender_email').value;
+            const senderPhone = document.getElementById('sender_phone').value;
+            const senderMessage = document.getElementById('sender_message').value;
+
+            const element = document.getElementById('summarySection');
+
+            const opt = {
+                margin: 0.2,
+                filename: 'summary.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, scrollY: 0 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' },
+                pagebreak: { mode: ['avoid-all'] }
+
+            };
+
+            html2pdf().set(opt).from(element).outputPdf('blob').then(function (pdfBlob) {
+                const formData = new FormData();
+                formData.append('pdf_file', pdfBlob, 'summary.pdf');
+                formData.append('action', 'send_pdf_email');
+                formData.append('to_email', 'info@kcsweb.ca');
+                formData.append('sender_name', senderName);
+                formData.append('sender_email', senderEmail);
+                formData.append('sender_phone', senderPhone);
+                formData.append('sender_message', senderMessage);
+                // fetch('/wp-admin/admin-ajax.php', {
+                //     method: 'POST',
+                //     body: formData
+                // })
+                //     .then(response => response.json())
+                //     .then(data => {
+                if (data.success) {
+                    sendBtn.disabled = false;
+                    sendBtn.textContent = 'Sent ...';
+                } else {
+                    sendBtn.disabled = false;
+                    sendBtn.textContent = 'unable to send Try Again';
+                }
+
+                // })
+                // .catch(error => {
+                //     console.error('Error:', error)
+                //     sendBtn.disabled = false;
+                //     sendBtn.textContent = 'Failed... Send again?';
+                // });
+            });
+        }
+    </script>
+
+    <div>
+        <button type="button" id="print_btn" onclick="printPage()">Print</button>
+        <button type="button" onclick="closeTab()">Cancel & Select Another Model</button>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sizingType = localStorage.getItem('sizingType') || false;
+            const sizingCategory = localStorage.getItem('sizingCategory') || false;
+            if (sizingType == 'RHS') {
+                document.getElementById('rain_water').style.display = 'block';
+                document.getElementById('system_option').style.display = 'block';
+
+                const selectedSystem = localStorage.getItem('selectedSystem') || "N/A";
+                const selectedOption = localStorage.getItem('selectedOption') || "N/A";
+                const systemImages = {
+                    "system 1": "https://rainwaterharvesting.services/wp-content/uploads/2025/03/system_1.jpeg",
+                    "system 2": "https://rainwaterharvesting.services/wp-content/uploads/2025/03/system_2.jpeg"
+                };
+
+                const optionImages = {
+                    "Cistern Tank": "https://rainwaterharvesting.services/wp-content/uploads/2025/03/sistern_tank.jpg",
+                    "Pump Configuration": "https://rainwaterharvesting.services/wp-content/uploads/2025/03/pump_config.jpg"
+                };
+
+                // Update the text content
+                document.getElementById('selectedSystem').textContent = selectedSystem;
+                document.getElementById('selectedOption').textContent = selectedOption;
+
+                // Update the images
+                if (systemImages[selectedSystem]) {
+                    document.getElementById('summarySystemImage').src = systemImages[selectedSystem];
+                }
+
+                if (optionImages[selectedOption]) {
+                    document.getElementById('summaryOptionImage').src = optionImages[selectedOption];
+                }
+
+                const collectionArea = localStorage.getItem('collectionArea') || "N/A";
+                const rainfall = localStorage.getItem('rainfall') || "N/A";
+                const conversion = localStorage.getItem('conversion');
+                const safetyFactor = localStorage.getItem('safetyFactor') || "N/A";
+                const totalYearlyGallonage = localStorage.getItem('totalYearlyGallonage') || "N/A";
+                const totalMonthlyGallonage = localStorage.getItem('totalMonthlyGallonage') || "N/A";
+
+                document.getElementById('collectionArea').textContent = collectionArea;
+                document.getElementById('rainfall').textContent = rainfall;
+                document.getElementById('conversion').textContent = conversion;
+                document.getElementById('safetyFactor').textContent = safetyFactor;
+                document.getElementById('totalYearlyGallonage').textContent = totalYearlyGallonage;
+                document.getElementById('totalMonthlyGallonage').textContent = totalMonthlyGallonage;
+
+            }
+            const addedFixtures = localStorage.getItem('addedFixtures') || "N/A";
+            const fixtureResult = localStorage.getItem('fixtureResult') || "N/A";
+            const totalIrrigationFlowRate = localStorage.getItem('totalIrrigationFlowRate') || "N/A";
+            const selectedPump = localStorage.getItem('selectedPump') || "N/A";
+            const helpingCanvas = localStorage.getItem('helpingCanvas');
+
+            const dischargePR = localStorage.getItem('dischargePressureRequirement') || "N/A";
+            const dischargeHP = localStorage.getItem('dischargeHeightFromPump') || "N/A";
+            const dischargeTPR = localStorage.getItem('dischargeTotalPipeRun') || "N/A";
+            const dischargeLOV = localStorage.getItem('dischargeLossesOnValves') || "N/A";
+            const dischargeLOF = localStorage.getItem('dischargeLossesOnFittings') || "N/A";
+            const dischargeResult = localStorage.getItem('dischargeResult') || "N/A";
+
+            const suctionHead = localStorage.getItem('suctionHead') || "N/A";
+            const suctionTPR = localStorage.getItem('suctionTotalPipeRun') || "N/A";
+            const suctionLOV = localStorage.getItem('suctionLossesOnValves') || "N/A";
+            const suctionLOF = localStorage.getItem('suctionLossesOnFittings') || "N/A";
+            const suctionResult = localStorage.getItem('suctionResult') || "N/A";
+
+            const totalHeadBoosterPumpResult = localStorage.getItem('totalHeadBoosterPumpResult') || "N/A";
+            const selectedPumpType = localStorage.getItem('selectedPumpType') || "N/A";
+            const selectedModelChart = localStorage.getItem('selectedModelChart') || "N/A";
+
+            document.getElementById('summaryAddedFixtures').innerHTML = addedFixtures;
+            document.getElementById('summaryFixtureResult').innerHTML = fixtureResult;
+            document.getElementById('summaryTotalIrrigationFlowRate').innerHTML = totalIrrigationFlowRate;
+            document.getElementById('summarySelectedPump').innerHTML = selectedPump;
+
+            if (helpingCanvas) {
+                document.getElementById('summaryHelpingCanvasImage').src = helpingCanvas;
+            }
+
+            document.getElementById('summaryDischargePR').textContent = dischargePR;
+            document.getElementById('summaryDischargeHP').textContent = dischargeHP;
+            document.getElementById('summaryDischargeTPR').textContent = dischargeTPR;
+            document.getElementById('summaryDischargeLOV').textContent = dischargeLOV;
+            document.getElementById('summaryDischargeLOF').textContent = dischargeLOF;
+            document.getElementById('summaryDischargeResult').innerHTML = dischargeResult;
+
+            document.getElementById('summarySuctionHead').textContent = suctionHead;
+            document.getElementById('summarySuctionTPR').textContent = suctionTPR;
+            document.getElementById('summarySuctionLOV').textContent = suctionLOV;
+            document.getElementById('summarySuctionLOF').textContent = suctionLOF;
+            document.getElementById('summarySuctionResult').innerHTML = suctionResult;
+
+            document.getElementById('summaryTotalHeadBoosterPumpResult').innerHTML = totalHeadBoosterPumpResult;
+            document.getElementById('summarySelectedPumpType').innerHTML = selectedPumpType;
+            document.getElementById('summarySelectedModelChart').innerHTML = selectedModelChart;
+
+        });
+
+        function closeTab() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.close();
+                setTimeout(() => {
+                    if (!window.closed) {
+                        alert("This tab cannot be closed programmatically. Please close it manually.");
+                    }
+                }, 100);
+            }
+        }
+
+
+        function printPage() {
+            window.print();
+        }
+    </script>
+
+
+
 </body>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Retrieve data from localStorage
-        const addedFixtures = localStorage.getItem('addedFixtures');
-        const fixtureResult = localStorage.getItem('fixtureResult');
-        const totalIrrigationFlowRate = localStorage.getItem('totalIrrigationFlowRate');
-        const selectedPump = localStorage.getItem('selectedPump');
-        const helpingCanvas = localStorage.getItem('helpingCanvas');
-
-        const dischargePR = localStorage.getItem('dischargePressureRequirement');
-        const dischargeHP = localStorage.getItem('dischargeHeightFromPump');
-        const dischargeTPR = localStorage.getItem('dischargeTotalPipeRun');
-        const dischargeLOV = localStorage.getItem('dischargeLossesOnValves');
-        const dischargeLOF = localStorage.getItem('dischargeLossesOnFittings');
-        const dischargeResult = localStorage.getItem('dischargeResult');
-
-        const suctionHead = localStorage.getItem('suctionHead');
-        const suctionTPR = localStorage.getItem('suctionTotalPipeRun');
-        const suctionLOV = localStorage.getItem('suctionLossesOnValves');
-        const suctionLOF = localStorage.getItem('suctionLossesOnFittings');
-        const suctionResult = localStorage.getItem('suctionResult');
-
-        const totalHeadBoosterPumpResult = localStorage.getItem('totalHeadBoosterPumpResult');
-        const selectedPumpType = localStorage.getItem('selectedPumpType');
-        const selectedModelChart = localStorage.getItem('selectedModelChart');
-
-        // Display the data on the summary page
-        document.getElementById('summaryDischargePR').textContent = dischargePR;
-        document.getElementById('summaryDischargeHP').textContent = dischargeHP;
-        document.getElementById('summaryDischargeTPR').textContent = dischargeTPR;
-        document.getElementById('summaryDischargeLOV').textContent = dischargeLOV;
-        document.getElementById('summaryDischargeLOF').textContent = dischargeLOF
-
-        document.getElementById('summarySuctionHead').textContent = suctionHead;
-        document.getElementById('summarySuctionTPR').textContent = suctionTPR;
-        document.getElementById('summarySuctionLOV').textContent = suctionLOV;
-        document.getElementById('summarySuctionLOF').textContent = suctionLOF;
-
-        document.getElementById('summaryAddedFixtures').innerHTML = addedFixtures;
-        document.getElementById('summaryFixtureResult').innerHTML = fixtureResult;
-        document.getElementById('summaryTotalIrrigationFlowRate').innerHTML = totalIrrigationFlowRate;
-        document.getElementById('summarySelectedPump').innerHTML = selectedPump;
-        if (helpingCanvas) {
-            document.getElementById('summaryHelpingCanvasImage').src = helpingCanvas;
-        }
-        document.getElementById('summaryDischargeResult').innerHTML = dischargeResult;
-        document.getElementById('summarySuctionResult').innerHTML = suctionResult;
-        document.getElementById('summaryTotalHeadBoosterPumpResult').innerHTML = totalHeadBoosterPumpResult;
-        document.getElementById('summarySelectedPumpType').innerHTML = selectedPumpType;
-        document.getElementById('summarySelectedModelChart').innerHTML = selectedModelChart;
-
-        const combinedData = `
-     <div id="summarySection" style="padding: 20px;">
-    <br>
-    <div id="flow_rate" style="border-radius: 20px; padding: 20px; background-color: #f1f1f2;">
-        <h4 style="margin-bottom: 10px; color: #333;">Added Fixtures: </h4>
-        <p id="summaryAddedFixtures" style="margin: 5px 0;"></p>
-
-        <h4 style="margin-bottom: 10px; color: #333;">Flow Rate: 
-        <span id="summaryFixtureResult" style="color: #033C59;"></span></h4>
-
-        <h4 style="margin-bottom: 10px; color: #333;">Total Irrigation Flow Rate: 
-        <span id="summaryTotalIrrigationFlowRate" style="color: #033C59;"></span></h4>
-
-        <h4 style="margin-bottom: 10px; color: #333;">Selected Pump Result: 
-        <span id="summarySelectedPump" style="color: #033C59;"></span></h4>
-        <br>
-        <img id="summaryHelpingCanvasImage" alt="Helping Canvas" style="display: block; margin-left: auto; margin-right: auto;">
-    </div>
-
-    <br>
-
-    <table border="1" style="width: 100%; border-collapse: collapse;">
-        <tr>
-            <th style="background-color: #033C59; color: #FFBA41; padding: 10px;">Discharge Values</th>
-            <th style="background-color: #033C59; color: #FFBA41; padding: 10px;">Suction Values</th>
-        </tr>
-        <tr style="background-color: #f2f1f2;">
-            <td style="padding: 8px; vertical-align: top;">
-                <p style="margin: 5px 0;">Pressure Requirement (psi): <span id="summaryDischargePR" style="font-weight: bold; font-size: 1.2em;"></span></p>
-                <p style="margin: 5px 0;">Height from Pump (ft): <span id="summaryDischargeHP" style="font-weight: bold; font-size: 1.2em;"></span></p>
-                <p style="margin: 5px 0;">Total Pipe Run (ft): <span id="summaryDischargeTPR" style="font-weight: bold; font-size: 1.2em;"></span></p>
-                <p style="margin: 5px 0;">Losses on Valves (psi): <span id="summaryDischargeLOV" style="font-weight: bold; font-size: 1.2em;"></span></p>
-                <p style="margin: 5px 0;">Losses on Fittings (ft): <span id="summaryDischargeLOF" style="font-weight: bold; font-size: 1.2em;"></span></p>
-                <h5 style="color: #FFBA41;">Result: <span id="summaryDischargeResult" style="color: #033C59;"></span></h5>
-            </td>
-            <td style="padding: 8px; vertical-align: top;">
-                <p style="margin: 5px 0;">Head at Suction Side (ft) <br> Municipal Line Pressure (psi): <span id="summarySuctionHead" style="font-weight: bold; font-size: 1.2em;"></span></p>
-                <p style="margin: 5px 0;">Total Pipe Run (ft): <span id="summarySuctionTPR" style="font-weight: bold; font-size: 1.2em;"></span></p>
-                <p style="margin: 5px 0;">Losses on Valves (psi): <span id="summarySuctionLOV" style="font-weight: bold; font-size: 1.2em;"></span></p>
-                <p style="margin: 5px 0;">Losses on Fittings (ft): <span id="summarySuctionLOF" style="font-weight: bold; font-size: 1.2em;"></span></p>
-                <h5 style="color: #FFBA41;">Result: <span id="summarySuctionResult" style="color: #033C59;"></span></h5>
-            </td>
-        </tr>
-    </table>
-    <br>
-
-    <div id="dt_ml" style="border-radius: 20px; padding: 20px; background-color: #f1f1f2;">
-        <h4 style="margin-bottom: 10px; color: #333;">Total Head Booster Pump Result: 
-        <span id="summaryTotalHeadBoosterPumpResult" style="color: #033C59;"></span></h4>
-
-        <h4 style="margin-bottom: 10px; color: #333;">Selected Pump Type: 
-        <span id="summarySelectedPumpType" style="color: #033C59;"></span></h4>
-
-        <h4 style="margin-bottom: 10px; color: #333;">Selected Pump Model</h4>
-        <div id="summarySelectedModelChart"></div>
-    </div>
-</div>
-`;
-
-        // Assign the combined data to the hidden field
-        document.getElementById('selected_model').value = combinedData;
-    });
-
-    function closeTab() {
-        if (window.history.length > 1) {
-            window.history.back(); // Go back to the previous page in the history stack
-        } else {
-            alert("This tab cannot be closed programmatically. Please close it manually."); // Alert user to close manually
-        }
-    }
-    function printPage() {
-        window.print();
-    }
-</script>
-
-
-<div>
-    <button type="button" id="print_btn" onclick="printPage()">Print</button>
-    <button type="button" onclick="closeTab()">Cancel & Select Another Model</button>
-</div>
-
-
-<script>
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const addedFixtures = localStorage.getItem('addedFixtures') || "N/A";
-        const fixtureResult = localStorage.getItem('fixtureResult') || "N/A";
-        const totalIrrigationFlowRate = localStorage.getItem('totalIrrigationFlowRate') || "N/A";
-        const selectedPump = localStorage.getItem('selectedPump') || "N/A";
-        const helpingCanvas = localStorage.getItem('helpingCanvas');
-
-        const dischargePR = localStorage.getItem('dischargePressureRequirement') || "N/A";
-        const dischargeHP = localStorage.getItem('dischargeHeightFromPump') || "N/A";
-        const dischargeTPR = localStorage.getItem('dischargeTotalPipeRun') || "N/A";
-        const dischargeLOV = localStorage.getItem('dischargeLossesOnValves') || "N/A";
-        const dischargeLOF = localStorage.getItem('dischargeLossesOnFittings') || "N/A";
-        const dischargeResult = localStorage.getItem('dischargeResult') || "N/A";
-
-        const suctionHead = localStorage.getItem('suctionHead') || "N/A";
-        const suctionTPR = localStorage.getItem('suctionTotalPipeRun') || "N/A";
-        const suctionLOV = localStorage.getItem('suctionLossesOnValves') || "N/A";
-        const suctionLOF = localStorage.getItem('suctionLossesOnFittings') || "N/A";
-        const suctionResult = localStorage.getItem('suctionResult') || "N/A";
-
-        const totalHeadBoosterPumpResult = localStorage.getItem('totalHeadBoosterPumpResult') || "N/A";
-        const selectedPumpType = localStorage.getItem('selectedPumpType') || "N/A";
-        const selectedModelChart = localStorage.getItem('selectedModelChart') || "N/A";
-
-        // Display the data on the summary page
-        document.getElementById('summaryAddedFixtures').innerHTML = addedFixtures;
-        document.getElementById('summaryFixtureResult').innerHTML = fixtureResult;
-        document.getElementById('summaryTotalIrrigationFlowRate').innerHTML = totalIrrigationFlowRate;
-        document.getElementById('summarySelectedPump').innerHTML = selectedPump;
-
-        if (helpingCanvas) {
-            document.getElementById('summaryHelpingCanvasImage').src = helpingCanvas;
-        }
-
-        document.getElementById('summaryDischargePR').textContent = dischargePR;
-        document.getElementById('summaryDischargeHP').textContent = dischargeHP;
-        document.getElementById('summaryDischargeTPR').textContent = dischargeTPR;
-        document.getElementById('summaryDischargeLOV').textContent = dischargeLOV;
-        document.getElementById('summaryDischargeLOF').textContent = dischargeLOF;
-        document.getElementById('summaryDischargeResult').innerHTML = dischargeResult;
-
-        document.getElementById('summarySuctionHead').textContent = suctionHead;
-        document.getElementById('summarySuctionTPR').textContent = suctionTPR;
-        document.getElementById('summarySuctionLOV').textContent = suctionLOV;
-        document.getElementById('summarySuctionLOF').textContent = suctionLOF;
-        document.getElementById('summarySuctionResult').innerHTML = suctionResult;
-
-        document.getElementById('summaryTotalHeadBoosterPumpResult').innerHTML = totalHeadBoosterPumpResult;
-        document.getElementById('summarySelectedPumpType').innerHTML = selectedPumpType;
-        document.getElementById('summarySelectedModelChart').innerHTML = selectedModelChart;
-
-
-
-        const combinedData = 
-            'Added Fixtures: '+ addedFixtures + '<br>' +
-            '   FlowRate: ' + fixtureResult + '<br>' +
-            '   Total Irrigation: ' + totalIrrigationFlowRate + '<br>' +
-            '   Selected Pump Result' + selectedPump + '<br>' +
-            '   Discharge Pressure Requirment: ' + dischargePR + '<br>' +
-            '   Discharge Height from Pump: ' + dischargeHP + '<br>' +
-            '   Discharge Total Pipe Run: ' + dischargeTPR + '<br>' +
-            '   Discharge Loss on Valve: ' + dischargeLOV + '<br>' +
-            '   Discharge Loss on Fittings: ' + dischargeLOF + '<br>' +
-            '   Discharge Result: ' + dischargeResult + '<br>' +
-            '   Suction Head or Munisipal Line Pressure: ' + suctionHead + '<br>' +
-            '   Suction Total Pipe Run: ' + suctionTPR + '<br>' +
-            '   Suction Loss on Valve: ' + suctionLOV + '<br>' +
-            '   Suction Loss on Fittings: ' + suctionLOF + '<br>' +
-            '   Suction Result: ' + suctionResult + '<br>' +
-            '   ' + totalHeadBoosterPumpResult + '<br>' +
-            '   Selected Pump Type: ' + selectedPumpType;
-        
-        // Store the formatted string in the hidden field as plain text for submission
-        document.getElementById('form-field-selected_model').value = combinedData;
-
-
-    });
-
-    function closeTab() {
-        window.close();
-    }
-    function printPage() {
-        window.print();
-    }
-</script>

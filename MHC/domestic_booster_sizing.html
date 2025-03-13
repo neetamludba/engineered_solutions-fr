@@ -1001,16 +1001,10 @@
 
             // Get the selected model's chart
             const selectedModelChart = document.getElementById(modelId).innerHTML; // Assuming the selected model has a class 'selected'
-            // Get the SVG element within the div with id 'frdtv20'
-            const svgElement = document.querySelector('#' + modelId + ' svg');
 
-            // Access the first <g> tag and extract its text
-            const pump = svgElement.querySelector('g text').textContent;
-
-            // Access the second <g> tag and extract its text
-            const model = svgElement.querySelectorAll('g text')[1].textContent;
             // Store data in localStorage
-            localStorage.setItem('sizing!', 'MHC_DBS');
+            localStorage.setItem('sizingType', 'DBS');
+            localStorage.setItem('sizingCategory', 'MHC');
             localStorage.setItem('addedFixtures', addedFixtures);
             localStorage.setItem('fixtureResult', fixtureResult);
             localStorage.setItem('totalIrrigationFlowRate', totalIrrigationFlowRate + ' GPM');
@@ -1030,8 +1024,7 @@
             localStorage.setItem('totalHeadBoosterPumpResult', totalHeadBoosterPumpResult);
             localStorage.setItem('selectedPumpType', selectedPumpType);
             localStorage.setItem('selectedModelChart', selectedModelChart);
-            localStorage.setItem('pump', pump);
-            localStorage.setItem('model', model);
+
             // Redirect to the summary page
             window.open('https://rainwaterharvesting.services/model-summary/', '_blank');
 

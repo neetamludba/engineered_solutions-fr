@@ -492,11 +492,11 @@
     <div class="rainwater_div" id="option_selection">
         <h2 id="option_select_h2">Select Options</h2>
         <div id="step1" class="options-container">
-            <div class="option" id="system_01" onclick="selectOption(1, 'system 1')">
+            <div class="option" id="system_01" onclick="selectSystem('system 1')">
                 <img src="https://rainwaterharvesting.services/wp-content/uploads/2025/03/system_1.jpeg" alt="system 1">
                 <h3>System 1</h3>
             </div>
-            <div class="option" id="system_02" onclick="selectOption(2, 'system 2')">
+            <div class="option" id="system_02" onclick="selectSystem('system 2')">
                 <img src="https://rainwaterharvesting.services/wp-content/uploads/2025/03/system_2.jpeg" alt="system 2">
                 <h3>System 2</h3>
             </div>
@@ -505,17 +505,18 @@
         <div id="step2">
             <h2>Select Next Option</h2>
             <div class="options-container">
-                <div class="option" id="cistern_tank" onclick="finalSelection('Cistern Tank')">
+                <div class="option" id="cistern_tank" onclick="selectOption('Cistern Tank')">
                     <img src="https://rainwaterharvesting.services/wp-content/uploads/2025/03/sistern_tank.jpg" alt="Cistern Tank">
                     <h3>Cistern Tank</h3>
                 </div>
-                <div class="option" id="pump_config" onclick="finalSelection('Pump Configuration')">
+                <div class="option" id="pump_config" onclick="selectOption('Pump Configuration')">
                     <img src="https://rainwaterharvesting.services/wp-content/uploads/2025/03/pump_config.jpg" alt="Pump Configuration">
                     <h3>Pump Configuration</h3>
                 </div>
             </div>
         </div>
     </div>
+    
     <div class="rw_container">
         <button class="toggle-button" onclick="showSection('day_tank')"><b>Day Tank Calculation</b></button>
     </div>
@@ -1043,36 +1044,39 @@
     <button type="button" id="print_btn" onclick="printPage()">Print</button>
 
     <script>
-        function selectOption(choice, name) {
-            localStorage.setItem('selectedSystem', name);
+        let selectedSystem = '';
+        let selectedOption = '';
+        function selectSystem(system) {
+            selectedSystem = system;
             document.getElementById('step2').style.display = 'block';
 
-            if (name === 'system 1') {
+            if (system === 'system 1') {
                 document.getElementById('system_01').style.border = '5px solid red';
                 document.getElementById('system_02').style.border = '2px solid white';
 
-            } else if (name === 'system 2') {
+            } else if (system === 'system 2') {
                 document.getElementById('system_02').style.border = '5px solid red';
                 document.getElementById('system_01').style.border = '2px solid white';
 
             }
         }
 
-        function finalSelection(name) {
-            localStorage.setItem('selectedOption', name);
-            if (name == 'Cistern Tank'){
+        function selectOption(option) {
+            selectedOption = option;
+            if (option == 'Cistern Tank'){
                 document.getElementById('cistern_tank').style.border = '5px solid red';
                 document.getElementById('pump_config').style.border = '2px solid white';
 
 
             }
-            if (name == 'Pump Configuration'){
+            if (option == 'Pump Configuration'){
                 document.getElementById('pump_config').style.border = '5px solid red';
                 document.getElementById('cistern_tank').style.border = '2px solid white';
 
             }
 
         }
+
         function showSection(sectionId) {
             // Hide both sections
             // document.getElementById("day_tank").style.display = "none";
@@ -1099,6 +1103,7 @@
         }
 
         function updateSummaryPage(type, modelId) {
+            localStorage.clear()
 
             const collectionArea = parseFloat(document.getElementById("collectionArea").value);
             const rainfall = parseFloat(document.getElementById("rainfall").value);
@@ -1158,7 +1163,12 @@
             const selectedModelChart = document.getElementById(modelId).innerHTML; // Assuming the selected model has a class 'selected'
 
             // Store data in localStorage
-            localStorage.setItem('sizing!', 'MHC_RHS');
+            localStorage.setItem('sizingType', 'RHS');
+            localStorage.setItem('sizingCategory', 'MHC');
+
+            localStorage.setItem('selectedSystem', selectedSystem);
+            localStorage.setItem('selectedOption', selectedOption);
+
             localStorage.setItem('collectionArea', collectionArea);
             localStorage.setItem('rainfall', rainfall);
             localStorage.setItem('conversion', conversion);
@@ -1207,20 +1217,6 @@
                 "LOAD_VALUES": 3.0
             },
             {
-                "OCCUPANCY": "Private",
-                "FIXTURE": "Water Closet",
-                "SUPPLY_CONTROL": "Flush Valve",
-                "PIPE_SIZE": "1",
-                "LOAD_VALUES": 10.0
-            },
-            {
-                "OCCUPANCY": "Public",
-                "FIXTURE": "Urinal",
-                "SUPPLY_CONTROL": "Flush Valve",
-                "PIPE_SIZE": "3/4",
-                "LOAD_VALUES": 3.0
-            },
-            {
                 "OCCUPANCY": "Public",
                 "FIXTURE": "Urinal",
                 "SUPPLY_CONTROL": "Flush Tank",
@@ -1248,13 +1244,6 @@
                 "PIPE_SIZE": "3/8",
                 "LOAD_VALUES": 5.0
             },
-            {
-                "OCCUPANCY": "Public",
-                "FIXTURE": "Water Closet",
-                "SUPPLY_CONTROL": "Flush Valve",
-                "PIPE_SIZE": "1",
-                "LOAD_VALUES": 10.0
-            }
         ];
 
         const occupancyArray = {
@@ -1276,10 +1265,10 @@
 
         const supplyControlArray = {
             "Urinal": {
-                "supplyControls": ["Flush Valve", "Flush Tank", "Self-Closing Valve"],
+                "supplyControls": [ "Flush Tank", "Self-Closing Valve"],
             },
             "Water Closet": {
-                "supplyControls": ["Flush Tank, 6 LPF or less", "Flush Tank, Greater than 6 LPF", "Flush Valve"],
+                "supplyControls": ["Flush Tank, 6 LPF or less", "Flush Tank, Greater than 6 LPF"],
             },
         };
 
