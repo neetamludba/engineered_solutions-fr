@@ -66,7 +66,8 @@
             color: #FFBA41;
         }
 
-        #day_tank_h2,#option_select_h2,
+        #day_tank_h2,
+        #option_select_h2,
         #flow_rate_h2 {
 
             text-align: center;
@@ -300,23 +301,37 @@
         .options-container {
             display: flex;
             justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            /* Ensures responsiveness */
             gap: 20px;
             margin-top: 20px;
+            width: 100%;
         }
 
+        /* Image container */
         .option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
             border: 2px solid #ddd;
             padding: 10px;
             cursor: pointer;
             border-radius: 8px;
             transition: 0.3s;
+            max-width: 45%;
+            /* Ensures both fit side-by-side */
+            flex: 1;
         }
 
         .option img {
+            width: 100%;
             max-width: 500px;
-            max-height: 400px;
+            height: auto;
+            /* Maintains aspect ratio */
             display: block;
-            margin: 0 auto;
+            cursor: pointer;
         }
 
         .option:hover {
@@ -325,6 +340,47 @@
 
         #step2 {
             display: none;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Expanded Image */
+        .modal-content {
+            align-items: center;
+            text-align: center;
+            width: 90vw;
+            height: auto;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Make images stack on small screens */
+        @media (max-width: 768px) {
+            .options-container {
+                flex-direction: column;
+            }
+
+            .option {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -494,29 +550,37 @@
         <div id="step1" class="options-container">
             <div class="option" id="system_01" onclick="selectSystem('system 1')">
                 <img src="https://rainwaterharvesting.services/wp-content/uploads/2025/03/system_1.jpeg" alt="system 1">
-                <h3>System 1</h3>
+                <h2 onclick="expandImage('system_01')">System 1 (<span class="h4_or">view</span> )</h2>
             </div>
             <div class="option" id="system_02" onclick="selectSystem('system 2')">
                 <img src="https://rainwaterharvesting.services/wp-content/uploads/2025/03/system_2.jpeg" alt="system 2">
-                <h3>System 2</h3>
+                <h2 onclick="expandImage('system_02')">System 2 (<span class="h4_or">view</span> )</h2>
             </div>
+        </div>
+
+        <!-- Fullscreen Image Modal -->
+        <div id="imageModal" class="modal" onclick="closeImage()">
+            <img id="modalImage" class="modal-content">
+            <p class="red_message">click to close the image</p>
         </div>
 
         <div id="step2">
             <h2>Select Next Option</h2>
             <div class="options-container">
                 <div class="option" id="cistern_tank" onclick="selectOption('Cistern Tank')">
-                    <img src="https://rainwaterharvesting.services/wp-content/uploads/2025/03/sistern_tank.jpg" alt="Cistern Tank">
-                    <h3>Cistern Tank</h3>
+                    <img src="https://rainwaterharvesting.services/wp-content/uploads/2025/03/sistern_tank.jpg"
+                        alt="Cistern Tank">
+                    <h2>Cistern Tank</h2>
                 </div>
                 <div class="option" id="pump_config" onclick="selectOption('Pump Configuration')">
-                    <img src="https://rainwaterharvesting.services/wp-content/uploads/2025/03/pump_config.jpg" alt="Pump Configuration">
-                    <h3>Pump Configuration</h3>
+                    <img src="https://rainwaterharvesting.services/wp-content/uploads/2025/03/pump_config.jpg"
+                        alt="Pump Configuration">
+                    <h2>Pump Configuration</h2>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <div class="rw_container">
         <button class="toggle-button" onclick="showSection('day_tank')"><b>Day Tank Calculation</b></button>
     </div>
@@ -1044,6 +1108,24 @@
     <button type="button" id="print_btn" onclick="printPage()">Print</button>
 
     <script>
+
+        function expandImage(id) {
+            let modal = document.getElementById("imageModal");
+            let modalImg = document.getElementById("modalImage");
+
+            // Get the correct image source
+            let imgElement = document.querySelector(`#${id} img`);
+            modalImg.src = imgElement.src;
+
+            // Show the modal
+            modal.style.display = "flex";
+        }
+
+        function closeImage() {
+            document.getElementById("imageModal").style.display = "none";
+        }
+
+
         let selectedSystem = '';
         let selectedOption = '';
         function selectSystem(system) {
@@ -1063,13 +1145,13 @@
 
         function selectOption(option) {
             selectedOption = option;
-            if (option == 'Cistern Tank'){
+            if (option == 'Cistern Tank') {
                 document.getElementById('cistern_tank').style.border = '5px solid red';
                 document.getElementById('pump_config').style.border = '2px solid white';
 
 
             }
-            if (option == 'Pump Configuration'){
+            if (option == 'Pump Configuration') {
                 document.getElementById('pump_config').style.border = '5px solid red';
                 document.getElementById('cistern_tank').style.border = '2px solid white';
 
@@ -1112,7 +1194,7 @@
             const totalYearlyGallonage = parseFloat(document.getElementById("totalYearly").value);
             const totalMonthlyGallonage = parseFloat(document.getElementById("totalMonthly").value);
 
-          
+
 
             // Get fixtures data
             const addedFixtures = document.getElementById('addedFixtures').innerHTML;
@@ -1265,7 +1347,7 @@
 
         const supplyControlArray = {
             "Urinal": {
-                "supplyControls": [ "Flush Tank", "Self-Closing Valve"],
+                "supplyControls": ["Flush Tank", "Self-Closing Valve"],
             },
             "Water Closet": {
                 "supplyControls": ["Flush Tank, 6 LPF or less", "Flush Tank, Greater than 6 LPF"],
