@@ -9,14 +9,13 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 
-
     <style>
         .page__banner-content {
             text-align: center
         }
 
         .section-padding {
-            padding: 0px
+            padding: 0
         }
 
         #flow_rate {
@@ -24,15 +23,20 @@
             background-color: #033C59;
         }
 
-        #municipal_line {
+        #day_tank {
             padding-bottom: 20px;
             background-color: #FFBA41;
+        }
+
+        #municipal_line {
+            padding-bottom: 20px;
+            background-color: #033C59;
         }
 
         #addedFixtures,
         p {
             font-size: 13px;
-            padding: 0px;
+            padding: 0;
             color: #000;
         }
 
@@ -42,11 +46,11 @@
         }
 
         .rw_container_div {
-            flex-basis: 47%;
+            flex-basis: 49%;
             background-color: #c0c0c0;
             border-radius: 8px;
-            padding: 0px 20px;
-            margin: 10px 0px;
+            padding: 0 20px;
+            margin: 10px 0;
         }
 
         h2 {
@@ -54,12 +58,13 @@
             color: #FFBA41;
         }
 
-        #flow_rate_h2 {
+        #flow_rate_h2,
+        #municipal_line_h2 {
             text-align: center;
             color: #FFBA41;
         }
 
-        #municipal_line_h2 {
+        #day_tank_h2 {
             text-align: center;
             color: #033C59;
         }
@@ -87,7 +92,7 @@
             width: 90%;
             height: auto;
             padding: 5px 5px 5px 10px;
-            margin: 0px 10px 0px 10px;
+            margin: 0 10px 0 10px;
             border-radius: 5px;
             border: 1px solid #ccc;
         }
@@ -96,7 +101,7 @@
             font-size: medium;
             width: 90%;
             padding: 5px 5px 5px 10px;
-            margin: 0px 10px 0px 10px;
+            margin: 0 10px 0 10px;
             border-radius: 5px;
             border: 1px solid #ccc;
         }
@@ -147,10 +152,12 @@
             display: none;
         }
 
+        #day_tank_pump_type_div,
         #municipal_line_pump_type_div {
             text-align: center;
         }
 
+        #day_tank_pump_type_div img,
         #municipal_line_pump_type_div img {
             display: inline-block;
         }
@@ -177,9 +184,9 @@
             display: flex;
             justify-content: space-between;
             background-color: #c0c0c0;
-            border-radius: 0px;
-            padding: 0px;
-            margin-bottom: 0px;
+            border-radius: 0;
+            padding: 0;
+            margin-bottom: 0;
         }
 
         .reset_irrigation {
@@ -199,7 +206,7 @@
         }
 
         .small_text {
-            margin: 0px;
+            margin: 0;
             color: #999;
             padding-left: 15px;
             font-size: small;
@@ -270,8 +277,6 @@
             height: 50px;
             font-size: 22px;
             cursor: pointer;
-            color: #033C59;
-            background-color: #FFBA41;
         }
 
         /* Hide sections initially */
@@ -279,6 +284,13 @@
             display: none;
             padding: 20px;
             background-color: #f1f1f1;
+        }
+
+        .para_white {
+            color: white;
+            padding-top: 0;
+            margin-top: 0;
+            text-align: center;
         }
 
         .rw_button_container_div {
@@ -329,7 +341,7 @@
 <body>
     <div class="rainwater_div" id="flow_rate">
         <h2 id="flow_rate_h2">Flow Rate Calculator</h2>
-        <p>Based on 2024 Building Code Compendium - Ontario</p>
+        <p class="para_white">Based on 2024 Building Code Compendium - Ontario</p>
         <div class="rw_container">
             <div class="rw_container_div">
                 <form id="addFixturesForm" onsubmit="addFixtures(event)">
@@ -998,7 +1010,7 @@
             localStorage.clear()
 
             // Get fixtures data
-            const addedFixtures = document.getElementById('addedFixtures').innerHTML;
+            const addedFixtures = document.getElementById('addedFixturesTable').innerHTML;
             const fixtureResult = document.getElementById('fixtureResult').innerHTML;
 
             // Get total irrigation flow rate
@@ -1885,8 +1897,8 @@
                 totalWSFU += +fixture.TOTAL_WSFU;
 
                 const name = fixture.SUPPLY_CONTROL.toLowerCase();
-                if (name.includes("flush tank")) flushTankCount+= fixture.NoF;
-                if (name.includes("flush valve")) flushValveCount+= fixture.NoF;
+                if (name.includes("flush tank")) flushTankCount += fixture.NoF;
+                if (name.includes("flush valve")) flushValveCount += fixture.NoF;
             });
 
             // Decision logic for which table to use

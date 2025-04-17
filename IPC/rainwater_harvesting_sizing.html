@@ -9,9 +9,8 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 
-
     <style>
-        .page__banner-content {
+                .page__banner-content {
             text-align: center
         }
 
@@ -24,7 +23,7 @@
             background-color: #FFBA41;
         }
 
-        #flow_rate,
+        #flow_rate,         
         #option_selection {
 
             padding-bottom: 20px;
@@ -281,8 +280,8 @@
         .h4_or {
             color: #bd6e20;
         }
-
-        .toggle-button-dt {
+        
+     .toggle-button-dt {
             width: 100%;
             height: 50px;
             font-size: 22px;
@@ -304,7 +303,7 @@
             flex-basis: 49%;
             border-radius: 8px;
         }
-
+      
         .options-container {
             display: flex;
             justify-content: center;
@@ -327,14 +326,14 @@
             cursor: pointer;
             border-radius: 8px;
             transition: 0.3s;
-            width: auto;
+            width:auto;
             flex: 0 0 35%;
             box-sizing: border-box;
 
         }
 
         .option img {
-            width: auto;
+            width:auto;
             height: 200px;
             object-fit: cover;
             cursor: pointer;
@@ -350,8 +349,7 @@
         }
 
         .modal {
-            display: none;
-            /* Hidden by default */
+            display: none; /* Hidden by default */
             position: fixed;
             z-index: 1000;
             left: 0;
@@ -359,7 +357,7 @@
             width: 100vw;
             height: 100vh;
             background-color: rgba(0, 0, 0, 0.8);
-
+        
             /* Center the modal content */
             justify-content: center;
             align-items: center;
@@ -367,7 +365,7 @@
             padding: 20px;
             box-sizing: border-box;
         }
-
+    
         .modal-content {
             max-width: 90vw;
             max-height: 90vh;
@@ -375,7 +373,7 @@
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
             transition: transform 0.3s ease-in-out;
-
+        
             /* Centering inside modal */
             display: block;
             margin: 0 auto;
@@ -418,16 +416,23 @@
             color: red;
         }
 
+        .para_white {
+            color: white;
+            padding-top: 0;
+            margin-top: 0;
+            text-align: center;
+        }
+
         /* Make images stack on small screens */
         @media (max-width: 768px) {
-            .options-container {
+          .options-container {
                 flex-direction: row;
                 flex-wrap: wrap;
                 justify-content: center;
             }
 
             .option {
-                width: auto;
+                width:auto;
                 max-width: 100%;
                 flex: 0 0 100%;
             }
@@ -436,6 +441,7 @@
                 height: 150px;
             }
         }
+
     </style>
 </head>
 
@@ -1252,10 +1258,6 @@
         }
 
         function showSection(sectionId) {
-            // Hide both sections
-            // document.getElementById("day_tank").style.display = "none";
-
-            // Display the selected section
             document.getElementById(sectionId).style.display = "block";
         }
 
@@ -1287,7 +1289,7 @@
             const totalMonthlyGallonage = parseFloat(document.getElementById("totalMonthly").value);
 
             // Get fixtures data
-            const addedFixtures = document.getElementById('addedFixtures').innerHTML;
+            const addedFixtures = document.getElementById('addedFixturesTable').innerHTML;
             const fixtureResult = document.getElementById('fixtureResult').innerHTML;
 
             // Get total irrigation flow rate

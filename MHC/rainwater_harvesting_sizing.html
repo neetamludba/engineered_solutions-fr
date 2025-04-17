@@ -9,7 +9,6 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 
-
     <style>
         .page__banner-content {
             text-align: center
@@ -381,7 +380,6 @@
             margin: 0 auto;
         }
 
-
         .fixture-table {
             width: 100%;
             border-collapse: collapse;
@@ -419,6 +417,13 @@
             color: red;
         }
 
+        .para_white {
+            color: white;
+            padding-top: 0;
+            margin-top: 0;
+            text-align: center;
+        }
+        
         /* Make images stack on small screens */
         @media (max-width: 768px) {
             .options-container {
@@ -1302,7 +1307,7 @@
 
 
             // Get fixtures data
-            const addedFixtures = document.getElementById('addedFixtures').innerHTML;
+            const addedFixtures = document.getElementById('addedFixturesTable').innerHTML;
             const fixtureResult = document.getElementById('fixtureResult').innerHTML;
 
             // Get total irrigation flow rate
