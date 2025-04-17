@@ -285,6 +285,43 @@
             flex-basis: 49%;
             border-radius: 8px;
         }
+
+        .fixture-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .fixture-table th,
+        .fixture-table td {
+            padding: 4px 8px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .fixture-table tr.details-row {
+            display: none;
+            background-color: #dfd4d4;
+        }
+
+        .fixture-table tr.expanded+.details-row {
+            display: table-row;
+        }
+
+        .fixture-table .remove-btn {
+            border: none;
+            cursor: pointer;
+            padding: 3px 5px;
+            border-radius: 5px;
+        }
+
+        .button_inline button {
+            margin-right: 10px;
+        }
+
+        .required_message {
+            color: red;
+        }
     </style>
 </head>
 
@@ -292,9 +329,10 @@
 <body>
     <div class="rainwater_div" id="flow_rate">
         <h2 id="flow_rate_h2">Flow Rate Calculator</h2>
+        <p>Based on 2024 Building Code Compendium - Ontario</p>
         <div class="rw_container">
             <div class="rw_container_div">
-                <form id="addFixturesForm" onsubmit="addFixtures()">
+                <form id="addFixturesForm" onsubmit="addFixtures(event)">
                     <h3>Fixture Flow Rate Calculation</h3>
                     <div class="rainwater_div">
                         <label for="occupancy">Select Occupancy:</label>
@@ -324,18 +362,34 @@
 
                     </div>
                     <div>
-                        <button id="add_fixture" type="submit">Add some Fixtures to see WSFU & FlowRate gpm
-                        </button>
+                        <div>
+                            <button id="add_fixture" type="submit">Add some Fixtures to see WSFU & FlowRate gpm
+                            </button>
+                        </div>
+                        <div class="button_inline">
+                            <button type="button" id="remove_fixture" onclick="removeLastFixture()">Remove Last
+                                Fixture</button>
+                            <button type="button" id="remove_fixture" onclick="removeAllFixture()">Remove All
+                                Fixtures</button>
+                        </div>
                     </div>
-                    <div>
-                        <button type="button" id="remove_fixture" onclick="removeLastFixture()">Remove Last
-                            Fixture</button>
-                    </div>
+
                     <p id="addFixtureError" class="required_message"></p>
                 </form>
-                <p id="addedFixtures"></p>
+                <table id="addedFixturesTable" class="fixture-table" border="1">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Occupancy</th>
+                            <th>Fixture</th>
+                            <th>Supply Control</th>
+                            <th>Count</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="addedFixturesBody"></tbody>
+                </table>
 
-                <br>
                 <h4 id="fixtureResult"></h4>
 
             </div>
@@ -1165,7 +1219,7 @@
                 "FIXTURE": "Urinal",
                 "SUPPLY_CONTROL": "Flush Valve",
                 "PIPE_SIZE": "3/4",
-                "LOAD_VALUES": 3.0
+                "LOAD_VALUES": 5.0
             },
             {
                 "OCCUPANCY": "Private",
@@ -1200,7 +1254,7 @@
                 "FIXTURE": "Water Closet",
                 "SUPPLY_CONTROL": "Flush Valve",
                 "PIPE_SIZE": "1",
-                "LOAD_VALUES": 10.0
+                "LOAD_VALUES": 6.0
             },
             {
                 "OCCUPANCY": "Public",
@@ -1389,7 +1443,7 @@
                 "FIXTURE": "Urinal",
                 "SUPPLY_CONTROL": "Flush Valve",
                 "PIPE_SIZE": "3/4",
-                "LOAD_VALUES": 3.0
+                "LOAD_VALUES": 5.0
             },
             {
                 "OCCUPANCY": "Public",
@@ -1663,7 +1717,7 @@
             );
         }
 
-        function addFixtures() {
+        function addFixtures(event) {
             event.preventDefault()
             const occupancy = document.getElementById('occupancy').value;
             const fixture = document.getElementById('fixtures').value;
@@ -1675,114 +1729,189 @@
             let matchingFixture = findMatchingFixture(occupancy, fixture, supplyControl);
 
             if (!matchingFixture) {
-                document.getElementById('addFixtureError').innerHTML = "Fixture not found! Please check the selected occupancy, fixture, and supply control.";
+                document.getElementById('addFixtureError').innerHTML = "Fixture not found!";
                 return;
             }
 
             if (isNaN(numberOfFixtures) || numberOfFixtures <= 0) {
-                document.getElementById('addFixtureError').innerHTML = "Please enter a valid number of fixtures.";
+                document.getElementById('addFixtureError').textContent = "Please enter a valid number of fixtures.";
                 return;
             }
 
-            fixturesTotalWSFU.push({
+            let totalWSFU = 0;
+
+            // Custom WSFU Calculation for Special Cases
+            if (
+                fixture === "Water Closet" &&
+                supplyControl.includes("Flush Valve") &&
+                (occupancy === "Private" || occupancy === "Public")
+            ) {
+                const isPrivate = occupancy === "Private";
+                const increments = isPrivate ? 6 : 10;
+
+                const baseValues = [40, 30, 20, 15];
+                for (let i = 0; i < numberOfFixtures; i++) {
+                    if (i < baseValues.length) {
+                        totalWSFU += baseValues[i];
+                    } else {
+                        totalWSFU += increments;
+                    }
+                }
+
+            } else if (
+                fixture === "Urinal" &&
+                supplyControl.includes("Flush Valve") &&
+                (occupancy === "Private" || occupancy === "Public")
+            ) {
+                const baseValues = [20, 15, 10, 8];
+                for (let i = 0; i < numberOfFixtures; i++) {
+                    if (i < baseValues.length) {
+                        totalWSFU += baseValues[i];
+                    } else {
+                        totalWSFU += 5;
+                    }
+                }
+
+            } else {
+                // Default calculation for all other fixtures
+                totalWSFU = matchingFixture.LOAD_VALUES * numberOfFixtures;
+            }
+
+            const newFixture = {
                 ...matchingFixture,
-                TOTAL_WSFU: (matchingFixture.LOAD_VALUES * numberOfFixtures).toFixed(2),
+                TOTAL_WSFU: totalWSFU.toFixed(2),
                 NoF: numberOfFixtures,
-            });
+            };
 
-            let display = '';
-            fixturesTotalWSFU.forEach((fixture, index) => {
-                display += `${index + 1}) `;
-                display += `O: ${fixture.OCCUPANCY} | `;
-                display += `F: ${fixture.FIXTURE} | `;
-                display += `SC: ${fixture.SUPPLY_CONTROL} | `;
-                display += `NPS: ${fixture.PIPE_SIZE} | `;
-                display += `LV: ${fixture.LOAD_VALUES} | `;
-                display += `NoF: ${fixture.NoF} | `;
-                display += `T: ${fixture.TOTAL_WSFU}`;
-                display += `<br>`;
-            });
 
-            document.getElementById('addedFixtures').innerHTML = display;
+            fixturesTotalWSFU.push(newFixture);
+            renderFixtureTable();
             document.getElementById('numberOfFixtures').value = '';
-            document.getElementById('addFixtureError').innerHTML = "";
+            document.getElementById('addFixtureError').textContent = "";
+            calculateFixtureFlow();
+        }
 
+        function renderFixtureTable() {
+            const tbody = document.getElementById('addedFixturesBody');
+            tbody.innerHTML = '';
+
+            fixturesTotalWSFU.forEach((fixture, index) => {
+                const row = document.createElement('tr');
+                row.classList.add('summary-row');
+                row.onclick = () => toggleDetails(index);
+
+                row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${fixture.OCCUPANCY}</td>
+                <td>${fixture.FIXTURE}</td>
+                <td>${fixture.SUPPLY_CONTROL}</td>
+                <td>${fixture.NoF}</td>
+                <td><button class="remove-btn" onclick="removeFixture(${index}, event)">❌</button></td>
+            `;
+
+                const detailRow = document.createElement('tr');
+                detailRow.classList.add('details-row');
+                detailRow.innerHTML = `
+                <td colspan="6">
+                    <strong>NPS:</strong> ${fixture.PIPE_SIZE} |
+                    <strong>Load Value:</strong> ${fixture.LOAD_VALUES} |
+                    <strong>Total WSFU:</strong> ${fixture.TOTAL_WSFU}
+                </td>
+            `;
+
+                tbody.appendChild(row);
+                tbody.appendChild(detailRow);
+            });
+        }
+
+        function toggleDetails(index) {
+            const rows = document.querySelectorAll('.summary-row');
+            rows[index].classList.toggle('expanded');
+        }
+
+        function removeFixture(index, event) {
+            event.stopPropagation();
+            fixturesTotalWSFU.splice(index, 1);
+            renderFixtureTable();
             calculateFixtureFlow();
         }
 
         function removeLastFixture() {
             if (fixturesTotalWSFU.length) {
                 fixturesTotalWSFU.pop();
-                let display = '';
-                fixturesTotalWSFU.forEach((fixture, index) => {
-                    display += `${index + 1}) `;
-                    display += ` O: ${fixture.OCCUPANCY} |`;
-                    display += ` F: ${fixture.FIXTURE} |`;
-                    display += ` SC: ${fixture.SUPPLY_CONTROL} |`;
-                    display += `NPS: ${fixture.PIPE_SIZE} | `;
-                    display += ` LV: ${fixture.LOAD_VALUES} |`;
-                    display += ` NoF: ${fixture.NoF} |`;
-                    display += ` T: ${fixture.TOTAL_WSFU}`;
-                    display += `<br>`;
-                });
-                document.getElementById('addedFixtures').innerHTML = display;
+                renderFixtureTable();
                 calculateFixtureFlow();
-
             } else {
-                document.getElementById('addFixtureError').innerHTML = "Please Add Fixtures";
-                document.getElementById('fixtureResult').innerHTML = '';
-                calculateFixtureFlow();
-
+                document.getElementById('addFixtureError').textContent = "Please Add Fixtures";
+                document.getElementById('fixtureResult').textContent = '';
             }
-
         }
 
-        function calculateFixtureFlow() {
+        function removeAllFixture() {
+            if (fixturesTotalWSFU.length) {
+                fixturesTotalWSFU = [];
+                renderFixtureTable();
+                calculateFixtureFlow();
+            } else {
+                document.getElementById('addFixtureError').textContent = "Please Add Fixtures";
+                document.getElementById('fixtureResult').textContent = '';
+            }
+        }
 
+        const flushTankLookup = {
+            1: 3, 2: 5, 3: 6.5, 4: 8, 5: 9.4, 6: 10.7, 7: 11.8, 8: 12.8, 9: 13.7, 10: 14.6,
+            11: 15.4, 12: 16, 13: 16.5, 14: 17, 15: 17.5, 16: 18, 17: 18.4, 18: 18.8, 19: 19.2, 20: 19.6,
+            25: 21.5, 30: 23.3, 35: 24.9, 40: 26.3, 45: 27.7, 50: 29.1, 60: 32, 70: 35, 80: 38,
+            90: 41, 100: 43.5, 120: 48, 140: 52.5, 160: 57, 180: 61, 200: 65, 225: 70, 250: 75,
+            275: 80, 300: 85, 400: 105, 500: 124, 750: 170, 1000: 208, 1250: 239, 1500: 269,
+            1750: 297, 2000: 325, 2500: 380, 3000: 433, 4000: 525, 5000: 593
+        };
+
+        const flushValveLookup = {
+            5: 15, 6: 17.4, 7: 19.8, 8: 22.2, 9: 24.6, 10: 27, 11: 27.8, 12: 28.6, 13: 29.4, 14: 30.2,
+            15: 31, 16: 31.8, 17: 32.6, 18: 33.4, 19: 34.2, 20: 35, 25: 38, 30: 42, 35: 44, 40: 46,
+            45: 48, 50: 50, 60: 54, 70: 58, 80: 61.2, 90: 64.3, 100: 67.5, 120: 73, 140: 77, 160: 81,
+            180: 85.5, 200: 90, 225: 95.5, 250: 101, 275: 104.5, 300: 108, 400: 127, 500: 143,
+            750: 177, 1000: 208, 1250: 239, 1500: 269, 1750: 297, 2000: 325, 2500: 380,
+            3000: 433, 4000: 525, 5000: 593
+        };
+
+        function calculateFixtureFlow() {
             let totalWSFU = 0;
+            let flushTankCount = 0;
+            let flushValveCount = 0;
 
             fixturesTotalWSFU.forEach((fixture) => {
-
                 totalWSFU += +fixture.TOTAL_WSFU;
+
+                const name = fixture.SUPPLY_CONTROL.toLowerCase();
+                if (name.includes("flush tank")) flushTankCount+= fixture.NoF;
+                if (name.includes("flush valve")) flushValveCount+= fixture.NoF;
             });
+
+            // Decision logic for which table to use
+            const useFlushTank = (flushTankCount - flushValveCount) > 2;
+            const selectedLookup = useFlushTank ? flushTankLookup : flushValveLookup;
 
             let gpm = 0;
             if (totalWSFU != 0) {
-                gpm = calculateGPM(totalWSFU);
+                gpm = calculateGPM(totalWSFU, selectedLookup);
             }
-            if (gpm) {
-                document.getElementById('addFixtureError').innerHTML = "";
-                document.getElementById('fixtureResult').innerHTML = `Total WSFU: ${totalWSFU.toFixed(2)}`;
-                document.getElementById('total_irrigation_flow_rate').value = gpm.toFixed(2);
-                calculateIrrigationFlow();
-                return gpm
-            } else {
-                document.getElementById('fixtureResult').innerHTML = `Total WSFU: ${totalWSFU.toFixed(2)}`;
-                document.getElementById('total_irrigation_flow_rate').value = gpm.toFixed(2);
-                calculateIrrigationFlow();
-                return gpm
-            }
-        }
 
-        function calculateGPM(totalWSFU) {
-            const lookupTable = {
-                5: 15, 6: 17.4, 7: 19.8, 8: 22.2, 9: 24.6, 10: 27, 11: 27.8, 12: 28.6, 13: 29.4, 14: 30.2,
-                15: 31, 16: 31.8, 17: 32.6, 18: 33.4, 19: 34.2, 20: 35, 25: 38, 30: 42, 35: 44, 40: 46,
-                45: 48, 50: 50, 60: 54, 70: 58, 80: 61.2, 90: 64.3, 100: 67.5, 120: 73, 140: 77, 160: 81,
-                180: 85.5, 200: 90, 225: 95.5, 250: 101, 275: 104.5, 300: 108, 400: 127, 500: 143,
-                750: 177, 1000: 208, 1250: 239, 1500: 269, 1750: 297, 2000: 325, 2500: 380, 3000: 433,
-                4000: 525, 5000: 593
-            };
-
-            const wsfuValues = Object.keys(lookupTable).map(Number);
-
-            const nearestWSFU = wsfuValues.reduce((prev, curr) => {
-                return (Math.abs(curr - totalWSFU) < Math.abs(prev - totalWSFU) ? curr : prev);
-            });
-
-            const gpm = lookupTable[nearestWSFU];
+            document.getElementById('addFixtureError').innerHTML = "";
+            document.getElementById('fixtureResult').innerHTML = `Total WSFU: ${totalWSFU.toFixed(2)}`;
+            document.getElementById('total_irrigation_flow_rate').value = gpm.toFixed(2);
+            calculateIrrigationFlow();
 
             return gpm;
+        }
+
+        function calculateGPM(totalWSFU, lookupTable) {
+            const wsfuValues = Object.keys(lookupTable).map(Number);
+            const nearestWSFU = wsfuValues.reduce((prev, curr) =>
+                Math.abs(curr - totalWSFU) < Math.abs(prev - totalWSFU) ? curr : prev
+            );
+            return lookupTable[nearestWSFU];
         }
 
         function calculateIrrigationFlow() {
