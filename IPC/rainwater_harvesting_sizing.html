@@ -10,7 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 
     <style>
-                .page__banner-content {
+        .page__banner-content {
             text-align: center
         }
 
@@ -23,7 +23,7 @@
             background-color: #FFBA41;
         }
 
-        #flow_rate,         
+        #flow_rate,
         #option_selection {
 
             padding-bottom: 20px;
@@ -280,8 +280,8 @@
         .h4_or {
             color: #bd6e20;
         }
-        
-     .toggle-button-dt {
+
+        .toggle-button-dt {
             width: 100%;
             height: 50px;
             font-size: 22px;
@@ -303,7 +303,7 @@
             flex-basis: 49%;
             border-radius: 8px;
         }
-      
+
         .options-container {
             display: flex;
             justify-content: center;
@@ -326,14 +326,14 @@
             cursor: pointer;
             border-radius: 8px;
             transition: 0.3s;
-            width:auto;
+            width: auto;
             flex: 0 0 35%;
             box-sizing: border-box;
 
         }
 
         .option img {
-            width:auto;
+            width: auto;
             height: 200px;
             object-fit: cover;
             cursor: pointer;
@@ -349,7 +349,8 @@
         }
 
         .modal {
-            display: none; /* Hidden by default */
+            display: none;
+            /* Hidden by default */
             position: fixed;
             z-index: 1000;
             left: 0;
@@ -357,7 +358,7 @@
             width: 100vw;
             height: 100vh;
             background-color: rgba(0, 0, 0, 0.8);
-        
+
             /* Center the modal content */
             justify-content: center;
             align-items: center;
@@ -365,7 +366,7 @@
             padding: 20px;
             box-sizing: border-box;
         }
-    
+
         .modal-content {
             max-width: 90vw;
             max-height: 90vh;
@@ -373,7 +374,7 @@
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
             transition: transform 0.3s ease-in-out;
-        
+
             /* Centering inside modal */
             display: block;
             margin: 0 auto;
@@ -425,14 +426,14 @@
 
         /* Make images stack on small screens */
         @media (max-width: 768px) {
-          .options-container {
+            .options-container {
                 flex-direction: row;
                 flex-wrap: wrap;
                 justify-content: center;
             }
 
             .option {
-                width:auto;
+                width: auto;
                 max-width: 100%;
                 flex: 0 0 100%;
             }
@@ -441,7 +442,6 @@
                 height: 150px;
             }
         }
-
     </style>
 </head>
 
@@ -615,7 +615,8 @@
             <div class="option" id="system_01" onclick="selectSystem('system 1')">
                 <img src="https://rainwaterharvesting.services/wp-content/uploads/2025/04/External-pump-for-a-push-through-system.jpg"
                     alt="External-pump-for-a-push-through-system">
-                <h4 class="h4_or" onclick="expandImage('system_01')">External pump for a push through system (view)</h4>
+                <h4 class="h4_or" onclick="expandImage('system_01')">Submersible pump for a push-through system (view)
+                </h4>
             </div>
             <div class="option" id="system_02" onclick="selectSystem('system 2')">
                 <img src="https://rainwaterharvesting.services/wp-content/uploads/2025/04/Submersible-transfer-pump-for-a-two-tank-system.jpg"
@@ -626,7 +627,7 @@
             <div class="option" id="system_03" onclick="selectSystem('system 3')">
                 <img src="https://rainwaterharvesting.services/wp-content/uploads/2025/04/Submersible-pump-for-a-push-through-system.jpg"
                     alt="Submersible pump for a push-through system">
-                <h4 class="h4_or" onclick="expandImage('system_03')">Submersible pump for a push-through system (view)
+                <h4 class="h4_or" onclick="expandImage('system_03')">External pump for a push through system (view)
                 </h4>
             </div>
             <div class="option" id="system_04" onclick="selectSystem('system 4')">
@@ -642,7 +643,7 @@
             <p class="red_message">click to close the image</p>
         </div>
 
-        <div id="step2">
+        <!-- <div id="step2">
             <h2>Select Configuration</h2>
             <div class="options-container">
                 <div class="option" id="cistern_tank" onclick="selectOption('Cistern Tank')">
@@ -657,7 +658,7 @@
 
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 
     <div class="rw_container">
@@ -743,15 +744,15 @@
         </div>
 
         <div class="rainwater_div" id="day_tank_pump_types">
-            <h3>Pump Type</h3>
+            <h3>Pump Selection </h3>
 
-            <p>Please select pump type:</p>
+            <!-- <p>Please select pump type:</p>
             <input type="radio" id="dt_vertical_multi-stage" name="day_tank_pump_type" value="vertical_multi-stage"
                 checked="checked">
             <label for="dt_vertical_multi-stage">Vertical Multi-Stage Pump</label>
             <input type="radio" id="dt_submersible" name="day_tank_pump_type" value="submersible">
             <label for="dt_submersible">Submersible Pump</label>
-            <br><br>
+            <br><br> -->
             <button type="button" onclick="dayTankPumpType()">Click to view available pump models for Day
                 Tank</button>
             <span id="dayTankMessage" class='red_message'></span>
@@ -1205,57 +1206,58 @@
         }
 
         let selectedSystem = '';
-        let selectedOption = '';
+        // let selectedOption = '';
+        let day_tank_pump_type = '';
 
         function selectSystem(system) {
             selectedSystem = system;
-            document.getElementById('step2').style.display = 'block';
+            // document.getElementById('step2').style.display = 'block';
 
             if (system === 'system 1') {
                 document.getElementById('system_01').style.border = '5px solid red';
                 document.getElementById('system_02').style.border = '2px solid white';
                 document.getElementById('system_03').style.border = '2px solid white';
                 document.getElementById('system_04').style.border = '2px solid white';
-
+                day_tank_pump_type = 'submersible';
             } else if (system === 'system 2') {
                 document.getElementById('system_02').style.border = '5px solid red';
                 document.getElementById('system_01').style.border = '2px solid white';
                 document.getElementById('system_03').style.border = '2px solid white';
                 document.getElementById('system_04').style.border = '2px solid white';
-
+                day_tank_pump_type = 'submersible';
             }
             else if (system === 'system 3') {
                 document.getElementById('system_03').style.border = '5px solid red';
                 document.getElementById('system_01').style.border = '2px solid white';
                 document.getElementById('system_02').style.border = '2px solid white';
                 document.getElementById('system_04').style.border = '2px solid white';
-
+                day_tank_pump_type = 'vertical_multi-stage';
             }
             else if (system === 'system 4') {
                 document.getElementById('system_04').style.border = '5px solid red';
                 document.getElementById('system_01').style.border = '2px solid white';
                 document.getElementById('system_02').style.border = '2px solid white';
                 document.getElementById('system_03').style.border = '2px solid white';
-
+                day_tank_pump_type = 'vertical_multi-stage';
             }
 
         }
 
-        function selectOption(option) {
-            selectedOption = option;
-            if (option == 'Cistern Tank') {
-                document.getElementById('cistern_tank').style.border = '5px solid red';
-                document.getElementById('pump_config').style.border = '2px solid white';
+        // function selectOption(option) {
+        //     selectedOption = option;
+        //     if (option == 'Cistern Tank') {
+        //         document.getElementById('cistern_tank').style.border = '5px solid red';
+        //         document.getElementById('pump_config').style.border = '2px solid white';
 
 
-            }
-            if (option == 'Pump Configuration') {
-                document.getElementById('pump_config').style.border = '5px solid red';
-                document.getElementById('cistern_tank').style.border = '2px solid white';
+        //     }
+        //     if (option == 'Pump Configuration') {
+        //         document.getElementById('pump_config').style.border = '5px solid red';
+        //         document.getElementById('cistern_tank').style.border = '2px solid white';
 
-            }
+        //     }
 
-        }
+        // }
 
         function showSection(sectionId) {
             document.getElementById(sectionId).style.display = "block";
@@ -1329,7 +1331,8 @@
                 totalHeadBoosterPumpResult = document.getElementById('DayTankTotalHeadBoosterPumpResult').innerHTML;
 
                 // Get selected pump type (Vertical Multistage or Submersible)
-                selectedPumpType = document.querySelector('input[name="day_tank_pump_type"]:checked').value; // Assuming radio buttons or similar input for pump type
+                selectedPumpType = day_tank_pump_type;
+                // document.querySelector('input[name="day_tank_pump_type"]:checked').value; // Assuming radio buttons or similar input for pump type
 
             }
 
@@ -1341,7 +1344,7 @@
             localStorage.setItem('sizingCategory', 'IPC');
 
             localStorage.setItem('selectedSystem', selectedSystem);
-            localStorage.setItem('selectedOption', selectedOption);
+            // localStorage.setItem('selectedOption', selectedOption);
 
             localStorage.setItem('collectionArea', collectionArea);
             localStorage.setItem('rainfall', rainfall);
@@ -1711,12 +1714,12 @@
                 totalWSFU += +fixture.TOTAL_WSFU;
 
                 const name = fixture.SUPPLY_CONTROL.toLowerCase();
-                if (name.includes("flush tank")) flushTankCount+= fixture.NoF;
-                if (name.includes("flush valve")) flushValveCount+= fixture.NoF;
+                if (name.includes("flush tank")) flushTankCount += fixture.NoF;
+                if (name.includes("flush valve")) flushValveCount += fixture.NoF;
             });
 
             // Decision logic for which table to use
-            const useFlushTank = (flushTankCount - flushValveCount) > 2;
+            const useFlushTank = (flushTankCount - flushValveCount) >= 2;
             const selectedLookup = useFlushTank ? flushTankLookup : flushValveLookup;
 
             let gpm = 0;
@@ -2211,7 +2214,7 @@
         function handlePumpType(pumpTypeInputName, totalHead, errorMsgVM, errorMsgS, hiddenDivId, visibleDivId, verticalPumps, submersiblePumps) {
             google.charts.load('current', { 'packages': ['corechart'] });
 
-            const selectedPumpType = document.querySelector(`input[name="${pumpTypeInputName}"]:checked`).value;
+            const selectedPumpType = day_tank_pump_type;
             const flow_Rate = flowRateSelector();
             const flowRate = Math.round(flow_Rate);
             document.getElementById(errorMsgVM).innerHTML = '';
