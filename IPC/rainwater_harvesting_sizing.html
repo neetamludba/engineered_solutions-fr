@@ -8,6 +8,12 @@
     <title>Rainwater Harvesting Sizing</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    
+    <!-- ESA Authentication System -->
+    <link rel="stylesheet" href="/wp-content/plugins/engineered-solutions-auth/assets/css/modern-auth.css">
+    <script src="/wp-content/plugins/engineered-solutions-auth/assets/js/auth-production.js"></script>
+    <script src="/wp-content/plugins/engineered-solutions-auth/assets/js/form-persistence.js"></script>
+    <script src="/wp-content/plugins/engineered-solutions-auth/integration/ipc-rainwater-harvesting-integration.js"></script>
 
     <style>
         .page__banner-content {
@@ -447,10 +453,12 @@
 
 
 <body>
+    <!-- ESA User Greeting Widget -->
+    <?php echo do_shortcode('[esa_user_greeting]'); ?>
 
     <div class="rainwater_div" id="flow_rate">
         <h2 id="flow_rate_h2">Flow Rate Calculator</h2>
-        <p>Based on 2024 Building Code Compendium - Ontario</p>
+        <p class="para_white">Based on 2024 Building Code Compendium - Ontario</p>
         <div class="rw_container">
             <div class="rw_container_div">
                 <form id="addFixturesForm" onsubmit="addFixtures(event)">
@@ -490,7 +498,7 @@
                         <div class="button_inline">
                             <button type="button" id="remove_fixture" onclick="removeLastFixture()">Remove Last
                                 Fixture</button>
-                            <button type="button" id="remove_fixture" onclick="removeAllFixture()">Remove All
+                            <button type="button" id="remove_fixture_all" onclick="removeAllFixture()">Remove All
                                 Fixtures</button>
                         </div>
                     </div>
@@ -1013,7 +1021,7 @@
                 </div>
                 <br>
                 <div class="chart-container">
-                    <div id="frdtspi650s1" class="shown_graph"></div>
+                    <div id="frdtspi690s1" class="shown_graph"></div>
                     <div class="summary-overlay">
                         <button type="button" class="summary-button"
                             onclick="updateSummaryPage('dt','frdtspi650s1')">Select this model and

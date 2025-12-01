@@ -1,0 +1,365 @@
+/**
+ * MHC Rainwater Harvesting Sizing Integration
+ * This code should be added to MHC/rainwater_harvesting_sizing.html
+ */
+
+// Override the existing authentication variables and functions
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait for ESA Auth to be available
+    const checkESA = setInterval(() => {
+        if (typeof window.esaAuth !== 'undefined') {
+            clearInterval(checkESA);
+            initializeMHCRainwaterHarvestingIntegration();
+        }
+    }, 100);
+});
+
+function initializeMHCRainwaterHarvestingIntegration() {
+    // Override the existing user and approved variables
+    Object.defineProperty(window, 'user', {
+        get: () => window.esaAuth ? window.esaAuth.isLoggedIn : false,
+        configurable: true
+    });
+    
+    Object.defineProperty(window, 'approved', {
+        get: () => window.esaAuth ? window.esaAuth.userApproved : false,
+        configurable: true
+    });
+    
+    // Override the existing initializeChartsForNonAuthenticatedUsers function
+    if (typeof window.initializeChartsForNonAuthenticatedUsers !== 'undefined') {
+        const originalFunction = window.initializeChartsForNonAuthenticatedUsers;
+        
+        window.initializeChartsForNonAuthenticatedUsers = function() {
+            if (window.esaAuth && window.esaAuth.isLoggedIn && window.esaAuth.userApproved) {
+                // User is authenticated and approved - show real charts
+                showAuthenticatedCharts();
+            } else {
+                // User is not authenticated or not approved - show dummy charts
+                showGuestCharts();
+            }
+        };
+    }
+    
+    // Override the existing drawChart function
+    if (typeof window.drawChart !== 'undefined') {
+        const originalDrawChart = window.drawChart;
+        
+        window.drawChart = function(chartName, fr, h, chartConfig, divID, hAxisMax, vAxisMax) {
+            // Check authentication before drawing chart
+            if (!window.esaAuth || !window.esaAuth.isLoggedIn || !window.esaAuth.userApproved) {
+                // Show dummy chart for non-authenticated users
+                const graph = document.getElementById(divID);
+                if (graph) {
+                    const isLoggedIn = window.esaAuth ? window.esaAuth.isLoggedIn : false;
+                    const isApproved = window.esaAuth ? window.esaAuth.userApproved : false;
+                    
+                    let message = '';
+                    let buttonHtml = '';
+                    
+                    if (!isLoggedIn) {
+                        // Guest user
+                        message = `
+                            <h3>Access Restricted</h3>
+                            <p>Please login to view this rainwater harvesting chart</p>
+                        `;
+                        buttonHtml = `
+                            <button class="esa-btn esa-btn-primary" onclick="window.esaAuth.showModal()">
+                                Login to Continue
+                            </button>
+                        `;
+                    } else if (!isApproved) {
+                        // Logged in but not approved
+                        message = `
+                            <h3>Access Restricted</h3>
+                            <p>Please wait for your approval to see graphs</p>
+                        `;
+                        buttonHtml = ''; // No button for pending approval
+                    }
+                    
+                    graph.innerHTML = `
+                        <div class="esa-guest-chart">
+                            ${message}
+                            ${buttonHtml}
+                        </div>
+                    `;
+                    graph.parentElement.style.display = 'block';
+                    graph.style.display = "inline-block";
+                    
+                    // Hide buttons
+                    const container = graph.parentElement;
+                    const summaryOverlay = container.querySelector('.summary-overlay');
+                    const chartOverlay = container.querySelector('.chart-overlay');
+                    
+                    if (summaryOverlay) summaryOverlay.style.display = 'none';
+                    if (chartOverlay) chartOverlay.style.display = 'none';
+                }
+                return;
+            }
+            
+            // Call original function for authenticated users
+            originalDrawChart.call(this, chartName, fr, h, chartConfig, divID, hAxisMax, vAxisMax);
+        };
+    }
+    
+    // Override the existing drawDummyChart function
+    if (typeof window.drawDummyChart !== 'undefined') {
+        const originalDrawDummyChart = window.drawDummyChart;
+        
+        window.drawDummyChart = function(divID) {
+            const graph = document.getElementById(divID);
+            if (graph) {
+                // Check user status to show appropriate message
+                const isLoggedIn = window.esaAuth ? window.esaAuth.isLoggedIn : false;
+                const isApproved = window.esaAuth ? window.esaAuth.userApproved : false;
+                
+                let message = '';
+                let buttonHtml = '';
+                
+                if (!isLoggedIn) {
+                    // Guest user
+                    message = `
+                        <h3>Access Restricted</h3>
+                        <p>Please login to view rainwater harvesting charts</p>
+                    `;
+                    buttonHtml = `
+                        <button class="esa-btn esa-btn-primary" onclick="window.esaAuth.showModal()">
+                            Login to Continue
+                        </button>
+                    `;
+                } else if (!isApproved) {
+                    // Logged in but not approved
+                    message = `
+                        <h3>Access Restricted</h3>
+                        <p>Please wait for your approval to see graphs</p>
+                    `;
+                    buttonHtml = ''; // No button for pending approval
+                }
+                
+                graph.innerHTML = `
+                    <div class="esa-guest-chart">
+                        ${message}
+                        ${buttonHtml}
+                    </div>
+                `;
+                graph.parentElement.style.display = 'block';
+                graph.style.display = "inline-block";
+                
+                // Hide buttons for dummy charts
+                const container = graph.parentElement;
+                const summaryOverlay = container.querySelector('.summary-overlay');
+                const chartOverlay = container.querySelector('.chart-overlay');
+                
+                if (summaryOverlay) summaryOverlay.style.display = 'none';
+                if (chartOverlay) chartOverlay.style.display = 'none';
+            }
+        };
+    }
+    
+    // Override the updateSummaryPage function to save estimates
+    if (typeof window.updateSummaryPage !== 'undefined') {
+        const originalUpdateSummaryPage = window.updateSummaryPage;
+        
+        window.updateSummaryPage = function(type, modelId) {
+            // Check if user is authenticated
+            if (!window.esaAuth || !window.esaAuth.isLoggedIn) {
+                window.esaAuth.showModal();
+                return;
+            }
+            
+            // Call original function
+            const result = originalUpdateSummaryPage.call(this, type, modelId);
+            
+            // Save estimate request
+            saveMHCRainwaterHarvestingEstimate(type, modelId);
+            
+            return result;
+        };
+    }
+    
+    // Initialize the page
+    initializeMHCRainwaterHarvestingPage();
+
+    // Sync UI with global auth state changes
+    document.addEventListener('esaAuthState', handleMHCRainwaterAuthState);
+}
+
+function handleMHCRainwaterAuthState(event) {
+    const state = event ? event.detail : null;
+    refreshMHCRainwaterView(state);
+}
+
+function refreshMHCRainwaterView(state) {
+    if (typeof window.initializeChartsForNonAuthenticatedUsers === 'function') {
+        window.initializeChartsForNonAuthenticatedUsers();
+        return;
+    }
+
+    if (state && state.isLoggedIn && state.userApproved) {
+        showAuthenticatedCharts();
+    } else {
+        showGuestCharts();
+    }
+}
+
+function showAuthenticatedCharts() {
+    // Show all chart containers
+    document.querySelectorAll('.chart-container').forEach(container => {
+        container.style.display = 'block';
+    });
+    
+    // Show all buttons
+    document.querySelectorAll('.summary-overlay, .chart-overlay').forEach(overlay => {
+        overlay.style.display = 'block';
+    });
+    
+    // Remove guest styling
+    document.querySelectorAll('.esa-guest-button').forEach(button => {
+        button.classList.remove('esa-guest-button');
+    });
+}
+
+function showGuestCharts() {
+    // Hide all chart containers initially
+    document.querySelectorAll('.chart-container').forEach(container => {
+        container.style.display = 'none';
+    });
+    
+    // Show only one dummy chart
+    showDummyChart();
+    
+    // Add guest styling to buttons
+    document.querySelectorAll('.summary-button, .pdf-button').forEach(button => {
+        button.classList.add('esa-guest-button');
+    });
+}
+
+function showDummyChart() {
+    // Find the first chart container and show dummy chart
+    const firstContainer = document.querySelector('.chart-container');
+    if (firstContainer) {
+        const chartDiv = firstContainer.querySelector('.shown_graph');
+        if (chartDiv) {
+            chartDiv.innerHTML = `
+                <div class="esa-guest-chart">
+                    <h3>Access Restricted</h3>
+                    <p>Please login to view rainwater harvesting charts</p>
+                    <p>Guest users can see only a preview</p>
+                    <button class="esa-btn esa-btn-primary" onclick="window.esaAuth.showModal()">
+                        Login to Continue
+                    </button>
+                </div>
+            `;
+            firstContainer.style.display = 'block';
+        }
+    }
+}
+
+function saveMHCRainwaterHarvestingEstimate(type, modelId) {
+    // Collect form data
+    const formData = collectMHCRainwaterHarvestingFormData();
+    
+    // Save estimate request
+    if (window.esaAuth) {
+        window.esaAuth.saveEstimateRequest('mhc_rainwater_harvesting', modelId, formData);
+    }
+}
+
+function collectMHCRainwaterHarvestingFormData() {
+    const formData = {};
+    
+    // Collect all form inputs
+    document.querySelectorAll('input, select, textarea').forEach(input => {
+        if (input.name && input.value) {
+            formData[input.name] = input.value;
+        }
+    });
+    
+    // Collect calculated values
+    const calculatedValues = {};
+    document.querySelectorAll('[id$="Result"]').forEach(element => {
+        calculatedValues[element.id] = element.textContent || element.innerHTML;
+    });
+    
+    formData.calculatedValues = calculatedValues;
+    
+    // Collect selected pump type
+    const selectedPumpType = document.querySelector('input[name*="pump_type"]:checked');
+    if (selectedPumpType) {
+        formData.selectedPumpType = selectedPumpType.value;
+    }
+    
+    // Collect rainwater harvesting specific data
+    const tankCapacity = document.getElementById('tank_capacity');
+    if (tankCapacity) {
+        formData.tankCapacity = tankCapacity.value;
+    }
+    
+    const roofArea = document.getElementById('roof_area');
+    if (roofArea) {
+        formData.roofArea = roofArea.value;
+    }
+    
+    const rainfallData = document.getElementById('rainfall_data');
+    if (rainfallData) {
+        formData.rainfallData = rainfallData.value;
+    }
+    
+    // Collect pump results
+    const pumpResultSimplex = document.getElementById('pumpResultSimplex');
+    const pumpResultDuplex = document.getElementById('pumpResultDuplex');
+    const pumpResultTriplex = document.getElementById('pumpResultTriplex');
+    
+    if (pumpResultSimplex) formData.pumpResultSimplex = pumpResultSimplex.innerText;
+    if (pumpResultDuplex) formData.pumpResultDuplex = pumpResultDuplex.innerText;
+    if (pumpResultTriplex) formData.pumpResultTriplex = pumpResultTriplex.innerText;
+    
+    // Collect selected pump
+    let selectedPump = '';
+    if (document.getElementById('flow_rate_simplex') && document.getElementById('flow_rate_simplex').checked) {
+        selectedPump = 'Simplex: ' + (pumpResultSimplex ? pumpResultSimplex.innerText : '') + ' GPM';
+    } else if (document.getElementById('flow_rate_duplex') && document.getElementById('flow_rate_duplex').checked) {
+        selectedPump = 'Duplex: ' + (pumpResultDuplex ? pumpResultDuplex.innerText : '') + ' GPM';
+    } else if (document.getElementById('flow_rate_triplex') && document.getElementById('flow_rate_triplex').checked) {
+        selectedPump = 'Triplex: ' + (pumpResultTriplex ? pumpResultTriplex.innerText : '') + ' GPM';
+    }
+    formData.selectedPump = selectedPump;
+    
+    return formData;
+}
+
+function initializeMHCRainwaterHarvestingPage() {
+    // Initialize charts based on authentication status
+    if (typeof window.initializeChartsForNonAuthenticatedUsers === 'function') {
+        window.initializeChartsForNonAuthenticatedUsers();
+    }
+    
+    // Add click handlers to buttons that require authentication
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('summary-button') || 
+            e.target.classList.contains('pdf-button')) {
+            
+            if (!window.esaAuth || !window.esaAuth.isLoggedIn) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.esaAuth.showModal();
+                return false;
+            }
+        }
+    });
+}
+
+// Utility functions
+window.esaRequiresAuth = function(callback) {
+    if (window.esaAuth && window.esaAuth.isLoggedIn) {
+        callback();
+    } else {
+        window.esaAuth.showModal();
+    }
+};
+
+window.esaSaveEstimate = function(pageType, selectedModel, formData) {
+    if (window.esaAuth) {
+        window.esaAuth.saveEstimateRequest(pageType, selectedModel, formData);
+    }
+};

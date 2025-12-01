@@ -1,0 +1,603 @@
+/**
+ * Modern Authentication System CSS
+ * Optimized for Desktop and Tablet
+ */
+
+/* Import base auth styles */
+@import url('auth.css');
+
+/* Modern Theme Variables */
+:root {
+    --esa-primary: #2563eb;
+    --esa-primary-dark: #1d4ed8;
+    --esa-secondary: #64748b;
+    --esa-success: #059669;
+    --esa-warning: #d97706;
+    --esa-error: #dc2626;
+    --esa-background: #f8fafc;
+    --esa-surface: #ffffff;
+    --esa-border: #e2e8f0;
+    --esa-text: #1e293b;
+    --esa-text-light: #64748b;
+    --esa-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --esa-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --esa-radius: 0.75rem;
+    --esa-radius-sm: 0.5rem;
+    --esa-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.esa-modal-header {
+    background: linear-gradient(135deg, var(--esa-primary) 0%, var(--esa-primary-dark) 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: var(--esa-radius) var(--esa-radius) 0 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 120px;
+}
+
+.esa-logo-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 2rem;
+}
+
+.esa-logo {
+    max-width: 450px;
+    width: 100%;
+    height: auto;
+    max-height: 108px;
+    object-fit: contain;
+    display: block;
+}
+
+.esa-modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.esa-modal-header h2::before {
+    content: "🔐";
+    font-size: 1.25rem;
+}
+
+.esa-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--esa-transition);
+}
+
+.esa-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* Modern Tabs */
+.esa-tabs {
+    display: flex;
+    background: var(--esa-background);
+    border-radius: var(--esa-radius-sm);
+    margin: 1.5rem 1.5rem 0;
+    padding: 0.25rem;
+    gap: 0.25rem;
+}
+
+.esa-tab-btn {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: transparent;
+    color: var(--esa-text-light);
+    font-weight: 500;
+    border-radius: var(--esa-radius-sm);
+    cursor: pointer;
+    transition: var(--esa-transition);
+    position: relative;
+}
+
+.esa-tab-btn.active {
+    background: var(--esa-surface);
+    color: var(--esa-primary);
+    box-shadow: var(--esa-shadow);
+}
+
+.esa-tab-btn:hover:not(.active) {
+    color: var(--esa-text);
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Modern Form Design */
+.esa-tab-content {
+    padding: 1.5rem;
+}
+
+.esa-form-group {
+    margin-bottom: 1.25rem;
+}
+
+.esa-form-group label {
+    display: block;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.esa-form-group input:invalid {
+    border-color: var(--esa-error);
+}
+
+.esa-form-group input:valid {
+    border-color: var(--esa-success);
+}
+
+/* Form Row Layout for Side-by-Side Fields */
+.esa-form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.esa-form-row .esa-form-group {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+/* Modern Buttons */
+.esa-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--esa-radius-sm);
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--esa-transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    min-height: 2.75rem;
+}
+
+.esa-btn-primary {
+    background: linear-gradient(135deg, var(--esa-primary) 0%, var(--esa-primary-dark) 100%);
+    color: white;
+    box-shadow: var(--esa-shadow);
+}
+
+.esa-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--esa-shadow-lg);
+}
+
+.esa-btn-secondary {
+    background: var(--esa-surface);
+    color: var(--esa-text);
+    border: 2px solid var(--esa-border);
+}
+
+.esa-btn-secondary:hover {
+    background: var(--esa-background);
+    border-color: var(--esa-primary);
+    color: var(--esa-primary);
+}
+
+.esa-btn-google {
+    background: white;
+    color: var(--esa-text);
+    border: 2px solid var(--esa-border);
+    width: 100%;
+    justify-content: center;
+}
+
+.esa-btn-google:hover {
+    background: var(--esa-background);
+    border-color: var(--esa-primary);
+    color: var(--esa-primary);
+}
+
+.esa-btn-google i {
+    color: #4285f4;
+    font-size: 1.125rem;
+}
+
+/* Social Login Section */
+.esa-social-login {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--esa-border);
+    text-align: center;
+}
+
+.esa-social-login p {
+    margin: 0 0 1rem 0;
+    color: var(--esa-text-light);
+    font-size: 0.875rem;
+}
+
+/* User Greeting Widget - Modern Design */
+.esa-user-greeting-widget {
+    background: linear-gradient(135deg, var(--esa-primary) 0%, var(--esa-primary-dark) 100%);
+    color: white;
+    border-radius: var(--esa-radius);
+    box-shadow: var(--esa-shadow-lg);
+    padding: 1rem 1.5rem;
+    margin: 1rem 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative;
+    overflow: hidden;
+}
+
+.esa-user-greeting-widget::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(30px, -30px);
+}
+
+.esa-user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.esa-user-details {
+    text-align: right;
+}
+
+.esa-user-name {
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin: 0 0 0.25rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.esa-user-name::before {
+    content: "👋";
+    font-size: 1rem;
+}
+
+.esa-user-status {
+    font-size: 0.875rem;
+    margin: 0;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.esa-status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.esa-status-approved {
+    background: var(--esa-success);
+    color: white;
+}
+
+.esa-status-pending {
+    background: var(--esa-warning);
+    color: white;
+}
+
+.esa-status-guest {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.esa-auth-buttons {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.esa-login-icon::before {
+    content: "🔑";
+    margin-right: 0.25rem;
+}
+
+.esa-logout-icon::before {
+    content: "🚪";
+    margin-right: 0.25rem;
+}
+
+/* Guest Chart Styling */
+.esa-guest-chart {
+    text-align: center;
+    padding: 2rem;
+    background: var(--esa-background);
+    border: 2px dashed var(--esa-border);
+    border-radius: var(--esa-radius);
+    margin: 1rem 0;
+}
+
+.esa-guest-chart h3 {
+    color: var(--esa-text);
+    margin: 0 0 1rem 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.esa-guest-chart p {
+    color: var(--esa-text-light);
+    margin: 0 0 1.5rem 0;
+    line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .esa-modal-content {
+        width: 95%;
+        margin: 1rem;
+    }
+
+    .esa-user-greeting-widget {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.5rem;
+    }
+
+    .esa-user-info {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .esa-user-details {
+        text-align: center;
+    }
+
+    .esa-auth-buttons {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .esa-tabs {
+        margin: 1rem 1rem 0;
+    }
+
+    .esa-tab-content {
+        padding: 1rem;
+    }
+
+    .esa-logo-container {
+        margin-right: 1rem;
+    }
+
+    .esa-logo {
+        max-width: 350px;
+        max-height: 84px;
+    }
+
+    .esa-form-row {
+        gap: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .esa-modal-header {
+        padding: 1rem;
+        min-height: auto;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .esa-logo-container {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+        justify-content: flex-start;
+    }
+
+    .esa-logo {
+        max-width: 100%;
+        max-height: 60px;
+    }
+
+    .esa-modal-header h2 {
+        font-size: 1.25rem;
+    }
+
+
+    .esa-form-row .esa-form-group {
+        margin-bottom: 1.25rem;
+    }
+}
+
+/* Desktop Optimizations */
+@media (min-width: 1024px) {
+    .esa-modal-content {
+        max-width: 520px;
+    }
+
+    .esa-user-greeting-widget {
+        padding: 1.25rem 2rem;
+    }
+
+    .esa-user-name {
+        font-size: 1.25rem;
+    }
+
+    .esa-form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .esa-form-group input {
+        padding: 0.875rem 1.25rem;
+        font-size: 1.125rem;
+    }
+
+    .esa-btn {
+        padding: 0.875rem 2rem;
+        font-size: 1.125rem;
+    }
+}
+
+/* Tablet Optimizations */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .esa-modal-content {
+        max-width: 500px;
+    }
+
+    .esa-user-greeting-widget {
+        padding: 1.125rem 1.75rem;
+    }
+
+    .esa-tabs {
+        margin: 1.25rem 1.25rem 0;
+    }
+
+    .esa-tab-content {
+        padding: 1.25rem;
+    }
+}
+
+/* Animation Enhancements */
+.esa-modal {
+    animation: esaModalFadeIn 0.3s ease-out;
+}
+
+@keyframes esaModalFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.esa-tab-content {
+    animation: esaTabSlideIn 0.3s ease-out;
+}
+
+@keyframes esaTabSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Focus States for Accessibility */
+.esa-btn:focus,
+.esa-tab-btn:focus,
+.esa-form-group input:focus {
+    outline: 2px solid var(--esa-primary);
+    outline-offset: 2px;
+}
+
+/* Loading States */
+.esa-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.esa-btn.loading {
+    position: relative;
+    color: transparent;
+}
+
+.esa-btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: esaSpin 1s linear infinite;
+}
+
+@keyframes esaSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* iOS Safe Area Support for Notched iPads */
+@supports (padding: max(0px)) {
+    .esa-modal-header {
+        padding-left: max(1.5rem, env(safe-area-inset-left));
+        padding-right: max(1.5rem, env(safe-area-inset-right));
+    }
+
+    .esa-modal-content {
+        margin-left: env(safe-area-inset-left);
+        margin-right: env(safe-area-inset-right);
+    }
+}
+
+/* Improve touch targets for iPad */
+.esa-password-toggle,
+.esa-close {
+    min-width: 44px;
+    /* iOS minimum touch target */
+    min-height: 44px;
+}
+
+/* Add active state feedback for touch devices */
+.esa-btn:active,
+.esa-tab-btn:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+}
+
+/* Larger CAPTCHA container for better touch interaction */
+#esa-captcha-login,
+#esa-captcha-register {
+    min-height: 78px;
+    /* Standard reCAPTCHA height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: scale(1.1);
+    /* Slightly larger for easier tapping on iPad */
+    transform-origin: center;
+}
+
+@media (max-width: 480px) {
+
+    #esa-captcha-login,
+    #esa-captcha-register {
+        transform: scale(1.0);
+        /* Normal size on very small screens */
+    }
+}
