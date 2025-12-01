@@ -8,6 +8,12 @@
     <title>Domestic Booster Sizing</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    
+    <!-- ESA Authentication System -->
+    <link rel="stylesheet" href="/wp-content/plugins/engineered-solutions-auth/assets/css/modern-auth.css">
+    <script src="/wp-content/plugins/engineered-solutions-auth/assets/js/auth-production.js"></script>
+    <script src="/wp-content/plugins/engineered-solutions-auth/assets/js/form-persistence.js"></script>
+    <script src="/wp-content/plugins/engineered-solutions-auth/integration/ipc-domestic-booster-integration.js"></script>
 
     <style>
         .page__banner-content {
@@ -339,6 +345,8 @@
 
 
 <body>
+    <!-- ESA User Greeting Widget -->
+    <?php echo do_shortcode('[esa_user_greeting]'); ?>
     <div class="rainwater_div" id="flow_rate">
         <h2 id="flow_rate_h2">Flow Rate Calculator</h2>
         <p class="para_white">Based on 2024 Building Code Compendium - Ontario</p>
@@ -381,7 +389,7 @@
                         <div class="button_inline">
                             <button type="button" id="remove_fixture" onclick="removeLastFixture()">Remove Last
                                 Fixture</button>
-                            <button type="button" id="remove_fixture" onclick="removeAllFixture()">Remove All
+                            <button type="button" id="remove_fixture_all" onclick="removeAllFixture()">Remove All
                                 Fixtures</button>
                         </div>
                     </div>
@@ -996,8 +1004,88 @@
     </div>
     <br />
     <button type="button" id="print_btn" onclick="printPage()">Print</button>
+    
 
     <script>
+        // User authentication variables
+        
+        // Function to initialize all charts with dummy graphs if user is not authenticated
+        function initializeChartsForNonAuthenticatedUsers() {
+            if (!user || !approved) {
+                // Get all chart containers and show dummy graphs
+                const chartContainers = document.querySelectorAll('.chart-container');
+                chartContainers.forEach(container => {
+                    const chartDiv = container.querySelector('.shown_graph');
+                    if (chartDiv) {
+                        drawDummyChart(chartDiv.id);
+                    }
+                    
+                    // Hide summary and PDF buttons for non-authenticated users
+                    const summaryOverlay = container.querySelector('.summary-overlay');
+                    const chartOverlay = container.querySelector('.chart-overlay');
+                    
+                    if (summaryOverlay) {
+                        summaryOverlay.style.display = 'none';
+                    }
+                    if (chartOverlay) {
+                        chartOverlay.style.display = 'none';
+                    }
+                });
+            } else {
+                // Show buttons for authenticated users
+                const chartContainers = document.querySelectorAll('.chart-container');
+                chartContainers.forEach(container => {
+                    const summaryOverlay = container.querySelector('.summary-overlay');
+                    const chartOverlay = container.querySelector('.chart-overlay');
+                    
+                    if (summaryOverlay) {
+                        summaryOverlay.style.display = 'block';
+                    }
+                    if (chartOverlay) {
+                        chartOverlay.style.display = 'block';
+                    }
+                });
+            }
+        }
+        
+        // Function to update status display
+        function updateStatusDisplay() {
+            const statusElement = document.getElementById('currentStatus');
+            if (user && approved) {
+                statusElement.textContent = 'Authenticated & Approved - Charts and buttons visible';
+                statusElement.style.color = '#097138';
+            } else if (!user) {
+                statusElement.textContent = 'Not Authenticated - Dummy charts and hidden buttons';
+                statusElement.style.color = '#a52714';
+            } else if (!approved) {
+                statusElement.textContent = 'Not Approved - Dummy charts and hidden buttons';
+                statusElement.style.color = '#a52714';
+            }
+        }
+        
+        // Function to toggle user authentication (for testing purposes)
+        function toggleUserAuth() {
+            user = !user;
+            console.log('User authentication toggled:', user);
+            document.getElementById('userStatus').textContent = user;
+            updateStatusDisplay();
+            initializeChartsForNonAuthenticatedUsers();
+        }
+        
+        function toggleApproval() {
+            approved = !approved;
+            console.log('User approval toggled:', approved);
+            document.getElementById('approvalStatus').textContent = approved;
+            updateStatusDisplay();
+            initializeChartsForNonAuthenticatedUsers();
+        }
+        
+        // Initialize charts when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStatusDisplay();
+            initializeChartsForNonAuthenticatedUsers();
+        });
+        
         function showSection(sectionId) {
             // Hide both sections
             // document.getElementById("municipal_line").style.display = "none";
@@ -2615,7 +2703,44 @@
         }
 
 
+        // Function to create a dummy graph for non-authenticated users
+        function drawDummyChart(divID) {
+            const graph = document.getElementById(divID);
+            if (graph) {
+                graph.innerHTML = `
+                    <div style="width: 100%; height: 400px; display: flex; align-items: center; justify-content: center; 
+                                background-color: #f5f5f5; border: 2px dashed #ccc; border-radius: 8px;">
+                        <div style="text-align: center; color: #666;">
+                            <h3>Access Restricted</h3>
+                            <p>Please contact administrator for chart access</p>
+                            <p style="font-size: 12px; margin-top: 10px;">User: ${user ? 'Authenticated' : 'Not Authenticated'} | 
+                               Approved: ${approved ? 'Yes' : 'No'}</p>
+                        </div>
+                    </div>
+                `;
+                graph.parentElement.style.display = 'block';
+                graph.style.display = "inline-block";
+                
+                // Hide buttons for dummy charts
+                const container = graph.parentElement;
+                const summaryOverlay = container.querySelector('.summary-overlay');
+                const chartOverlay = container.querySelector('.chart-overlay');
+                
+                if (summaryOverlay) {
+                    summaryOverlay.style.display = 'none';
+                }
+                if (chartOverlay) {
+                    chartOverlay.style.display = 'none';
+                }
+            }
+        }
+
         function drawChart(chartName, fr, h, chartConfig, divID, hAxisMax, vAxisMax) {
+            // Check user authentication and approval status
+            if (!user || !approved) {
+                drawDummyChart(divID);
+                return;
+            }
             var data = new google.visualization.DataTable();
             chartConfig.columns.forEach(column => data.addColumn('number', column));
             data.addRows(chartConfig.data);
@@ -2669,6 +2794,18 @@
                 graph.parentElement.style.display = 'block';
                 graph.style.display = "inline-block";
                 noPlot = false
+                
+                // Show buttons for authenticated users when chart is displayed
+                const container = graph.parentElement;
+                const summaryOverlay = container.querySelector('.summary-overlay');
+                const chartOverlay = container.querySelector('.chart-overlay');
+                
+                if (summaryOverlay) {
+                    summaryOverlay.style.display = 'block';
+                }
+                if (chartOverlay) {
+                    chartOverlay.style.display = 'block';
+                }
             }
 
             for (let i = 0; i < data.getNumberOfColumns(); i++) {
