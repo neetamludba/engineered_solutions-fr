@@ -14,72 +14,221 @@ $action = isset($_GET['action']) ? $_GET['action'] : 'list';
 
 // Handle user approval/denial
 if (isset($_POST['esa_action']) && wp_verify_nonce($_POST['esa_nonce'], 'esa_admin_action')) {
+    // Start output buffering to prevent "headers already sent" errors
+    ob_start();
+    
     $user_id = intval($_POST['user_id']);
     $action_type = sanitize_text_field($_POST['esa_action']);
     
+    global $wpdb;
+    $table = $wpdb->prefix . 'esa_user_approval';
+    
+    // Check current approval status
+    $current_status = $wpdb->get_row($wpdb->prepare(
+        "SELECT is_approved, approved_by, approval_date FROM {$table} WHERE user_id = %d",
+        $user_id
+    ));
+    
     if ($action_type === 'approve') {
-        // Update user_meta
-        update_user_meta($user_id, 'esa_approved', true);
-        
-        $user = new WP_User($user_id);
-        $user->set_role('esa_user');
-        
-        global $wpdb;
-        $table = $wpdb->prefix . 'esa_user_approval';
-        $wpdb->replace(
-            $table,
-            array(
-                'user_id' => $user_id,
-                'is_approved' => 1,
-                'approval_date' => current_time('mysql'),
-                'approved_by' => get_current_user_id()
-            )
-        );
-        
-        // Send approval email to user
-        $user_data = get_userdata($user_id);
-        wp_mail(
-            $user_data->user_email,
-            'Account Approved - Engineered Solutions',
-            'Your account has been approved! You can now access all features.',
-            array('Content-Type: text/html')
-        );
-        
-        echo '<div class="notice notice-success"><p>User approved successfully!</p></div>';
+        // Check if already approved
+        if ($current_status && $current_status->is_approved == 1) {
+            $approver = get_userdata($current_status->approved_by);
+            $approver_name = $approver ? $approver->display_name : 'Another admin';
+            $approval_date = date('F j, Y \a\t g:i A', strtotime($current_status->approval_date));
+            
+            ob_end_clean(); // Clear buffer
+            echo '<div class="notice notice-info"><p><strong>User is already approved.</strong> This user was approved by ' . esc_html($approver_name) . ' on ' . esc_html($approval_date) . '.</p></div>';
+        } else {
+            // Update user_meta
+            update_user_meta($user_id, 'esa_approved', true);
+            
+            $user = new WP_User($user_id);
+            $user->set_role('esa_user');
+            
+            $wpdb->replace(
+                $table,
+                array(
+                    'user_id' => $user_id,
+                    'is_approved' => 1,
+                    'approval_date' => current_time('mysql'),
+                    'approved_by' => get_current_user_id()
+                )
+            );
+            
+            // Send approval email to user
+            $user_data = get_userdata($user_id);
+            $first_name = get_user_meta($user_id, 'first_name', true);
+            $last_name = get_user_meta($user_id, 'last_name', true);
+            $full_name = trim($first_name . ' ' . $last_name);
+            if (empty($full_name)) {
+                $full_name = $user_data->display_name;
+            }
+            
+            $user_roles = $user_data->roles;
+            $role_display = !empty($user_roles) ? ucfirst(str_replace('_', ' ', $user_roles[0])) : 'ESA User';
+            
+            $approval_message = "
+            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;'>
+                <div style='background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
+                    <h2 style='color: #059669; margin-top: 0;'>🎉 Account Approved!</h2>
+                    
+                    <p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>Hello <strong>{$full_name}</strong>,</p>
+                    
+                    <p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>Great news! Your Engineered Solutions account has been approved. You now have full access to all features and tools.</p>
+                    
+                    <div style='background-color: #d1fae5; border-left: 4px solid #059669; padding: 15px; margin: 20px 0; border-radius: 4px;'>
+                        <p style='color: #065f46; font-size: 14px; margin: 0; line-height: 1.6;'>
+                            <strong>✅ Status:</strong> Your account is now active and ready to use!
+                        </p>
+                    </div>
+                    
+                    <div style='background-color: #f9fafb; padding: 15px; border-radius: 6px; margin: 20px 0;'>
+                        <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'><strong>Your Account Details:</strong></p>
+                        <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'>👤 Name: {$full_name}</p>
+                        <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'>📧 Email: {$user_data->user_email}</p>
+                        <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'>🔑 Role: {$role_display}</p>
+                        <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'>✅ Status: Approved</p>
+                    </div>
+                    
+                    <div style='text-align: center; margin: 30px 0;'>
+                        <a href='" . home_url() . "' style='background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);'>
+                            🚀 Access Your Account
+                        </a>
+                    </div>
+                    
+                    <p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
+                    
+                    <hr style='border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;'>
+                    
+                    <p style='color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 0;'>
+                        Best regards,<br>
+                        <strong>Engineered Solutions Team</strong>
+                    </p>
+                </div>
+            </div>
+            ";
+            
+            wp_mail(
+                $user_data->user_email,
+                'Account Approved - Engineered Solutions',
+                $approval_message,
+                array('Content-Type: text/html')
+            );
+            
+            // Notify other admins (requires access to main plugin class)
+            $esa = EngineeredSolutionsAuth::get_instance();
+            if ($esa && method_exists($esa, 'send_admin_action_notification_public')) {
+                $esa->send_admin_action_notification_public($user_id, 'approved');
+            }
+            
+            ob_end_clean(); // Clear buffer
+            echo '<div class="notice notice-success"><p>User approved successfully!</p></div>';
+        }
     } elseif ($action_type === 'deny') {
-        // Update user_meta
-        update_user_meta($user_id, 'esa_approved', false);
-        
-        $user = new WP_User($user_id);
-        $user->set_role('esa_guest');
-        
-        global $wpdb;
-        $table = $wpdb->prefix . 'esa_user_approval';
-        $wpdb->replace(
-            $table,
-            array(
-                'user_id' => $user_id,
-                'is_approved' => 0,
-                'approved_by' => get_current_user_id()
-            )
-        );
-        
-        // Send denial email to user
-        $user_data = get_userdata($user_id);
-        wp_mail(
-            $user_data->user_email,
-            'Account Access Denied - Engineered Solutions',
-            'Your account access has been denied. Please contact support for more information.',
-            array('Content-Type: text/html')
-        );
-        
-        echo '<div class="notice notice-success"><p>User denied successfully!</p></div>';
+        // Check if already denied
+        if ($current_status && $current_status->is_approved == 0) {
+            $denier = get_userdata($current_status->approved_by);
+            $denier_name = $denier ? $denier->display_name : 'Another admin';
+            $denial_date = $current_status->approval_date ? date('F j, Y \a\t g:i A', strtotime($current_status->approval_date)) : 'previously';
+            
+            ob_end_clean(); // Clear buffer
+            echo '<div class="notice notice-info"><p><strong>User is already denied.</strong> This user was denied by ' . esc_html($denier_name) . ' on ' . esc_html($denial_date) . '.</p></div>';
+        } else {
+            // Update user_meta
+            update_user_meta($user_id, 'esa_approved', false);
+            
+            $user = new WP_User($user_id);
+            $user->set_role('esa_guest');
+            
+            $wpdb->replace(
+                $table,
+                array(
+                    'user_id' => $user_id,
+                    'is_approved' => 0,
+                    'approved_by' => get_current_user_id()
+                )
+            );
+            
+            // Send denial email to user
+            $user_data = get_userdata($user_id);
+            $first_name = get_user_meta($user_id, 'first_name', true);
+            $last_name = get_user_meta($user_id, 'last_name', true);
+            $full_name = trim($first_name . ' ' . $last_name);
+            if (empty($full_name)) {
+                $full_name = $user_data->display_name;
+            }
+            
+            $user_roles = $user_data->roles;
+            $role_display = !empty($user_roles) ? ucfirst(str_replace('_', ' ', $user_roles[0])) : 'ESA Guest';
+            
+            $denial_message = "
+            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;'>
+                <div style='background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
+                    <h2 style='color: #dc2626; margin-top: 0;'>Account Access Update</h2>
+                    
+                    <p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>Hello <strong>{$full_name}</strong>,</p>
+                    
+                    <p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>We regret to inform you that your account access request for Engineered Solutions has been denied at this time.</p>
+                    
+                    <div style='background-color: #fee2e2; border-left: 4px solid #dc2626; padding: 15px; margin: 20px 0; border-radius: 4px;'>
+                        <p style='color: #991b1b; font-size: 14px; margin: 0; line-height: 1.6;'>
+                            <strong>⚠️ Status:</strong> Access Denied
+                        </p>
+                    </div>
+                    
+                    <div style='background-color: #f9fafb; padding: 15px; border-radius: 6px; margin: 20px 0;'>
+                        <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'><strong>Account Information:</strong></p>
+                        <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'>👤 Name: {$full_name}</p>
+                        <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'>📧 Email: {$user_data->user_email}</p>
+                        <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'>🔑 Role: {$role_display}</p>
+                        <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'>❌ Status: Denied</p>
+                    </div>
+                    
+                    <div style='background-color: #dbeafe; border-left: 4px solid #2563eb; padding: 15px; margin: 20px 0; border-radius: 4px;'>
+                        <p style='color: #1e40af; font-size: 14px; margin: 0; line-height: 1.6;'>
+                            <strong>ℹ️ Need Help?</strong> If you believe this is an error or would like more information, please contact our support team for assistance.
+                        </p>
+                    </div>
+                    
+                    <div style='text-align: center; margin: 30px 0;'>
+                        <a href='mailto:support@engineeredsolutions.com' style='background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);'>
+                            📧 Contact Support
+                        </a>
+                    </div>
+                    
+                    <hr style='border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;'>
+                    
+                    <p style='color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 0;'>
+                        Best regards,<br>
+                        <strong>Engineered Solutions Team</strong>
+                    </p>
+                </div>
+            </div>
+            ";
+            
+            wp_mail(
+                $user_data->user_email,
+                'Account Access Update - Engineered Solutions',
+                $denial_message,
+                array('Content-Type: text/html')
+            );
+            
+            // Notify other admins (requires access to main plugin class)
+            $esa = EngineeredSolutionsAuth::get_instance();
+            if ($esa && method_exists($esa, 'send_admin_action_notification_public')) {
+                $esa->send_admin_action_notification_public($user_id, 'denied');
+            }
+            
+            ob_end_clean(); // Clear buffer
+            echo '<div class="notice notice-success"><p>User denied successfully!</p></div>';
+        }
     }
 }
 
 // Get users data
 global $wpdb;
 $users_table = $wpdb->prefix . 'users';
+$usermeta_table = $wpdb->prefix . 'usermeta';
 $approval_table = $wpdb->prefix . 'esa_user_approval';
 $logins_table = $wpdb->prefix . 'esa_user_logins';
 
@@ -93,7 +242,9 @@ $users = $wpdb->get_results("
         a.approval_date,
         l.login_time,
         l.ip_address,
-        l.social_provider
+        l.social_provider,
+        fn.meta_value as first_name,
+        ln.meta_value as last_name
     FROM {$users_table} u
     LEFT JOIN {$approval_table} a ON u.ID = a.user_id
     LEFT JOIN (
@@ -101,6 +252,8 @@ $users = $wpdb->get_results("
         FROM {$logins_table}
         GROUP BY user_id
     ) l ON u.ID = l.user_id
+    LEFT JOIN {$usermeta_table} fn ON u.ID = fn.user_id AND fn.meta_key = 'first_name'
+    LEFT JOIN {$usermeta_table} ln ON u.ID = ln.user_id AND ln.meta_key = 'last_name'
     WHERE u.user_email LIKE '%@%'
     ORDER BY u.user_registered DESC
 ");
@@ -161,7 +314,22 @@ $users = $wpdb->get_results("
                     <?php foreach ($users as $user): ?>
                         <tr>
                             <td>
-                                <strong><?php echo esc_html($user->display_name); ?></strong>
+                                <?php 
+                                // Build full name from first and last name
+                                $full_name = trim(($user->first_name ?? '') . ' ' . ($user->last_name ?? ''));
+                                // Fallback to display_name if no first/last name
+                                if (empty($full_name)) {
+                                    $full_name = $user->display_name;
+                                }
+                                // Final fallback to email if display_name is also empty
+                                if (empty($full_name) || $full_name === $user->user_email) {
+                                    $full_name = $user->user_email;
+                                }
+                                ?>
+                                <strong><?php echo esc_html($full_name); ?></strong><br>
+                                <?php if ($full_name !== $user->user_email): ?>
+                                    <small><?php echo esc_html($user->user_email); ?></small>
+                                <?php endif; ?>
                             </td>
                             <td><?php echo esc_html($user->user_email); ?></td>
                             <td>

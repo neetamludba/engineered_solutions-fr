@@ -50,12 +50,14 @@ class ESAFormPersistence {
             this.saveCurrentFormData();
         });
 
-        // Auto-save as fields change during the session
-        ['input', 'change'].forEach(eventName => {
-            document.addEventListener(eventName, () => {
-                this.debouncedSave();
-            }, true);
-        });
+        // REMOVED: Auto-save as fields change during the session
+        // This was causing form data to save on every keystroke, which can impact performance
+        // Form data now only saves when opening login/register modals or before page unload
+        // ['input', 'change'].forEach(eventName => {
+        //     document.addEventListener(eventName, () => {
+        //         this.debouncedSave();
+        //     }, true);
+        // });
     }
     
     setupFormRestoration() {

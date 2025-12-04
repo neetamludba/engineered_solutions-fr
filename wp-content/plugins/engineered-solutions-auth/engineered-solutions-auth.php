@@ -3,7 +3,7 @@
  * Plugin Name: Engineered Solutions Authentication
  * Plugin URI: https://rainwaterharvesting.services
  * Description: Complete authentication system for pump sizing applications with user tracking, social login, access control, bot protection, and email verification.
- * Version: 2.2.5
+ * Version: 2.3.1
  * Author: Engineered Solutions
  * License: GPL v2 or later
  */
@@ -16,20 +16,29 @@ if (!defined('ABSPATH')) {
 // Define plugin constants
 define('ESA_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('ESA_PLUGIN_PATH', plugin_dir_path(__FILE__));
-define('ESA_VERSION', '2.2.5');
+define('ESA_VERSION', '2.3.1');
 
 class EngineeredSolutionsAuth {
+    
+    private static $instance = null;
+    
+    public static function get_instance() {
+        if (null === self::$instance) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
     
     public function __construct() {
         add_action('init', array($this, 'init'));
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
         add_action('wp_ajax_esa_login', array($this, 'handle_login'));
-        add_action('wp_ajax_esa_register', array($this, 'handle_register'));
+        // add_action('wp_ajax_esa_register', array($this, 'handle_register'));
         add_action('wp_ajax_esa_logout', array($this, 'handle_logout'));
         add_action('wp_ajax_esa_track_activity', array($this, 'track_user_activity'));
         add_action('wp_ajax_esa_save_estimate', array($this, 'save_estimate_request'));
         add_action('wp_ajax_nopriv_esa_login', array($this, 'handle_login'));
-        add_action('wp_ajax_nopriv_esa_register', array($this, 'handle_register'));
+        // add_action('wp_ajax_nopriv_esa_register', array($this, 'handle_register'));
         add_action('wp_ajax_nopriv_esa_track_activity', array($this, 'track_user_activity'));
         
 		// OTP endpoints
@@ -158,12 +167,30 @@ class EngineeredSolutionsAuth {
         }
 
         // Localize script for AJAX - only for production script
+        $current_user_name = '';
+        if (is_user_logged_in()) {
+            $current_user = wp_get_current_user();
+            $first_name = get_user_meta($current_user->ID, 'first_name', true);
+            $last_name = get_user_meta($current_user->ID, 'last_name', true);
+            $current_user_name = trim($first_name . ' ' . $last_name);
+            
+            // Fallback to display_name if no first/last name
+            if (empty($current_user_name)) {
+                $current_user_name = $current_user->display_name;
+            }
+            
+            // Final fallback to email if display_name is also empty or same as email
+            if (empty($current_user_name) || $current_user_name === $current_user->user_email) {
+                $current_user_name = $current_user->user_email;
+            }
+        }
+        
         wp_localize_script('esa-auth-production-js', 'esa_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('esa_nonce'),
             'is_user_logged_in' => is_user_logged_in(),
             'user_id' => get_current_user_id(),
-            'user_name' => is_user_logged_in() ? wp_get_current_user()->display_name : '',
+            'user_name' => $current_user_name,
             'user_email' => is_user_logged_in() ? wp_get_current_user()->user_email : '',
             'user_approved' => $this->is_user_approved(get_current_user_id()),
             'captcha_enabled' => $captcha_enabled,
@@ -381,11 +408,27 @@ class EngineeredSolutionsAuth {
         // Log login event
         $this->log_user_login($user->ID);
 
+        // Get user's full name from meta
+        $first_name = get_user_meta($user->ID, 'first_name', true);
+        $last_name = get_user_meta($user->ID, 'last_name', true);
+        $full_name = trim($first_name . ' ' . $last_name);
+        
+        // Fallback to display_name if no first/last name
+        if (empty($full_name)) {
+            $full_name = $user->display_name;
+        }
+        
+        // Final fallback to email if display_name is also empty or same as email
+        if (empty($full_name) || $full_name === $user->user_email) {
+            $full_name = $user->user_email;
+        }
+
         $response_data = array(
             'message' => 'Login successful',
+            'nonce' => wp_create_nonce('esa_nonce'),
             'user' => array(
                 'id' => $user->ID,
-                'name' => $user->display_name,
+                'name' => $full_name,
                 'email' => $user->user_email,
                 'approved' => $this->is_user_approved($user->ID)
             )
@@ -482,14 +525,57 @@ class EngineeredSolutionsAuth {
             home_url('/')
         );
         
-        $subject = 'Your Magic Login Link - Engineered Solutions';
-        $message = "Hi " . $user->display_name . ",\n\n";
-        $message .= "Click the link below to log in to Engineered Solutions:\n\n";
-        $message .= $login_url . "\n\n";
-        $message .= "This link will expire in 15 minutes.\n\n";
-        $message .= "If you didn't request this, you can safely ignore this email.";
+        $first_name = get_user_meta($user->ID, 'first_name', true);
+        $last_name = get_user_meta($user->ID, 'last_name', true);
+        $full_name = trim($first_name . ' ' . $last_name);
+        if (empty($full_name)) {
+            $full_name = $user->display_name;
+        }
         
-        wp_mail($email, $subject, $message);
+        $user_roles = $user->roles;
+        $role_display = !empty($user_roles) ? ucfirst(str_replace('_', ' ', $user_roles[0])) : 'User';
+        
+        $subject = 'Your Magic Login Link - Engineered Solutions';
+        $message = "
+        <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;'>
+            <div style='background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
+                <h2 style='color: #1f2937; margin-top: 0;'>✨ Magic Login Link</h2>
+                
+                <p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>Hello <strong>{$full_name}</strong>,</p>
+                
+                <p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>You requested a magic login link to access your Engineered Solutions account. Click the button below to log in instantly:</p>
+                
+                <div style='text-align: center; margin: 30px 0;'>
+                    <a href='{$login_url}' style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);'>
+                        🔐 Log In to Your Account
+                    </a>
+                </div>
+                
+                <div style='background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 4px;'>
+                    <p style='color: #92400e; font-size: 14px; margin: 0; line-height: 1.6;'>
+                        <strong>⚠️ Security Notice:</strong> This link will expire in 15 minutes for your security.
+                    </p>
+                </div>
+                
+                <div style='background-color: #f9fafb; padding: 15px; border-radius: 6px; margin: 20px 0;'>
+                    <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'><strong>Account Details:</strong></p>
+                    <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'>📧 Email: {$email}</p>
+                    <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'>👤 Role: {$role_display}</p>
+                </div>
+                
+                <p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>If you didn't request this login link, you can safely ignore this email.</p>
+                
+                <hr style='border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;'>
+                
+                <p style='color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 0;'>
+                    Best regards,<br>
+                    <strong>Engineered Solutions Team</strong>
+                </p>
+            </div>
+        </div>
+        ";
+        
+        wp_mail($email, $subject, $message, array('Content-Type: text/html'));
         
         wp_send_json_success(array('message' => 'Magic link sent! Check your email.'));
     }
@@ -536,6 +622,7 @@ class EngineeredSolutionsAuth {
         
         wp_send_json_success(array(
             'message' => 'Login successful',
+            'nonce' => wp_create_nonce('esa_nonce'),
             'user_id' => $user->ID,
             'user_name' => $user->display_name,
             'user_email' => $user->user_email,
@@ -1059,17 +1146,13 @@ class EngineeredSolutionsAuth {
         <p><strong>IP Address:</strong> " . $this->get_client_ip() . "</p>
         <p><strong>Registration Time:</strong> " . current_time('Y-m-d H:i:s') . "</p>
 
-        <h4>User Authentication Link</h4>
-        <p>Direct login link for the user (bypasses login form):<br>
-        <a href='{$login_url}' style='background: #007cba; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; display: inline-block; margin: 8px 0;'>Login as {$username}</a></p>
-
         <h4>Admin Actions</h4>
-        <p>
-            <a href='{$approve_url}' style='background: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Approve User (No Login Required)</a>
-            <a href='{$admin_approve_url}' style='background: #17a2b8; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-left: 10px;'>Admin Approve (Login Required)</a>
-            <a href='{$public_deny_url}' style='background: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-left: 10px;'>Deny User (No Login Required)</a>
-            <a href='{$deny_url}' style='background: #6c757d; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-left: 10px;'>Admin Deny (Login Required)</a>
-        </p>
+        <div style='margin: 20px 0;'>
+            <a href='{$approve_url}' style='display: inline-block; background: #28a745; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; margin: 5px 5px; font-size: 14px; min-width: 180px; text-align: center; box-sizing: border-box;'>Approve User (No Login Required)</a>
+            <a href='{$admin_approve_url}' style='display: inline-block; background: #17a2b8; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; margin: 5px 5px; font-size: 14px; min-width: 180px; text-align: center; box-sizing: border-box;'>Admin Approve (Login Required)</a>
+            <a href='{$public_deny_url}' style='display: inline-block; background: #dc3545; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; margin: 5px 5px; font-size: 14px; min-width: 180px; text-align: center; box-sizing: border-box;'>Deny User (No Login Required)</a>
+            <a href='{$deny_url}' style='display: inline-block; background: #6c757d; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; margin: 5px 5px; font-size: 14px; min-width: 180px; text-align: center; box-sizing: border-box;'>Admin Deny (Login Required)</a>
+        </div>
         ";
 
         // Send to all admin emails
@@ -1077,6 +1160,56 @@ class EngineeredSolutionsAuth {
             wp_mail($admin_email, $subject, $message, array('Content-Type: text/html'));
         }
     }
+    
+    private function send_user_welcome_email($user_id, $first_name, $last_name, $email, $login_url) {
+        $full_name = trim($first_name . ' ' . $last_name);
+        
+        $subject = 'Welcome to Engineered Solutions';
+        $message = "
+        <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;'>
+            <div style='background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
+                <h2 style='color: #2563eb; margin-top: 0;'>🎉 Welcome to Engineered Solutions!</h2>
+                
+                <p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>Hello <strong>{$full_name}</strong>,</p>
+                
+                <p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>Thank you for registering with Engineered Solutions. Your account has been successfully created!</p>
+                
+                <div style='background-color: #dbeafe; border-left: 4px solid #2563eb; padding: 15px; margin: 20px 0; border-radius: 4px;'>
+                    <p style='color: #1e40af; font-size: 14px; margin: 0; line-height: 1.6;'>
+                        <strong>📧 Email:</strong> {$email}
+                    </p>
+                </div>
+                
+                <h3 style='color: #1f2937; margin-top: 25px;'>Quick Login Access</h3>
+                <p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>For your convenience, you can use the secure direct login link below:</p>
+                
+                <div style='text-align: center; margin: 30px 0;'>
+                    <a href='{$login_url}' style='background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);'>
+                        🔐 Login to Your Account
+                    </a>
+                </div>
+                
+                <div style='background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 4px;'>
+                    <p style='color: #92400e; font-size: 14px; margin: 0; line-height: 1.6;'>
+                        <strong>⏳ Pending Approval:</strong> Your account is currently pending admin approval. You will receive another email once your account has been approved and you have full access to all features.
+                    </p>
+                </div>
+                
+                <p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>If you have any questions while waiting for approval, please don't hesitate to contact our support team.</p>
+                
+                <hr style='border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;'>
+                
+                <p style='color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 0;'>
+                    Best regards,<br>
+                    <strong>Engineered Solutions Team</strong>
+                </p>
+            </div>
+        </div>
+        ";
+        
+        wp_mail($email, $subject, $message, array('Content-Type: text/html'));
+    }
+
     
     private function get_admin_emails() {
         $emails = get_option('esa_admin_emails', '');
@@ -1311,7 +1444,73 @@ class EngineeredSolutionsAuth {
             'Your account has been approved! You can now access all features.',
             array('Content-Type: text/html')
         );
+        
+        // Notify other admins about this approval
+        $this->send_admin_action_notification($user_id, 'approved');
     }
+    
+    private function send_admin_action_notification($user_id, $action) {
+        $admin_emails = $this->get_admin_emails();
+        $current_admin_id = get_current_user_id();
+        $current_admin = $current_admin_id > 0 ? get_userdata($current_admin_id) : null;
+        $admin_name = $current_admin ? $current_admin->display_name : 'System';
+        
+        $user_data = get_userdata($user_id);
+        $first_name = get_user_meta($user_id, 'first_name', true);
+        $last_name = get_user_meta($user_id, 'last_name', true);
+        $full_name = trim($first_name . ' ' . $last_name);
+        if (empty($full_name)) {
+            $full_name = $user_data->display_name;
+        }
+        
+        $action_past = $action === 'approved' ? 'Approved' : 'Denied';
+        $action_color = $action === 'approved' ? '#059669' : '#dc2626';
+        $action_bg = $action === 'approved' ? '#d1fae5' : '#fee2e2';
+        $action_border = $action === 'approved' ? '#059669' : '#dc2626';
+        $action_icon = $action === 'approved' ? '✅' : '❌';
+        
+        $subject = "User {$action_past} by {$admin_name}";
+        $message = "
+        <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;'>
+            <div style='background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
+                <h2 style='color: {$action_color}; margin-top: 0;'>{$action_icon} User {$action_past}</h2>
+                
+                <div style='background-color: {$action_bg}; border-left: 4px solid {$action_border}; padding: 15px; margin: 20px 0; border-radius: 4px;'>
+                    <p style='color: #1f2937; font-size: 14px; margin: 0; line-height: 1.6;'>
+                        <strong>{$admin_name}</strong> has {$action} the following user account:
+                    </p>
+                </div>
+                
+                <div style='background-color: #f9fafb; padding: 15px; border-radius: 6px; margin: 20px 0;'>
+                    <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'><strong>User Name:</strong> {$full_name}</p>
+                    <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'><strong>Email:</strong> {$user_data->user_email}</p>
+                    <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'><strong>Action:</strong> {$action_past}</p>
+                    <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'><strong>By:</strong> {$admin_name}</p>
+                    <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'><strong>Time:</strong> " . current_time('Y-m-d H:i:s') . "</p>
+                </div>
+                
+                <hr style='border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;'>
+                
+                <p style='color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 0;'>
+                    This is an automated notification from the Engineered Solutions user management system.
+                </p>
+            </div>
+        </div>
+        ";
+        
+        // Send to all admins except the one who performed the action
+        foreach ($admin_emails as $admin_email) {
+            if ($current_admin && $admin_email === $current_admin->user_email) {
+                continue; // Don't send to the admin who performed the action
+            }
+            wp_mail($admin_email, $subject, $message, array('Content-Type: text/html'));
+        }
+    }
+    
+    public function send_admin_action_notification_public($user_id, $action) {
+        $this->send_admin_action_notification($user_id, $action);
+    }
+
     
     private function deny_user_direct($user_id) {
         // Suspend account - set meta flag
@@ -1338,9 +1537,59 @@ class EngineeredSolutionsAuth {
             array(
                 'user_id' => $user_id,
                 'is_approved' => 0,
-                'approved_by' => 0 // System action
+                'approved_by' => get_current_user_id()
             )
         );
+        
+        // Send denial email to user
+        $user_data = get_userdata($user_id);
+        $first_name = get_user_meta($user_id, 'first_name', true);
+        $last_name = get_user_meta($user_id, 'last_name', true);
+        $full_name = trim($first_name . ' ' . $last_name);
+        if (empty($full_name)) {
+            $full_name = $user_data->display_name;
+        }
+        
+        $denial_message = "
+        <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;'>
+            <div style='background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
+                <h2 style='color: #dc2626; margin-top: 0;'>Account Access Update</h2>
+                
+                <p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>Hello <strong>{$full_name}</strong>,</p>
+                
+                <p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>We regret to inform you that your account access request for Engineered Solutions has been denied at this time.</p>
+                
+                <div style='background-color: #fee2e2; border-left: 4px solid #dc2626; padding: 15px; margin: 20px 0; border-radius: 4px;'>
+                    <p style='color: #991b1b; font-size: 14px; margin: 0; line-height: 1.6;'>
+                        <strong>⚠️ Status:</strong> Access Denied
+                    </p>
+                </div>
+                
+                <div style='background-color: #dbeafe; border-left: 4px solid #2563eb; padding: 15px; margin: 20px 0; border-radius: 4px;'>
+                    <p style='color: #1e40af; font-size: 14px; margin: 0; line-height: 1.6;'>
+                        <strong>ℹ️ Need Help?</strong> If you believe this is an error or would like more information, please contact our support team for assistance.
+                    </p>
+                </div>
+                
+                <hr style='border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;'>
+                
+                <p style='color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 0;'>
+                    Best regards,<br>
+                    <strong>Engineered Solutions Team</strong>
+                </p>
+            </div>
+        </div>
+        ";
+        
+        wp_mail(
+            $user_data->user_email,
+            'Account Access Update - Engineered Solutions',
+            $denial_message,
+            array('Content-Type: text/html')
+        );
+        
+        // Notify other admins about this denial
+        $this->send_admin_action_notification($user_id, 'denied');
     }
     
     private function get_client_ip() {
@@ -1484,7 +1733,7 @@ class EngineeredSolutionsAuth {
         // Check token
 		$token_data = $wpdb->get_row($wpdb->prepare(
 			"SELECT * FROM {$wpdb->prefix}esa_approval_tokens 
-			 WHERE token = %s AND action = 'approve' AND used = 0 AND expires_at > UTC_TIMESTAMP()",
+			 WHERE token = %s AND action = 'approve' AND used = 0 AND expires_at >UTC_TIMESTAMP()",
 			$token
 		));
         
@@ -1504,7 +1753,23 @@ class EngineeredSolutionsAuth {
 				$reason = 'Wrong link type.';
 			} elseif ((int)$raw->used === 1) {
 				error_log('ESA Approve: token already used for user ' . (int)$raw->user_id);
-				$reason = 'Link already used.';
+				
+				// Check the actual user status
+				$user_status = $wpdb->get_row($wpdb->prepare(
+					"SELECT is_approved, approved_by, approval_date FROM {$wpdb->prefix}esa_user_approval WHERE user_id = %d",
+					(int)$raw->user_id
+				));
+				
+				if ($user_status && $user_status->is_approved == 1) {
+					// User is approved - show who approved and when
+					$approver = get_userdata($user_status->approved_by);
+					$approver_name = $approver ? $approver->display_name : 'an administrator';
+					$approval_date = $user_status->approval_date ? date('F j, Y \a\t g:i A', strtotime($user_status->approval_date)) : 'previously';
+					$reason = "This user has already been approved by {$approver_name} on {$approval_date}.";
+				} else {
+					// User is not approved or denied - standard message
+					$reason = 'Link already used.';
+				}
 			} elseif (strtotime($raw->expires_at . ' UTC') <= time()) {
 				error_log('ESA Approve: token expired at ' . $raw->expires_at . 'Z');
 				$reason = 'Link expired.';
@@ -1564,7 +1829,23 @@ class EngineeredSolutionsAuth {
 				$reason = 'Wrong link type.';
 			} elseif ((int)$raw->used === 1) {
 				error_log('ESA Deny: token already used for user ' . (int)$raw->user_id);
-				$reason = 'Link already used.';
+				
+				// Check the actual user status
+				$user_status = $wpdb->get_row($wpdb->prepare(
+					"SELECT is_approved, approved_by, approval_date FROM {$wpdb->prefix}esa_user_approval WHERE user_id = %d",
+					(int)$raw->user_id
+				));
+				
+				if ($user_status && $user_status->is_approved == 0) {
+					// User is denied - show who denied and when
+					$denier = get_userdata($user_status->approved_by);
+					$denier_name = $denier ? $denier->display_name : 'an administrator';
+					$denial_date = $user_status->approval_date ? date('F j, Y \a\t g:i A', strtotime($user_status->approval_date)) : 'previously';
+					$reason = "This user has already been denied by {$denier_name} on {$denial_date}.";
+				} else {
+					// User is not denied or is approved - standard message
+					$reason = 'Link already used.';
+				}
 			} elseif (strtotime($raw->expires_at . ' UTC') <= time()) {
 				error_log('ESA Deny: token expired at ' . $raw->expires_at . 'Z');
 				$reason = 'Link expired.';
@@ -1673,14 +1954,34 @@ class EngineeredSolutionsAuth {
 		}
 		
 		// Send code email
-		$subject = 'Your Engineered Solutions verification code';
-		$message = "
-			<h3>Your verification code</h3>
-			<p>Use the 6-digit code below to verify your email. This code is valid for 10 minutes.</p>
-			<p style='font-size:28px;letter-spacing:6px;margin:16px 0;'><strong>{$code}</strong></p>
-			<p>If you did not request this, you can ignore this message.</p>
-		";
-		wp_mail($email, $subject, $message, array('Content-Type: text/html'));
+	$subject = 'Your Engineered Solutions Verification Code';
+	$message = "
+		<div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;'>
+			<div style='background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
+				<h2 style='color: #1f2937; margin-top: 0;'>Email Verification</h2>
+				<p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>Hello,</p>
+				<p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>Thank you for registering with Engineered Solutions. Please use the 6-digit verification code below to complete your registration:</p>
+				
+				<div style='background-color: #f3f4f6; padding: 20px; border-radius: 6px; text-align: center; margin: 25px 0;'>
+					<p style='font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #2563eb; margin: 0;'>{$code}</p>
+				</div>
+				
+				<p style='color: #6b7280; font-size: 14px; line-height: 1.6;'>
+					<strong>Important:</strong> This code will expire in 10 minutes.
+				</p>
+				
+				<p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>If you did not request this verification code, please ignore this email.</p>
+				
+				<hr style='border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;'>
+				
+				<p style='color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 0;'>
+					Best regards,<br>
+					<strong>Engineered Solutions Team</strong>
+				</p>
+			</div>
+		</div>
+	";
+	wp_mail($email, $subject, $message, array('Content-Type: text/html'));
 		
 		wp_send_json_success(array(
 			'message' => 'Verification code sent. Please check your email.',
@@ -1778,6 +2079,12 @@ class EngineeredSolutionsAuth {
 		update_user_meta($user_id, 'company_name', $company_name);
 		update_user_meta($user_id, 'esa_email_verified', true);
 		
+		// Set display name to full name
+		wp_update_user(array(
+			'ID' => $user_id,
+			'display_name' => trim($first_name . ' ' . $last_name)
+		));
+		
 		// Set role to guest (preserve admins)
 		if (!user_can($user_id, 'administrator')) {
 			$user = new \WP_User($user_id);
@@ -1798,12 +2105,45 @@ class EngineeredSolutionsAuth {
 			array('id' => $row->id)
 		);
 		
+		// Generate authenticated login link for user
+		$login_token = bin2hex(random_bytes(32));
+		$login_expires = gmdate('Y-m-d H:i:s', strtotime('+30 days')); // Longer expiry for user convenience
+
+		$wpdb->insert(
+			$wpdb->prefix . 'esa_approval_tokens',
+			array(
+				'user_id' => $user_id,
+				'token' => $login_token,
+				'action' => 'auto_login',
+				'created_at' => current_time('mysql', 1),
+				'expires_at' => $login_expires,
+				'used' => 0
+			)
+		);
+
+		// Direct authenticated login URL for user
+		$site_url = home_url();
+		$login_url = add_query_arg(array(
+			'action' => 'esa_auto_login',
+			'token' => $login_token
+		), $site_url);
+		
 		// Send to admin for approval
 		$this->send_approval_email(
 			$user_id,
 			$first_name,
 			$last_name,
 			$email
+		);
+
+		
+		// Send welcome email to user with login link
+		$this->send_user_welcome_email(
+			$user_id,
+			$first_name,
+			$last_name,
+			$email,
+			$login_url
 		);
 		
 		wp_send_json_success(array(
@@ -2180,17 +2520,56 @@ class EngineeredSolutionsAuth {
         }
         
         // Send email with code
+        $first_name = get_user_meta($user->ID, 'first_name', true);
+        $last_name = get_user_meta($user->ID, 'last_name', true);
+        $full_name = trim($first_name . ' ' . $last_name);
+        if (empty($full_name)) {
+            $full_name = $user->display_name;
+        }
+        
+        $user_roles = $user->roles;
+        $role_display = !empty($user_roles) ? ucfirst(str_replace('_', ' ', $user_roles[0])) : 'User';
+        
         $to = $email;
         $subject = 'Password Reset Code - Engineered Solutions';
-        $message = "Hello,\n\n";
-        $message .= "You requested to reset your password. Your 6-digit verification code is:\n\n";
-        $message .= "Code: {$code}\n\n";
-        $message .= "This code will expire in 15 minutes.\n\n";
-        $message .= "If you did not request a password reset, please ignore this email.\n\n";
-        $message .= "Best regards,\n";
-        $message .= "Engineered Solutions Team";
+        $message = "
+        <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;'>
+            <div style='background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
+                <h2 style='color: #1f2937; margin-top: 0;'>Password Reset Request</h2>
+                
+                <p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>Hello <strong>{$full_name}</strong>,</p>
+                
+                <p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>We received a request to reset your password. Please use the 6-digit verification code below:</p>
+                
+                <div style='background-color: #f3f4f6; padding: 20px; border-radius: 6px; text-align: center; margin: 25px 0;'>
+                    <p style='font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #dc2626; margin: 0;'>{$code}</p>
+                </div>
+                
+                <div style='background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 4px;'>
+                    <p style='color: #92400e; font-size: 14px; margin: 0; line-height: 1.6;'>
+                        <strong>⚠️ Important:</strong> This code will expire in 15 minutes.
+                    </p>
+                </div>
+                
+                <div style='background-color: #f9fafb; padding: 15px; border-radius: 6px; margin: 20px 0;'>
+                    <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'><strong>Account Details:</strong></p>
+                    <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'>📧 Email: {$email}</p>
+                    <p style='color: #6b7280; font-size: 14px; margin: 5px 0;'>👤 Role: {$role_display}</p>
+                </div>
+                
+                <p style='color: #4b5563; font-size: 16px; line-height: 1.6;'>If you did not request a password reset, please ignore this email and your password will remain unchanged.</p>
+                
+                <hr style='border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;'>
+                
+                <p style='color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 0;'>
+                    Best regards,<br>
+                    <strong>Engineered Solutions Team</strong>
+                </p>
+            </div>
+        </div>
+        ";
         
-        $headers = array('Content-Type: text/plain; charset=UTF-8');
+        $headers = array('Content-Type: text/html; charset=UTF-8');
         
         wp_mail($to, $subject, $message, $headers);
         
@@ -2287,6 +2666,7 @@ class EngineeredSolutionsAuth {
         
         wp_send_json_success(array(
             'message' => 'Password reset successful. You are now logged in.',
+            'nonce' => wp_create_nonce('esa_nonce'),
             'user' => array(
                 'id' => $user->ID,
                 'name' => $user->display_name,
@@ -2299,4 +2679,4 @@ class EngineeredSolutionsAuth {
 
 
 // Initialize the plugin
-new EngineeredSolutionsAuth();
+EngineeredSolutionsAuth::get_instance();

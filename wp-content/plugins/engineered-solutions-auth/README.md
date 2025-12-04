@@ -1,4 +1,4 @@
-# Engineered Solutions Authentication (ESA) v2.2.5
+# Engineered Solutions Authentication (ESA) v2.3.1
 
 Complete WordPress authentication for pump sizing applications with OTP email verification, social login integration, access control, user tracking, estimate submission, admin approvals, rate limiting, and bot protection.
 
@@ -243,6 +243,46 @@ add_action('wp_enqueue_scripts', 'esa_enqueue_scripts');
 - ESA integrates with Nextend hooks to log and set roles appropriately
 
 ## Changelog
+
+### 2.3.1 - Admin Panel & Form Persistence Improvements (December 2025)
+**Admin Panel Fixes:**
+- Fixed critical error when approving/denying users directly from ESA User Management page
+- Added output buffering to prevent "headers already sent" errors
+- Implemented status verification before processing to prevent duplicate actions
+- Shows informative messages when user is already approved/denied with admin name and timestamp
+
+**Enhanced Admin Messaging:**
+- Public approval/denial links now show actual user status instead of generic "link expired" messages
+- When link is already used, displays: *"This user has already been [approved/denied] by [Admin Name] on [Date]"*
+- Improved clarity for multi-admin environments
+
+**Form Persistence Optimization:**
+- Removed auto-save on every keystroke (input/change events) for better performance
+- Form data now saves only when opening login/register modals or before page unload
+- Maintains data persistence while eliminating performance overhead
+
+### 2.3.0 - Magic Link & iPad Compatibility (November 2025)
+**Magic Link Authentication:**
+- Passwordless login via secure one-time email link
+- 15-minute token expiration with cryptographic security
+- New `wp_esa_magic_links` database table
+- AJAX endpoints: `esa_request_magic_link`, `esa_verify_magic_link`
+
+**iPad & Touch Device Optimization:**
+- Prevented auto-zoom on input focus (16px font size)
+- Added touch event support with `touchend` listeners
+- Improved touch targets and button sizes for easier tapping
+- Hardware acceleration for smoother animations
+- Safe area support for devices with notches
+
+**Frontend Enhancements:**
+- Touch event support alongside click events (eliminates 300ms delay)
+- Device detection for conditional touch logic
+- Passive event listeners for better scroll performance
+
+### 2.2.3 - Bug Fixes & Stability
+- Miscellaneous bug fixes and stability improvements
+- Performance optimizations
 
 ### 2.2.2 - OTP UI Bug Fix
 - Fixed `originalText` scope error that blocked OTP flow

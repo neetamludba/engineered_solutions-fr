@@ -76,6 +76,7 @@
         init() {
             try {
                 this.createAuthModal();
+                this.initializePasswordResetForm();
                 this.bindEvents();
                 this.setupPasswordToggle();
                 this.startUserTracking();
@@ -724,6 +725,12 @@
                         this.userEmail = result.data.user_email;
                         this.userApproved = result.data.user_approved;
 
+                        // Update nonce if provided
+                        if (result.data.nonce) {
+                            this.ajaxData.nonce = result.data.nonce;
+                            console.log('ESA Magic Link: Nonce updated');
+                        }
+
                         // Broadcast login
                         this.broadcastAuthState('login');
 
@@ -746,6 +753,247 @@
                     this.showMessage('Verification failed. Please try again.', 'error');
                 }
             }
+        }
+
+        showPasswordResetTab() {
+            try {
+                this.switchTab('reset');
+            } catch (error) {
+                console.error('ESA Auth show password reset tab error:', error);
+            }
+        }
+
+        resetPasswordResetStage() {
+            try {
+                const emailStage = document.getElementById('esa-reset-email-stage');
+                const codeStage = document.getElementById('esa-reset-code-stage');
+                const emailInput = document.getElementById('reset-email');
+                const codeInput = document.getElementById('reset-code');
+                const newPasswordInput = document.getElementById('reset-new-password');
+                const confirmPasswordInput = document.getElementById('reset-confirm-password');
+
+                if (emailStage) emailStage.style.display = 'block';
+                if (codeStage) codeStage.style.display = 'none';
+                if (emailInput) emailInput.value = '';
+
+                // Remove required attribute from hidden fields to prevent validation errors
+                if (codeInput) codeInput.removeAttribute('required');
+                if (newPasswordInput) newPasswordInput.removeAttribute('required');
+                if (confirmPasswordInput) confirmPasswordInput.removeAttribute('required');
+
+                this.passwordResetStage = 'email';
+                this.passwordResetEmail = null;
+            } catch (error) {
+                console.error('ESA Auth reset password stage error:', error);
+            }
+        }
+
+        initializePasswordResetForm() {
+            try {
+                // Remove required attribute from hidden fields on initial load
+                const codeInput = document.getElementById('reset-code');
+                const newPasswordInput = document.getElementById('reset-new-password');
+                const confirmPasswordInput = document.getElementById('reset-confirm-password');
+
+                if (codeInput) codeInput.removeAttribute('required');
+                if (newPasswordInput) newPasswordInput.removeAttribute('required');
+                if (confirmPasswordInput) confirmPasswordInput.removeAttribute('required');
+            } catch (error) {
+                console.error('ESA Auth initialize password reset form error:', error);
+            }
+        }
+
+        async handlePasswordReset() {
+            try {
+                const form = document.getElementById('esa-reset-password');
+                if (!form) return;
+
+                if (this.passwordResetStage === 'email') {
+                    // Stage 1: Request reset code
+                    const emailInput = document.getElementById('reset-email');
+                    const email = emailInput.value;
+
+                    if (!email) {
+                        this.showMessage('Please enter your email address', 'error');
+                        return;
+                    }
+
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.textContent;
+                    submitBtn.textContent = 'Sending...';
+                    submitBtn.disabled = true;
+
+                    const response = await fetch(this.ajaxData.ajax_url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            action: 'esa_request_password_reset',
+                            nonce: this.ajaxData.nonce,
+                            email: email
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        this.showMessage(result.data.message, 'success');
+                        this.passwordResetEmail = email;
+                        this.passwordResetStage = 'code';
+
+                        // Show code stage
+                        document.getElementById('esa-reset-email-stage').style.display = 'none';
+                        document.getElementById('esa-reset-code-stage').style.display = 'block';
+
+                        // Add required attribute to code stage fields now that they're visible
+                        const codeInput = document.getElementById('reset-code');
+                        const newPasswordInput = document.getElementById('reset-new-password');
+                        const confirmPasswordInput = document.getElementById('reset-confirm-password');
+                        if (codeInput) codeInput.setAttribute('required', 'required');
+                        if (newPasswordInput) newPasswordInput.setAttribute('required', 'required');
+                        if (confirmPasswordInput) confirmPasswordInput.setAttribute('required', 'required');
+
+                        // Start resend timer
+                        this.startResetResendTimer(60);
+                    } else {
+                        this.showMessage(result.data.message || 'Failed to send reset code', 'error');
+                    }
+
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+
+                } else if (this.passwordResetStage === 'code') {
+                    // Stage 2: Verify code and reset password
+                    const code = document.getElementById('reset-code').value;
+                    const newPassword = document.getElementById('reset-new-password').value;
+                    const confirmPassword = document.getElementById('reset-confirm-password').value;
+
+                    if (!code || !newPassword || !confirmPassword) {
+                        this.showMessage('Please fill in all fields', 'error');
+                        return;
+                    }
+
+                    if (newPassword !== confirmPassword) {
+                        this.showMessage('Passwords do not match', 'error');
+                        return;
+                    }
+
+                    if (newPassword.length < 8) {
+                        this.showMessage('Password must be at least 8 characters', 'error');
+                        return;
+                    }
+
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.textContent;
+                    submitBtn.textContent = 'Resetting...';
+                    submitBtn.disabled = true;
+
+                    const response = await fetch(this.ajaxData.ajax_url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            action: 'esa_verify_password_reset',
+                            nonce: this.ajaxData.nonce,
+                            email: this.passwordResetEmail,
+                            code: code,
+                            new_password: newPassword
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        this.showMessage(result.data.message, 'success');
+
+                        // Update authentication state with user data from response
+                        if (result.data.user) {
+                            this.broadcastAuthState('login');
+
+                            // Reset password reset form
+                            this.resetPasswordResetStage();
+
+                            // Close the modal after a short delay
+                            setTimeout(() => {
+                                this.hideModal();
+                            }, 1500);
+                        } else {
+                            // Fallback: just reload the page if user data not provided
+                            this.resetPasswordResetStage();
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1500);
+                        }
+                    } else {
+                        this.showMessage(result.data.message || 'Failed to reset password', 'error');
+                    }
+
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error('ESA Auth password reset error:', error);
+                this.showMessage('An error occurred. Please try again.', 'error');
+            }
+        }
+
+        startResetResendTimer(seconds) {
+            const resendBtn = document.getElementById('esa-reset-resend-btn');
+            if (!resendBtn) return;
+
+            let countdown = seconds;
+            resendBtn.disabled = true;
+            resendBtn.textContent = `Resend code (${countdown})`;
+
+            const interval = setInterval(() => {
+                countdown--;
+                if (countdown <= 0) {
+                    clearInterval(interval);
+                    resendBtn.disabled = false;
+                    resendBtn.textContent = 'Resend code';
+                } else {
+                    resendBtn.textContent = `Resend code (${countdown})`;
+                }
+            }, 1000);
+
+            resendBtn.onclick = async () => {
+                if (resendBtn.disabled) return;
+
+                resendBtn.disabled = true;
+                resendBtn.textContent = 'Sending...';
+
+                try {
+                    const response = await fetch(this.ajaxData.ajax_url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            action: 'esa_request_password_reset',
+                            nonce: this.ajaxData.nonce,
+                            email: this.passwordResetEmail
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        this.showMessage('New code sent!', 'success');
+                        this.startResetResendTimer(60);
+                    } else {
+                        this.showMessage(result.data.message || 'Failed to resend code', 'error');
+                        resendBtn.disabled = false;
+                        resendBtn.textContent = 'Resend code';
+                    }
+                } catch (error) {
+                    console.error('Resend error:', error);
+                    this.showMessage('Failed to resend code', 'error');
+                    resendBtn.disabled = false;
+                    resendBtn.textContent = 'Resend code';
+                }
+            };
         }
 
         get isIPad() {
@@ -773,7 +1021,23 @@
                 document.querySelectorAll('.esa-tab-content').forEach(content => {
                     content.style.display = 'none';
                 });
-                document.getElementById(`esa-${tabName}-form`).style.display = 'block';
+
+                // Handle different tab name formats
+                let formId;
+                if (tabName.endsWith('-form')) {
+                    // Already has -form suffix (like 'magic-link-form')
+                    formId = `esa-${tabName}`;
+                } else {
+                    // Standard tabs (like 'login', 'register', 'reset')
+                    formId = `esa-${tabName}-form`;
+                }
+
+                const targetForm = document.getElementById(formId);
+                if (targetForm) {
+                    targetForm.style.display = 'block';
+                } else {
+                    console.warn(`ESA Auth: Form element not found: ${formId}`);
+                }
             } catch (error) {
                 console.error('ESA Auth tab switch error:', error);
             }
@@ -891,6 +1155,13 @@
                         this.isLoggedIn = true;
                         this.userId = result.data.user.id;
                         this.userApproved = result.data.user.approved;
+
+                        // Update nonce if provided
+                        if (result.data.nonce) {
+                            this.ajaxData.nonce = result.data.nonce;
+                            console.log('ESA Login: Nonce updated');
+                        }
+
                         console.log('ESA Login: Auth state updated:', { isLoggedIn: this.isLoggedIn, userId: this.userId, approved: this.userApproved });
 
                         // Update user greeting widget
@@ -1060,14 +1331,59 @@
                     const result = await response.json();
                     if (result && result.success) {
                         this.showMessage(result.data.message, 'success');
-                        // Switch to login tab
-                        this.switchTab('login');
+
+                        // Auto-login the user after successful registration
+                        try {
+                            const loginResponse = await fetch(this.ajaxData.ajax_url, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: new URLSearchParams({
+                                    action: 'esa_login',
+                                    nonce: this.ajaxData.nonce,
+                                    email: this.registrationData.email,
+                                    password: this.registrationData.password
+                                })
+                            });
+
+                            const loginResult = await loginResponse.json();
+
+                            if (loginResult && loginResult.success) {
+                                // Update authentication state
+                                this.isLoggedIn = true;
+                                this.userId = loginResult.data.user.id;
+                                this.userApproved = loginResult.data.user.approved;
+                                this.userName = loginResult.data.user.name || loginResult.data.user.email;
+                                this.userEmail = loginResult.data.user.email;
+
+                                // Update nonce if provided
+                                if (loginResult.data.nonce) {
+                                    this.ajaxData.nonce = loginResult.data.nonce;
+                                }
+
+                                // Update UI
+                                this.updateUserGreeting();
+                                this.hideModal();
+                                this.broadcastAuthState('register');
+
+                                // Trigger events
+                                document.dispatchEvent(new CustomEvent('userAuthChanged', {
+                                    detail: { action: 'register', success: true }
+                                }));
+                                document.dispatchEvent(new CustomEvent('esaAuthSuccess', {
+                                    detail: { user: loginResult.data.user, action: 'register' }
+                                }));
+                            } else {
+                                // Fall back to login tab if auto-login fails
+                                console.log('Auto-login after registration failed, showing login tab');
+                                this.switchTab('login');
+                            }
+                        } catch (loginError) {
+                            console.error('Auto-login error after registration:', loginError);
+                            this.switchTab('login');
+                        }
+
                         // Clear OTP state
                         this.resetOtpStage();
-                        // Trigger event
-                        document.dispatchEvent(new CustomEvent('userAuthChanged', {
-                            detail: { action: 'register', success: true }
-                        }));
                     } else {
                         const msg = (result && result.data && result.data.message) ? result.data.message : 'Verification failed.';
                         this.showMessage(msg, 'error');
@@ -1195,6 +1511,62 @@
                         resendBtn.textContent = 'Resend code';
                     }
                 };
+            }
+        }
+
+        resetOtpStage() {
+            try {
+                // Reset registration stage back to details
+                this.registrationStage = 'details';
+                this.registrationData = null;
+                this.otpResendSeconds = 0;
+
+                // Clear OTP resend interval
+                if (this.otpResendInterval) {
+                    clearInterval(this.otpResendInterval);
+                    this.otpResendInterval = null;
+                }
+
+                // Reset form elements
+                const form = document.getElementById('esa-register');
+                if (form) {
+                    form.reset();
+
+                    // Reset email field readonly state
+                    const emailInput = document.getElementById('reg-email');
+                    if (emailInput) {
+                        emailInput.removeAttribute('readonly');
+                        emailInput.style.background = '';
+                    }
+
+                    // Hide OTP group
+                    const otpGroup = document.getElementById('esa-otp-group');
+                    if (otpGroup) {
+                        otpGroup.style.display = 'none';
+                    }
+
+                    // Reset submit button
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.textContent = 'Register';
+                    }
+                }
+
+                // Reset CAPTCHA if enabled
+                if (this.ajaxData.captcha_enabled && this.captchaWidgetIds.register !== null) {
+                    try {
+                        if (this.ajaxData.captcha_type === 'hcaptcha' && typeof hcaptcha !== 'undefined') {
+                            hcaptcha.reset();
+                        } else if (typeof grecaptcha !== 'undefined') {
+                            grecaptcha.reset(this.captchaWidgetIds.register);
+                        }
+                        this.captchaValid.register = false;
+                    } catch (e) {
+                        console.warn('ESA: Could not reset CAPTCHA:', e);
+                    }
+                }
+            } catch (error) {
+                console.error('ESA: Error resetting OTP stage:', error);
             }
         }
 
@@ -1477,6 +1849,11 @@
 
         async trackActivity(activityType) {
             try {
+                // Only track activity for logged-in users to prevent 403 errors
+                if (!this.isLoggedIn) {
+                    return;
+                }
+
                 await fetch(this.ajaxData.ajax_url, {
                     method: 'POST',
                     headers: {
