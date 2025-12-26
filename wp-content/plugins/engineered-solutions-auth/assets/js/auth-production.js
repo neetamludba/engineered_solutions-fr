@@ -50,6 +50,7 @@
                 this.sessionId = this.generateSessionId();
                 this.pageStartTime = Date.now();
                 this.heartbeatInterval = null;
+                this.approvalCheckInterval = null;
                 this.captchaWidgetIds = {
                     login: null,
                     register: null
@@ -305,6 +306,8 @@
 
                         // LOGIN WIDGET
                         if (loginContainer) {
+                            // Show container before rendering
+                            loginContainer.style.display = 'block';
                             if (this.captchaWidgetIds.login !== null) {
                                 console.log('ESA Auth: Resetting existing login CAPTCHA widget');
                                 grecaptcha.reset(this.captchaWidgetIds.login);
@@ -320,6 +323,8 @@
 
                         // REGISTER WIDGET (same logic as login)
                         if (registerContainer) {
+                            // Show container before rendering
+                            registerContainer.style.display = 'block';
                             if (this.captchaWidgetIds.register !== null) {
                                 console.log('ESA Auth: Resetting existing register CAPTCHA widget');
                                 grecaptcha.reset(this.captchaWidgetIds.register);
@@ -333,9 +338,7 @@
                             }
                         }
 
-                        // Initially disable submit buttons until CAPTCHA is completed
-                        this.updateSubmitButtons('login', true);
-                        this.updateSubmitButtons('register', true);
+                        // Note: Submit buttons are enabled by default, only disabled if CAPTCHA validation fails
                     }
                     else {
                         console.warn('ESA Auth: reCAPTCHA script not loaded');
@@ -412,13 +415,25 @@
                                         </div>
                                         <div class="esa-form-group">
                                             <label for="login-password">Password:</label>
-                                            <input type="password" id="login-password" name="password" required>
+                                            <div class="esa-password-wrapper">
+                                                <input type="password" id="login-password" name="password" required>
+                                                <button type="button" class="esa-password-toggle" aria-label="Toggle password visibility">
+                                                    <svg class="esa-eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                        <circle cx="12" cy="12" r="3"></circle>
+                                                    </svg>
+                                                    <svg class="esa-eye-slash-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="display: none;">
+                                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                                    </svg>
+                                                </button>
+                                            </div>
                                         </div>
                                         <div class="esa-form-group">
                                             <a href="#" id="esa-forgot-password-link" style="font-size: 14px; color: #2563eb; text-decoration: none;">Forgot Password?</a>
                                         </div>
                                         <div class="esa-form-group">
-                                            <div id="esa-captcha-login"></div>
+                                            <div id="esa-captcha-login" style="display: none;"></div>
                                             <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response-login">
                                         </div>
                                     <button type="submit" class="esa-btn esa-btn-primary">Login</button>
@@ -444,7 +459,7 @@
                                         <small style="color: #64748b; display: block; margin-top: 0.5rem;">We'll send you a secure link to log in instantly.</small>
                                     </div>
                                     <button type="submit" class="esa-btn esa-btn-primary" style="width: 100%;">Send Magic Link</button>
-                                    <button type="button" id="esa-magic-link-back" class="esa-btn esa-btn-secondary" style="width: 100%; margin-top: 10rem;">Back to Login</button>
+                                    <button type="button" id="esa-magic-link-back" class="esa-btn esa-btn-secondary" style="width: 100%; margin-top: 1rem;">Back to Login</button>
                                 </form>
                                 <div id="esa-magic-link-success" style="display: none; text-align: center; padding: 1rem;">
                                     <div style="font-size: 3rem; margin-bottom: 1rem;">📧</div>
@@ -514,11 +529,35 @@
                                         </div>
                                         <div class="esa-form-group">
                                             <label for="reg-password">Password:</label>
-                                            <input type="password" id="reg-password" name="password" required>
+                                            <div class="esa-password-wrapper">
+                                                <input type="password" id="reg-password" name="password" required minlength="8">
+                                                <button type="button" class="esa-password-toggle" aria-label="Toggle password visibility">
+                                                    <svg class="esa-eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                        <circle cx="12" cy="12" r="3"></circle>
+                                                    </svg>
+                                                    <svg class="esa-eye-slash-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="display: none;">
+                                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                                    </svg>
+                                                </button>
+                                            </div>
                                         </div>
                                         <div class="esa-form-group">
                                             <label for="reg-confirm-password">Confirm Password:</label>
-                                            <input type="password" id="reg-confirm-password" name="confirm_password" required>
+                                            <div class="esa-password-wrapper">
+                                                <input type="password" id="reg-confirm-password" name="confirm_password" required minlength="8">
+                                                <button type="button" class="esa-password-toggle" aria-label="Toggle password visibility">
+                                                    <svg class="esa-eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                        <circle cx="12" cy="12" r="3"></circle>
+                                                    </svg>
+                                                    <svg class="esa-eye-slash-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="display: none;">
+                                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                                    </svg>
+                                                </button>
+                                            </div>
                                         </div>
                                         <div class="esa-form-group" id="esa-otp-group" style="display:none;">
                                             <label for="reg-otp-code">Verification Code:</label>
@@ -528,7 +567,7 @@
                                             </div>
                                         </div>
                                         <div class="esa-form-group">
-                                            <div id="esa-captcha-register"></div>
+                                            <div id="esa-captcha-register" style="display: none;"></div>
                                             <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response-register">
                                         </div>
                                         <button type="submit" class="esa-btn esa-btn-primary">Register</button>
@@ -1156,10 +1195,14 @@
                         this.userId = result.data.user.id;
                         this.userApproved = result.data.user.approved;
 
-                        // Update nonce if provided
+                        // Update nonce if provided - CRITICAL for logout and other AJAX calls
                         if (result.data.nonce) {
                             this.ajaxData.nonce = result.data.nonce;
-                            console.log('ESA Login: Nonce updated');
+                            // Also update the global esa_ajax object
+                            if (typeof esa_ajax !== 'undefined') {
+                                esa_ajax.nonce = result.data.nonce;
+                            }
+                            console.log('ESA Login: Nonce updated to:', result.data.nonce.substring(0, 10) + '...');
                         }
 
                         console.log('ESA Login: Auth state updated:', { isLoggedIn: this.isLoggedIn, userId: this.userId, approved: this.userApproved });
@@ -1198,12 +1241,11 @@
                     console.log('ESA Login: Login failed:', result.data.message);
                     this.showMessage(result.data.message, 'error');
 
-                    // Reset CAPTCHA on login failure
+                    // Reset CAPTCHA on login failure (only if CAPTCHA is enabled)
                     if (this.ajaxData.captcha_enabled && this.captchaWidgetIds.login !== null) {
                         console.log('ESA Login: Resetting CAPTCHA after failed attempt');
                         grecaptcha.reset(this.captchaWidgetIds.login);
                         this.captchaValid.login = false;
-                        this.updateSubmitButtons('login', true);
                     }
                 }
             } catch (error) {
@@ -1216,9 +1258,13 @@
                 const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
                 if (submitBtn) {
                     submitBtn.textContent = originalText || 'Login';
-                    // Keep disabled if CAPTCHA must be completed
-                    const shouldDisable = this.ajaxData.captcha_enabled && !this.captchaValid.login;
-                    submitBtn.disabled = shouldDisable;
+                    // Only keep disabled if CAPTCHA is enabled AND not valid
+                    // If CAPTCHA is disabled, always enable the button
+                    if (this.ajaxData.captcha_enabled) {
+                        submitBtn.disabled = !this.captchaValid.login;
+                    } else {
+                        submitBtn.disabled = false;
+                    }
                 }
             }
         }
@@ -1572,6 +1618,9 @@
 
         async handleLogout() {
             try {
+                console.log('ESA Logout: Starting logout, nonce:', this.ajaxData.nonce.substring(0, 10) + '...');
+                console.log('ESA Logout: User ID:', this.userId, 'Logged in:', this.isLoggedIn);
+
                 const response = await fetch(this.ajaxData.ajax_url, {
                     method: 'POST',
                     headers: {
@@ -1842,6 +1891,9 @@
                 this.heartbeatInterval = setInterval(() => {
                     this.trackActivity('heartbeat');
                 }, 30000); // Every 30 seconds
+
+                // NOTE: Approval status is now checked on-demand when user clicks buttons
+                // instead of automatic polling every 60 seconds
             } catch (error) {
                 console.error('ESA Auth tracking error:', error);
             }
@@ -1869,6 +1921,70 @@
                 });
             } catch (error) {
                 console.error('ESA Auth activity tracking error:', error);
+            }
+        }
+
+        async checkApprovalStatus() {
+            try {
+                // Only check if user is logged in
+                if (!this.isLoggedIn) {
+                    return;
+                }
+
+                const response = await fetch(this.ajaxData.ajax_url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        action: 'esa_check_approval_status',
+                        nonce: this.ajaxData.nonce
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const isApproved = result.data.approved;
+                    const wasApproved = this.userApproved;
+
+                    // Update local state
+                    this.userApproved = isApproved;
+
+                    if (isApproved && !wasApproved) {
+                        // User GRANTED approval
+                        console.log('ESA Auth: User approval status changed to APPROVED');
+                        this.showMessage('Your account has been approved! You now have full access.', 'success');
+                        this.updateUserGreeting();
+                        this.broadcastAuthState('approval_granted');
+
+                        document.dispatchEvent(new CustomEvent('esaAuthState', {
+                            detail: {
+                                isLoggedIn: this.isLoggedIn,
+                                userId: this.userId,
+                                userApproved: true,
+                                action: 'approval_granted'
+                            }
+                        }));
+                    } else if (!isApproved && wasApproved) {
+                        // User REVOKED approval
+                        console.log('ESA Auth: User approval status changed to DENIED');
+                        this.showMessage('Your account access has been revoked.', 'error');
+                        this.updateUserGreeting();
+                        this.broadcastAuthState('approval_revoked');
+
+                        document.dispatchEvent(new CustomEvent('esaAuthState', {
+                            detail: {
+                                isLoggedIn: this.isLoggedIn,
+                                userId: this.userId,
+                                userApproved: false,
+                                action: 'approval_revoked'
+                            }
+                        }));
+                    }
+                }
+            } catch (error) {
+                console.error('ESA Auth approval status check error:', error);
             }
         }
 

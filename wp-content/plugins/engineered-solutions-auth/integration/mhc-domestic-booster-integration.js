@@ -177,6 +177,9 @@ function initializeMHCDomesticBoosterIntegration() {
         };
     }
     
+    // Override the pump type button function to check status on click
+    setupPumpFunctionOverride('municipalLinePumpType');
+    
     // Initialize the page
     initializeMHCDomesticBoosterPage();
 
@@ -327,6 +330,104 @@ function collectMHCDomesticBoosterFormData() {
     formData.selectedPump = selectedPump;
     
     return formData;
+}
+
+async function checkAndUpdateApprovalStatus() {
+    try {
+        if (!window.esaAuth || !window.esaAuth.checkApprovalStatus) {
+            return;
+        }
+        
+        // Call the approval status check method
+        // This will update the local userApproved state if it changed (approved <-> denied)
+        await window.esaAuth.checkApprovalStatus();
+        
+    } catch (error) {
+        console.error('ESA MHC Domestic Booster: Error checking approval status:', error);
+    }
+}
+
+function setupPumpFunctionOverride(funcName) {
+    // Wait for the function to exist before overriding (functions may load after DOMContentLoaded)
+    const checkFunction = setInterval(() => {
+        if (typeof window[funcName] === 'function') {
+            clearInterval(checkFunction);
+            
+            const originalFunc = window[funcName];
+            window[funcName] = async function(...args) {
+                console.log(`ESA MHC Domestic Booster: Intercepted ${funcName}`);
+                
+                // CRITICAL: Capture event synchronously before any async operations
+                // The event object exists in onclick handler scope but may not be on window.event
+                let capturedEvent = null;
+                try {
+                    // Try to access the implicit 'event' variable (available in onclick handlers)
+                    // This needs to be in a try-catch because 'event' might not exist in strict mode
+                    if (typeof event !== 'undefined' && event) {
+                        capturedEvent = event;
+                    }
+                } catch (e) {
+                    // event is not accessible
+                }
+                
+                // Also check window.event and first argument as fallbacks
+                if (!capturedEvent) {
+                    if (typeof window.event !== 'undefined' && window.event) {
+                        capturedEvent = window.event;
+                    } else if (args[0] && typeof args[0].preventDefault === 'function') {
+                        capturedEvent = args[0];
+                    } else {
+                        // Create a dummy event object if none exists (for nested functions that need it)
+                        capturedEvent = {
+                            preventDefault: function() {},
+                            stopPropagation: function() {},
+                            target: null,
+                            currentTarget: null
+                        };
+                    }
+                }
+                
+                // Store event globally so nested functions can access it via window.event
+                // In non-strict mode, window.event should be accessible as 'event' in global scope
+                const previousEvent = window.event;
+                window.event = capturedEvent;
+                
+                // Always check status if logged in (to catch approvals AND revocations)
+                // Must await to ensure status is updated before calling original function
+                if (window.esaAuth && window.esaAuth.isLoggedIn) {
+                    console.log('ESA MHC Domestic Booster: Verifying approval status...');
+                    try {
+                        await checkAndUpdateApprovalStatus();
+                    } catch (err) {
+                        console.error('ESA MHC Domestic Booster: Error in approval check:', err);
+                    }
+                }
+                
+                try {
+                    // Call original function with all arguments
+                    // The event should now be available via window.event for nested functions
+                    // In non-strict mode, window.event should be accessible as 'event'
+                    return originalFunc.apply(this, args);
+                } finally {
+                    // Restore previous event state
+                    if (previousEvent !== undefined) {
+                        window.event = previousEvent;
+                    } else {
+                        try {
+                            delete window.event;
+                        } catch (e) {
+                            window.event = undefined;
+                        }
+                    }
+                }
+            };
+        }
+    }, 100);
+    
+    // Stop checking after 5 seconds to avoid infinite loop
+    setTimeout(() => {
+        clearInterval(checkFunction);
+    }, 5000);
 }
 
 function initializeMHCDomesticBoosterPage() {

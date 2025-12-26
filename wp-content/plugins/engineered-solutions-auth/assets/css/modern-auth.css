@@ -362,6 +362,15 @@
     .esa-modal-content {
         width: 95%;
         margin: 1rem;
+        max-height: 85vh;
+        /* Reduce from 90vh for better iPad fit */
+    }
+
+    .esa-modal-header {
+        min-height: 100px;
+        /* Reduce from 120px */
+        padding: 1rem;
+        /* Reduce from 1.5rem */
     }
 
     .esa-user-greeting-widget {
@@ -397,12 +406,19 @@
     }
 
     .esa-logo {
-        max-width: 350px;
-        max-height: 84px;
+        max-width: 300px;
+        /* Reduce from 350px */
+        max-height: 70px;
+        /* Reduce from 84px */
     }
 
     .esa-form-row {
         gap: 0.75rem;
+    }
+
+    .esa-form-group {
+        margin-bottom: 1rem;
+        /* Reduce from 1.25rem */
     }
 }
 
@@ -580,9 +596,21 @@
     opacity: 0.9;
 }
 
-/* Larger CAPTCHA container for better touch interaction */
+/* CAPTCHA Container - No spacing when empty/hidden */
 #esa-captcha-login,
 #esa-captcha-register {
+    margin: 0;
+    padding: 0;
+}
+
+#esa-captcha-login:empty,
+#esa-captcha-register:empty {
+    display: none !important;
+}
+
+/* Larger CAPTCHA container for better touch interaction when visible */
+#esa-captcha-login:not(:empty),
+#esa-captcha-register:not(:empty) {
     min-height: 78px;
     /* Standard reCAPTCHA height */
     display: flex;
@@ -595,8 +623,8 @@
 
 @media (max-width: 480px) {
 
-    #esa-captcha-login,
-    #esa-captcha-register {
+    #esa-captcha-login:not(:empty),
+    #esa-captcha-register:not(:empty) {
         transform: scale(1.0);
         /* Normal size on very small screens */
     }

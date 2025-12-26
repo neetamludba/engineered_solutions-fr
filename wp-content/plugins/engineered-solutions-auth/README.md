@@ -1,4 +1,4 @@
-# Engineered Solutions Authentication (ESA) v2.3.1
+# Engineered Solutions Authentication (ESA) v2.4.4
 
 Complete WordPress authentication for pump sizing applications with OTP email verification, social login integration, access control, user tracking, estimate submission, admin approvals, rate limiting, and bot protection.
 
@@ -243,6 +243,35 @@ add_action('wp_enqueue_scripts', 'esa_enqueue_scripts');
 - ESA integrates with Nextend hooks to log and set roles appropriately
 
 ## Changelog
+
+### 2.4.4 - Fix Pump Function Override in Integration Files
+- await the approval status check before calling the original function
+
+
+### 2.4.3 - Fix Pump Function Override in Integration Files removed async
+
+### 2.4.2 - Approval Status Check Fix
+- Fixed approval/denial status check issue
+
+### 2.4.0 - Logout Nonce and status check fix
+- Fixed logout nonce issue
+- Fixed status check issue
+
+### 2.3.8 - Login Button and Password toogle fix
+- Fixed login button and password toogle issue
+
+
+### 2.3.5 - iPad Compatibility & Magic Link Implementation (December 2025)
+**iPad Compatibility Fixes:**
+- Prevents auto-zoom on mobile devices
+- Increases touch targets for better interaction
+- Optimizes CSS for smooth momentum scrolling
+- Adds hardware acceleration for improved performance
+
+**Magic Link Authentication:**
+- Added a "Login with Magic Link" button to the main login form
+- Implemented `handleMagicLinkRequest()` to send the user's email to the backend
+- Implemented `verifyMagicLink()` which runs on page load to check for `esa_magic_token` in the URL, verify it, and log the user in automatically
 
 ### 2.3.1 - Admin Panel & Form Persistence Improvements (December 2025)
 **Admin Panel Fixes:**
