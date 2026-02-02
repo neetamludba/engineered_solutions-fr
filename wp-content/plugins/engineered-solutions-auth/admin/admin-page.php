@@ -108,12 +108,14 @@ if (isset($_POST['esa_action']) && wp_verify_nonce($_POST['esa_nonce'], 'esa_adm
             </div>
             ";
             
+            
             wp_mail(
                 $user_data->user_email,
                 'Account Approved - Engineered Solutions',
                 $approval_message,
                 array('Content-Type: text/html')
             );
+            
             
             // Notify other admins (requires access to main plugin class)
             $esa = EngineeredSolutionsAuth::get_instance();
@@ -161,6 +163,13 @@ if (isset($_POST['esa_action']) && wp_verify_nonce($_POST['esa_nonce'], 'esa_adm
             $user_roles = $user_data->roles;
             $role_display = !empty($user_roles) ? ucfirst(str_replace('_', ' ', $user_roles[0])) : 'ESA Guest';
             
+            
+            // ============================================================================
+            // IMPORTANT: DO NOT SEND DENIAL EMAIL TO USER
+            // Per user requirement: Users should NOT receive emails when denied/disapproved
+            // Only admins are notified via send_admin_action_notification_public()
+            // ============================================================================
+            /*
             $denial_message = "
             <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;'>
                 <div style='background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
@@ -212,6 +221,7 @@ if (isset($_POST['esa_action']) && wp_verify_nonce($_POST['esa_nonce'], 'esa_adm
                 $denial_message,
                 array('Content-Type: text/html')
             );
+            */
             
             // Notify other admins (requires access to main plugin class)
             $esa = EngineeredSolutionsAuth::get_instance();

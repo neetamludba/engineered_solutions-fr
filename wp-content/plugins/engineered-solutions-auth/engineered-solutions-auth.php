@@ -3,7 +3,7 @@
  * Plugin Name: Engineered Solutions Authentication
  * Plugin URI: https://rainwaterharvesting.services
  * Description: Complete authentication system for pump sizing applications with user tracking, social login, access control, bot protection, and email verification.
- * Version: 2.4.4
+ * Version: 2.5.0
  * Author: Engineered Solutions
  * License: GPL v2 or later
  */
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 // Define plugin constants
 define('ESA_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('ESA_PLUGIN_PATH', plugin_dir_path(__FILE__));
-define('ESA_VERSION', '2.4.4');
+define('ESA_VERSION', '2.5.0');
 
 class EngineeredSolutionsAuth {
     
@@ -1640,12 +1640,14 @@ class EngineeredSolutionsAuth {
         </div>
         ";
         
+        /*
         wp_mail(
             $user_data->user_email,
             'Account Access Update - Engineered Solutions',
             $denial_message,
             array('Content-Type: text/html')
         );
+        */
         
         // Notify other admins about this denial
         $this->send_admin_action_notification($user_id, 'denied');
