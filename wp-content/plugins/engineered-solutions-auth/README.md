@@ -1,4 +1,4 @@
-# Engineered Solutions Authentication (ESA) v2.4.5
+# Engineered Solutions Authentication (ESA) v2.6.0
 
 Complete WordPress authentication for pump sizing applications with OTP email verification, social login integration, access control, user tracking, estimate submission, admin approvals, rate limiting, and bot protection.
 

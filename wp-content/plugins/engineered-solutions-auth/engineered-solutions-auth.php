@@ -3,7 +3,7 @@
  * Plugin Name: Engineered Solutions Authentication
  * Plugin URI: https://rainwaterharvesting.services
  * Description: Complete authentication system for pump sizing applications with user tracking, social login, access control, bot protection, and email verification.
- * Version: 2.5.0
+ * Version: 2.6.0
  * Author: Engineered Solutions
  * License: GPL v2 or later
  */
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 // Define plugin constants
 define('ESA_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('ESA_PLUGIN_PATH', plugin_dir_path(__FILE__));
-define('ESA_VERSION', '2.5.0');
+define('ESA_VERSION', '2.6.0');
 
 class EngineeredSolutionsAuth {
     
@@ -497,7 +497,9 @@ class EngineeredSolutionsAuth {
         
         wp_logout();
         error_log('ESA Logout: Logout successful for user ' . $user_id);
-        wp_send_json_success(array('message' => 'Logged out successfully'));
+        // Generate a fresh nonce AFTER logout so the client can re-login without a page reload
+        $fresh_nonce = wp_create_nonce('esa_nonce');
+        wp_send_json_success(array('message' => 'Logged out successfully', 'nonce' => $fresh_nonce));
     }
 
     public function request_magic_link() {

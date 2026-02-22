@@ -1088,6 +1088,17 @@
                 if (modal) {
                     modal.style.display = 'flex';
                     document.body.style.overflow = 'hidden';
+                    // iOS / iPad: prevent pull-to-refresh and background scroll
+                    document.body.style.overscrollBehavior = 'none';
+                    document.body.style.position = 'fixed';
+                    document.body.style.width = '100%';
+                    // Prevent touchmove from scrolling the page behind the modal
+                    this._modalTouchHandler = (e) => {
+                        if (!e.target.closest('.esa-modal-content, .esa-modal-body')) {
+                            e.preventDefault();
+                        }
+                    };
+                    document.addEventListener('touchmove', this._modalTouchHandler, { passive: false });
                     // Render CAPTCHA when modal opens
                     this.renderCaptcha();
                 }
@@ -1102,6 +1113,14 @@
                 if (modal) {
                     modal.style.display = 'none';
                     document.body.style.overflow = 'auto';
+                    // iOS: restore normal scroll behaviour
+                    document.body.style.overscrollBehavior = '';
+                    document.body.style.position = '';
+                    document.body.style.width = '';
+                    if (this._modalTouchHandler) {
+                        document.removeEventListener('touchmove', this._modalTouchHandler);
+                        this._modalTouchHandler = null;
+                    }
                 }
             } catch (error) {
                 console.error('ESA Auth hide modal error:', error);
@@ -1640,6 +1659,16 @@
                     this.userApproved = false;
                     this.userName = '';  // Clear username on logout
                     this.userEmail = '';
+
+                    // CRITICAL: Update nonce with the fresh one from server
+                    // After wp_logout() the old nonce is invalidated; use the new guest nonce for re-login
+                    if (data.data && data.data.nonce) {
+                        this.ajaxData.nonce = data.data.nonce;
+                        if (typeof esa_ajax !== 'undefined') {
+                            esa_ajax.nonce = data.data.nonce;
+                        }
+                        console.log('ESA Logout: Fresh nonce stored for re-login:', data.data.nonce.substring(0, 10) + '...');
+                    }
 
                     // Clear form data
                     if (window.esaFormPersistence) {
