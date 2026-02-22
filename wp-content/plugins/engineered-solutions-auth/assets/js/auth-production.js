@@ -91,6 +91,8 @@
                 // Check if user needs to be prompted for login
                 if (!this.isLoggedIn) {
                     this.showGuestAccess();
+                    // Double check with server to bypass potential page caching
+                    this.verifyTrueLoginStatus();
                 } else {
                     this.showAuthenticatedAccess();
                 }
@@ -99,6 +101,43 @@
                 this.emitAuthEvent('init');
             } catch (error) {
                 console.error('ESA Auth init error:', error);
+            }
+        }
+
+        async verifyTrueLoginStatus() {
+            try {
+                const response = await fetch(this.ajaxData.ajax_url + '?action=esa_check_auth_status', {
+                    method: 'GET',
+                    cache: 'no-store'
+                });
+                const result = await response.json();
+
+                if (result.success && result.data.is_logged_in) {
+                    console.log('ESA Auth: Bypassed cache - user is actually logged in. Updating state.');
+                    this.isLoggedIn = true;
+                    this.userId = result.data.user_id;
+                    this.userApproved = result.data.user_approved;
+                    this.userName = result.data.user_name || this.userName;
+                    this.userEmail = result.data.user_email || this.userEmail;
+                    if (result.data.nonce) {
+                        this.ajaxData.nonce = result.data.nonce;
+                    }
+
+                    this.updateUserGreeting();
+                    this.showAuthenticatedAccess();
+
+                    this.broadcastAuthState('sync');
+                    document.dispatchEvent(new CustomEvent('esaAuthState', {
+                        detail: {
+                            isLoggedIn: this.isLoggedIn,
+                            userId: this.userId,
+                            userApproved: this.userApproved,
+                            action: 'sync'
+                        }
+                    }));
+                }
+            } catch (error) {
+                console.error('ESA Auth: Status check failed', error);
             }
         }
 
@@ -201,6 +240,18 @@
                 this.showMessage('Social login failed. Please try again.', 'error');
             } catch (error) {
                 console.error('ESA Auth Nextend error handler error:', error);
+            }
+        }
+
+        async saveEstimateRequest(pageType, selectedModel, formData) {
+            try {
+                // Feature stub: Currently there is no "esa_save_estimate" endpoint in engineered-solutions-auth.php
+                // This prevents the page integration scripts from crashing when they try to call it.
+                console.log(`ESA Auth: saveEstimateRequest stub called for ${pageType}. Backend API not implemented.`);
+                return true;
+            } catch (error) {
+                console.error('ESA Auth save estimate error:', error);
+                return false;
             }
         }
 
@@ -1082,8 +1133,15 @@
             }
         }
 
+
         showModal() {
             try {
+                // GUARD: never show login modal if user is already logged in
+                if (this.isLoggedIn) {
+                    console.log('ESA Auth: showModal() suppressed — user already logged in');
+                    return;
+                }
+
                 const modal = document.getElementById('esa-auth-modal');
                 if (modal) {
                     modal.style.display = 'flex';
@@ -1106,6 +1164,7 @@
                 console.error('ESA Auth show modal error:', error);
             }
         }
+
 
         hideModal() {
             try {
@@ -2049,12 +2108,32 @@
 
     // Initialize when DOM is ready
     document.addEventListener('DOMContentLoaded', () => {
-        try {
-            if (typeof window.ESAAuth !== 'undefined' && !window.esaAuth) {
-                window.esaAuth = new window.ESAAuth();
+        const initAuth = () => {
+            try {
+                if (typeof window.ESAAuth !== 'undefined' && !window.esaAuth) {
+                    window.esaAuth = new window.ESAAuth();
+                }
+            } catch (error) {
+                console.error('ESA Auth DOM ready initialization error:', error);
             }
-        } catch (error) {
-            console.error('ESA Auth DOM ready initialization error:', error);
+        };
+
+        // Static HTML apps sometimes load esa_ajax asynchronously after DOMContentLoaded
+        if (typeof esa_ajax !== 'undefined') {
+            initAuth();
+        } else {
+            const waitTimer = setInterval(() => {
+                if (typeof esa_ajax !== 'undefined') {
+                    clearInterval(waitTimer);
+                    initAuth();
+                }
+            }, 50);
+
+            // Fallback after 5 seconds
+            setTimeout(() => {
+                clearInterval(waitTimer);
+                if (!window.esaAuth) initAuth();
+            }, 5000);
         }
     });
 

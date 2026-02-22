@@ -21,7 +21,38 @@ class ESAFormPersistence {
     setupFormSaving() {
         if (!this.storage) return;
 
-        // Save ONLY when these specific buttons are clicked (not on every input or page unload)
+        // Auto-save form data on input/change events with a debounce
+        let saveTimeout;
+        const debouncedSave = () => {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                this.saveCurrentFormData();
+            }, 1000); // 1-second debounce to prevent lag
+        };
+
+        // Listen for user input
+        document.addEventListener('input', (e) => {
+            if (e.target.closest('.esa-auth-modal') || e.target.closest('.esa-user-greeting-widget')) return;
+            debouncedSave();
+        });
+
+        // Listen for changes (like dropdowns, checkboxes)
+        document.addEventListener('change', (e) => {
+            if (e.target.closest('.esa-auth-modal') || e.target.closest('.esa-user-greeting-widget')) return;
+            debouncedSave();
+        });
+
+        // Save immediately on any app button click (like "Calculate" or "Add Fixture")
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.esa-auth-modal') || e.target.closest('.esa-user-greeting-widget')) return;
+
+            const target = e.target.closest('button') || e.target;
+            if (target.tagName === 'BUTTON' || target.type === 'button') {
+                this.saveCurrentFormData();
+            }
+        });
+
+        // Save explicitly when trying to login/register via our modal triggers
         document.addEventListener('click', (e) => {
             const target = e.target.closest('button') || e.target;
             const text = (target.textContent || '').trim();
@@ -31,23 +62,20 @@ class ESAFormPersistence {
                 (target.classList.contains('esa-btn-primary') && text.includes('Sign In')) ||
                 (target.tagName === 'BUTTON' && text.includes('Sign In')) ||
                 text.includes('Login to Continue') ||
-                text.includes('Login to View');
+                text.includes('Login to View') ||
+                (target.classList.contains('esa-tab-btn') && target.dataset.tab === 'register');
 
             if (isSaveButton) {
-                console.log('ESA Form Data: Saving on button click:', text);
+                console.log('ESA Form Data: Saving on Auth button click:', text);
                 this.saveCurrentFormData();
             }
         });
 
-        // Save when user switches to Register tab (they might log in via register)
-        document.addEventListener('click', (e) => {
-            const target = e.target.closest('.esa-tab-btn') || e.target;
-            if (target.classList.contains('esa-tab-btn') && target.dataset.tab === 'register') {
-                this.saveCurrentFormData();
-            }
+        // Fail-safe: Save right before the user refreshes or leaves the page
+        window.addEventListener('beforeunload', () => {
+            console.log('ESA Form Data: Saving right before page unload');
+            this.saveCurrentFormData();
         });
-
-        // NOTE: beforeunload removed intentionally — saves only on explicit user actions above
     }
 
     setupFormRestoration() {
@@ -77,7 +105,7 @@ class ESAFormPersistence {
         // Use readyState because this class is typically constructed inside DOMContentLoaded,
         // so adding another DOMContentLoaded listener here would never fire.
         const doPageLoadRestore = () => {
-            const isLoggedIn = (typeof esa_ajax !== 'undefined' && esa_ajax.is_user_logged_in);
+            const isLoggedIn = (typeof esa_ajax !== 'undefined' && (esa_ajax.is_logged_in || esa_ajax.is_user_logged_in));
             if (isLoggedIn && !this.hasRestored) {
                 // Small delay to let the page's own JS finish initializing
                 setTimeout(() => this.restoreFormData(), 1500);
@@ -117,7 +145,8 @@ class ESAFormPersistence {
             // ── Basic inputs (by name OR id, excluding passwords) ────────────────────
             document.querySelectorAll('input, select, textarea').forEach(input => {
                 const key = input.name || input.id;
-                if (!key || input.type === 'password') return;
+                if (!key || input.type === 'password' || key.startsWith('esa-')) return;
+                if (input.closest('.esa-auth-modal') || input.closest('.esa-user-greeting-widget')) return;
                 if (input.type === 'radio' || input.type === 'checkbox') return; // handled below
                 if (input.value) formData[key] = input.value;
             });
@@ -125,7 +154,7 @@ class ESAFormPersistence {
             // ── Radio buttons ─────────────────────────────────────────────────────────
             document.querySelectorAll('input[type="radio"]').forEach(radio => {
                 const key = radio.name || radio.id;
-                if (key) {
+                if (key && !key.startsWith('esa-') && !radio.closest('.esa-auth-modal') && !radio.closest('.esa-user-greeting-widget')) {
                     // Store both which group value is selected AND individual checked state
                     if (radio.checked) formData[key] = radio.value;
                     if (radio.id) formData[`radio_checked_${radio.id}`] = radio.checked;
@@ -135,7 +164,9 @@ class ESAFormPersistence {
             // ── Checkboxes ────────────────────────────────────────────────────────────
             document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
                 const key = checkbox.name || checkbox.id;
-                if (key) formData[key] = checkbox.checked;
+                if (key && !key.startsWith('esa-') && !checkbox.closest('.esa-auth-modal') && !checkbox.closest('.esa-user-greeting-widget')) {
+                    formData[key] = checkbox.checked;
+                }
             });
 
             // ── Section / panel visibility (Day Tank, Municipal Line, etc.) ───────────
@@ -143,9 +174,9 @@ class ESAFormPersistence {
             const sectionVisibility = {};
             document.querySelectorAll('[id]').forEach(el => {
                 const id = el.id;
-                if (!id) return;
+                if (!id || id.startsWith('esa-') || el.closest('.esa-auth-modal') || el.closest('.esa-user-greeting-widget')) return;
+
                 // Capture everything that might be a toggled section
-                const style = window.getComputedStyle(el);
                 if (el.tagName !== 'SCRIPT' && el.tagName !== 'STYLE') {
                     sectionVisibility[id] = {
                         display: el.style.display,
@@ -158,14 +189,16 @@ class ESAFormPersistence {
             // ── Toggle/active button state for section selectors ─────────────────────
             const activeButtons = [];
             document.querySelectorAll('.active, .selected, [aria-selected="true"]').forEach(el => {
-                if (el.id) activeButtons.push(el.id);
+                if (el.id && !el.id.startsWith('esa-') && !el.closest('.esa-auth-modal') && !el.closest('.esa-user-greeting-widget')) {
+                    activeButtons.push(el.id);
+                }
             });
             formData.activeButtons = activeButtons;
 
             // ── All calculated results and result divs ───────────────────────────────
             const calculatedValues = {};
             document.querySelectorAll('[id$="Result"], [id*="Result"], [id*="result"]').forEach(el => {
-                if (el.id && (el.textContent || el.innerHTML)) {
+                if (el.id && !el.id.startsWith('esa-') && !el.closest('.esa-auth-modal') && (el.textContent || el.innerHTML)) {
                     calculatedValues[el.id] = el.innerHTML;
                 }
             });
@@ -200,13 +233,22 @@ class ESAFormPersistence {
 
             // ── All spans that contain computed text ──────────────────────────────────
             document.querySelectorAll('span[id]').forEach(span => {
-                if (span.textContent && span.id) formData[`span_${span.id}`] = span.textContent;
+                if (span.textContent && span.id && !span.id.startsWith('esa-') && !span.closest('.esa-auth-modal') && !span.closest('.esa-user-greeting-widget')) {
+                    formData[`span_${span.id}`] = span.textContent;
+                }
             });
 
             // ── Global JS state variables ─────────────────────────────────────────────
-            ['selectedSystem', 'selectedOption', 'day_tank_pump_type'].forEach(varName => {
+            ['selectedSystem', 'selectedOption', 'day_tank_pump_type', 'fixturesTotalWSFU'].forEach(varName => {
                 if (typeof window[varName] !== 'undefined') formData[`global_${varName}`] = window[varName];
             });
+
+            // ── Pump results visibility ───────────────────────────────────────────────
+            const pumpResultsVisibility = [];
+            document.querySelectorAll('.pumpResult').forEach(el => {
+                pumpResultsVisibility.push(el.style.display || '');
+            });
+            formData.pumpResultsVisibility = pumpResultsVisibility;
 
             // ── Meta ──────────────────────────────────────────────────────────────────
             formData.timestamp = Date.now();
@@ -247,6 +289,8 @@ class ESAFormPersistence {
                     if (formData.pageUrl !== window.location.href) return;
                 }
             }
+
+            console.log('ESA Form Data: Payload being restored:', formData);
 
             // ── Freshness check (24 hours) ────────────────────────────────────────────
             if (Date.now() - formData.timestamp > 24 * 60 * 60 * 1000) {
@@ -322,7 +366,9 @@ class ESAFormPersistence {
 
                 elements.forEach(el => {
                     if (el.type === 'radio') {
-                        if (el.value === formData[key]) el.checked = true;
+                        if (el.value === formData[key]) {
+                            el.checked = true;
+                        }
                     } else if (el.type === 'checkbox') {
                         el.checked = !!formData[key];
                     } else if (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') {
@@ -378,22 +424,38 @@ class ESAFormPersistence {
                 if (span) span.textContent = formData[key];
             });
 
-            // ── STEP 10: Restore global JS variables ──────────────────────────────────
+            // ── STEP 10: Restore pump results visibility ──────────────────────────────
+            if (formData.pumpResultsVisibility) {
+                const pumpResultEls = document.querySelectorAll('.pumpResult');
+                formData.pumpResultsVisibility.forEach((display, i) => {
+                    if (pumpResultEls[i]) {
+                        pumpResultEls[i].style.display = display;
+                    }
+                });
+            }
+
+            // ── STEP 11: Restore global JS variables ──────────────────────────────────
             Object.keys(formData).forEach(key => {
                 if (!key.startsWith('global_')) return;
                 const varName = key.substring(7);
                 window[varName] = formData[key];
             });
 
-            // ── STEP 11: Fire change/input events so app recalculates ─────────────────
-            // Small delay so DOM is stable after all above writes
+            // ── STEP 12: Fire change events globally after all values are set ────────
             setTimeout(() => {
                 document.querySelectorAll('input, select, textarea').forEach(input => {
                     if (input.value && input.type !== 'radio' && input.type !== 'checkbox') {
-                        input.dispatchEvent(new Event('input', { bubbles: true }));
                         input.dispatchEvent(new Event('change', { bubbles: true }));
                     }
                 });
+
+                // ── STEP 13: Execute application-specific table renders ──────────────────
+                if (typeof window.renderFixtureTable === 'function') {
+                    window.renderFixtureTable();
+                }
+                if (typeof window.calculateFixtureFlow === 'function') {
+                    window.calculateFixtureFlow();
+                }
             }, 100);
 
             console.log('ESA Form Data: Restored complete form data for', window.location.pathname);
