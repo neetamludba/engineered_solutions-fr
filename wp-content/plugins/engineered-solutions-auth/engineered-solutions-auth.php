@@ -62,6 +62,10 @@ class EngineeredSolutionsAuth {
         // Approval status check endpoint
         add_action('wp_ajax_esa_check_approval_status', array($this, 'check_approval_status'));
 		
+        // True authentication status check endpoint (bypasses page cache)
+        add_action('wp_ajax_nopriv_esa_check_auth_status', array($this, 'check_auth_status'));
+        add_action('wp_ajax_esa_check_auth_status', array($this, 'check_auth_status'));
+		
         // Nextend Social Login Pro integration hooks
         add_action('nsl_login_success', array($this, 'handle_nextend_login'), 10, 2);
         add_action('nsl_register_success', array($this, 'handle_nextend_register'), 10, 2);
@@ -356,10 +360,11 @@ class EngineeredSolutionsAuth {
     }
     
     public function handle_login() {
-        check_ajax_referer('esa_nonce', 'nonce');
+        // NOTE: No nonce check here intentionally.
+        // The login endpoint is secured by email+password credentials and rate limiting.
+        // WordPress nonces become invalid after wp_logout() destroys the session token,
+        // which would prevent re-login without a full page reload.
         
-        // Log login attempt
-        error_log('ESA Login: Starting login process');
         
         // Verify CAPTCHA if enabled
         if (get_option('esa_enable_captcha', 0)) {
@@ -2737,6 +2742,35 @@ class EngineeredSolutionsAuth {
                 'approved' => $this->is_user_approved($user->ID)
             )
         ));
+    }
+	
+    public function check_auth_status() {
+        // Just return current true login status, bypassing HTML cache
+        $is_logged_in = is_user_logged_in();
+        $response = array(
+            'is_logged_in' => $is_logged_in
+        );
+        
+        if ($is_logged_in) {
+            $user = wp_get_current_user();
+            $first_name = get_user_meta($user->ID, 'first_name', true);
+            $last_name = get_user_meta($user->ID, 'last_name', true);
+            $user_name = trim($first_name . ' ' . $last_name);
+            if (empty($user_name)) {
+                $user_name = $user->display_name;
+            }
+            if (empty($user_name) || $user_name === $user->user_email) {
+                $user_name = $user->user_email;
+            }
+            
+            $response['user_id'] = $user->ID;
+            $response['user_email'] = $user->user_email;
+            $response['user_name'] = $user_name;
+            $response['user_approved'] = $this->is_user_approved($user->ID);
+            $response['nonce'] = wp_create_nonce('esa_nonce'); // Refresh nonce just in case
+        }
+        
+        wp_send_json_success($response);
     }
 }
 

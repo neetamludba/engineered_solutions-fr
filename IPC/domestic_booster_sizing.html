@@ -8,12 +8,13 @@
     <title>Domestic Booster Sizing</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
-    
+
     <!-- ESA Authentication System -->
     <link rel="stylesheet" href="/wp-content/plugins/engineered-solutions-auth/assets/css/modern-auth.css">
     <script src="/wp-content/plugins/engineered-solutions-auth/assets/js/auth-production.js"></script>
     <script src="/wp-content/plugins/engineered-solutions-auth/assets/js/form-persistence.js"></script>
-    <script src="/wp-content/plugins/engineered-solutions-auth/integration/ipc-domestic-booster-integration.js"></script>
+    <script
+        src="/wp-content/plugins/engineered-solutions-auth/integration/ipc-domestic-booster-integration.js"></script>
 
     <style>
         .page__banner-content {
@@ -346,7 +347,8 @@
 
 <body>
     <!-- ESA User Greeting short code -->
-    [esa_user_greeting greeting_text="Welcome" position="right" show_user_name="true" show_status="true" show_buttons="true"]
+    [esa_user_greeting greeting_text="Welcome" position="right" show_user_name="true" show_status="true"
+    show_buttons="true"]
     <div class="rainwater_div" id="flow_rate">
         <h2 id="flow_rate_h2">Flow Rate Calculator</h2>
         <p class="para_white">Based on 2024 Building Code Compendium - Ontario</p>
@@ -1004,11 +1006,11 @@
     </div>
     <br />
     <button type="button" id="print_btn" onclick="printPage()">Print</button>
-    
+
 
     <script>
         // User authentication variables
-        
+
         // Function to initialize all charts with dummy graphs if user is not authenticated
         function initializeChartsForNonAuthenticatedUsers() {
             if (!user || !approved) {
@@ -1019,11 +1021,11 @@
                     if (chartDiv) {
                         drawDummyChart(chartDiv.id);
                     }
-                    
+
                     // Hide summary and PDF buttons for non-authenticated users
                     const summaryOverlay = container.querySelector('.summary-overlay');
                     const chartOverlay = container.querySelector('.chart-overlay');
-                    
+
                     if (summaryOverlay) {
                         summaryOverlay.style.display = 'none';
                     }
@@ -1037,7 +1039,7 @@
                 chartContainers.forEach(container => {
                     const summaryOverlay = container.querySelector('.summary-overlay');
                     const chartOverlay = container.querySelector('.chart-overlay');
-                    
+
                     if (summaryOverlay) {
                         summaryOverlay.style.display = 'block';
                     }
@@ -1047,7 +1049,7 @@
                 });
             }
         }
-        
+
         // Function to update status display
         function updateStatusDisplay() {
             const statusElement = document.getElementById('currentStatus');
@@ -1062,7 +1064,7 @@
                 statusElement.style.color = '#a52714';
             }
         }
-        
+
         // Function to toggle user authentication (for testing purposes)
         function toggleUserAuth() {
             user = !user;
@@ -1071,7 +1073,7 @@
             updateStatusDisplay();
             initializeChartsForNonAuthenticatedUsers();
         }
-        
+
         function toggleApproval() {
             approved = !approved;
             console.log('User approval toggled:', approved);
@@ -1079,13 +1081,13 @@
             updateStatusDisplay();
             initializeChartsForNonAuthenticatedUsers();
         }
-        
+
         // Initialize charts when page loads
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             updateStatusDisplay();
             initializeChartsForNonAuthenticatedUsers();
         });
-        
+
         function showSection(sectionId) {
             // Hide both sections
             // document.getElementById("municipal_line").style.display = "none";
@@ -1748,7 +1750,7 @@
             },
         };
 
-        let fixturesTotalWSFU = [];
+        var fixturesTotalWSFU = [];
 
         function updateAddFixtureButtonText() {
             const fixture = document.getElementById('fixtures').value;
@@ -2014,8 +2016,8 @@
             return lookupTable[nearestWSFU];
         }
 
-        function calculateIrrigationFlow() {
-            event.preventDefault();
+        function calculateIrrigationFlow(event) {
+            if (event) event.preventDefault();
 
             const sprinklers = parseFloat(document.getElementById('irrigation_sprinklers').value) || 0;
             const flowRate = parseFloat(document.getElementById('irrigation_flow_rate').value) || 0;
@@ -2720,12 +2722,12 @@
                 `;
                 graph.parentElement.style.display = 'block';
                 graph.style.display = "inline-block";
-                
+
                 // Hide buttons for dummy charts
                 const container = graph.parentElement;
                 const summaryOverlay = container.querySelector('.summary-overlay');
                 const chartOverlay = container.querySelector('.chart-overlay');
-                
+
                 if (summaryOverlay) {
                     summaryOverlay.style.display = 'none';
                 }
@@ -2794,12 +2796,12 @@
                 graph.parentElement.style.display = 'block';
                 graph.style.display = "inline-block";
                 noPlot = false
-                
+
                 // Show buttons for authenticated users when chart is displayed
                 const container = graph.parentElement;
                 const summaryOverlay = container.querySelector('.summary-overlay');
                 const chartOverlay = container.querySelector('.chart-overlay');
-                
+
                 if (summaryOverlay) {
                     summaryOverlay.style.display = 'block';
                 }

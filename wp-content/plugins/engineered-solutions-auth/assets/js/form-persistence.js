@@ -70,12 +70,6 @@ class ESAFormPersistence {
                 this.saveCurrentFormData();
             }
         });
-
-        // Fail-safe: Save right before the user refreshes or leaves the page
-        window.addEventListener('beforeunload', () => {
-            console.log('ESA Form Data: Saving right before page unload');
-            this.saveCurrentFormData();
-        });
     }
 
     setupFormRestoration() {

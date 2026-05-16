@@ -8,12 +8,13 @@
     <title>Rainwater Harvesting Sizing</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
-    
+
     <!-- ESA Authentication System -->
     <link rel="stylesheet" href="/wp-content/plugins/engineered-solutions-auth/assets/css/modern-auth.css">
     <script src="/wp-content/plugins/engineered-solutions-auth/assets/js/auth-production.js"></script>
     <script src="/wp-content/plugins/engineered-solutions-auth/assets/js/form-persistence.js"></script>
-    <script src="/wp-content/plugins/engineered-solutions-auth/integration/ipc-rainwater-harvesting-integration.js"></script>
+    <script
+        src="/wp-content/plugins/engineered-solutions-auth/integration/ipc-rainwater-harvesting-integration.js"></script>
 
     <style>
         .page__banner-content {
@@ -454,7 +455,8 @@
 
 <body>
     <!-- ESA User Greeting short code -->
-    [esa_user_greeting greeting_text="Welcome" position="right" show_user_name="true" show_status="true" show_buttons="true"]
+    [esa_user_greeting greeting_text="Welcome" position="right" show_user_name="true" show_status="true"
+    show_buttons="true"]
 
     <div class="rainwater_div" id="flow_rate">
         <h2 id="flow_rate_h2">Flow Rate Calculator</h2>
@@ -1486,7 +1488,7 @@
             },
         };
 
-        let fixturesTotalWSFU = [];
+        var fixturesTotalWSFU = [];
 
         function updateAddFixtureButtonText() {
             const fixture = document.getElementById('fixtures').value;
@@ -1752,8 +1754,8 @@
         }
 
 
-        function calculateIrrigationFlow() {
-            event.preventDefault();
+        function calculateIrrigationFlow(event) {
+            if (event) event.preventDefault();
 
             const sprinklers = parseFloat(document.getElementById('irrigation_sprinklers').value) || 0;
             const flowRate = parseFloat(document.getElementById('irrigation_flow_rate').value) || 0;
